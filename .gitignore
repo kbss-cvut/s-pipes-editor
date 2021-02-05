@@ -1,0 +1,14 @@
+.idea
+target
+*.iml
+src/main/java/generated-sources/
+doc/*.toc
+doc/*.aux
+doc/*.log
+doc/*.out
+src/main/webapp/**/node_modules
+*.log
+src/main/webapp/package-lock.json
+*.sc
+/scripts
+profiles
