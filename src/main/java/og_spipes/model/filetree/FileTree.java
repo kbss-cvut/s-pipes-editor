@@ -1,4 +1,4 @@
-package og_spipes.persistence.dao.filetree;
+package og_spipes.model.filetree;
 
 public interface FileTree {
     String getName();
