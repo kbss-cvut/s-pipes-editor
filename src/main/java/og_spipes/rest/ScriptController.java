@@ -15,23 +15,30 @@
 package og_spipes.rest;
 
 import og_spipes.model.filetree.SubTree;
+import og_spipes.model.spipes.ModuleType;
 import og_spipes.service.FileTreeService;
+import og_spipes.service.ScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.List;
 
 @RestController
 @RequestMapping("/scripts")
 public class ScriptController {
 
     private final FileTreeService fileTreeService;
+    private final ScriptService scriptService;
 
     @Autowired
-    public ScriptController(FileTreeService fileTreeService) {
-        this.fileTreeService= fileTreeService;
+    public ScriptController(FileTreeService fileTreeService, ScriptService scriptService) {
+        this.fileTreeService = fileTreeService;
+        this.scriptService = scriptService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -39,4 +46,16 @@ public class ScriptController {
         //TODO parametrize later
         return fileTreeService.getTtlFileTree(new File("/home/chlupnoha/IdeaProjects/s-pipes-newgen/src/test/resources/ttl_files"));
     }
+
+    @GetMapping("/moduleTypes")
+    public List<ModuleType> getModuleTypes() {
+        //TODO parametrize later
+        String filepath = "/home/chlupnoha/IdeaProjects/og-spipes/src/test/resources/scripts_test/sample/simple-import/script.ttl";
+        List<ModuleType> moduleTypes = scriptService.getModuleTypes(filepath);
+        System.out.println("sizu controller: " + moduleTypes.size());
+
+        //WHY??? - cz/cvut/kbss/jopa/model/MultilingualString
+        return moduleTypes;
+    }
+
 }

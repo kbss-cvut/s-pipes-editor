@@ -41,9 +41,9 @@ public class SchemaExporter {
             case JenaOntoDriverProperties.TDB:
                 exportToTDB();
                 break;
-            case JenaOntoDriverProperties.FUSEKI:
-                exportToFuseki();
-                break;
+//            case JenaOntoDriverProperties.FUSEKI:
+//                exportToFuseki();
+//                break;
             default:
                 throw new IllegalArgumentException("Unsupported Jena repository type " + repoType);
         }

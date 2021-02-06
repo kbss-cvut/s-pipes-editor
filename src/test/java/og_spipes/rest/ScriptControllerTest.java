@@ -25,4 +25,12 @@ public class ScriptControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @DisplayName("Get file moduleTypes")
+    public void testGetScriptModuleTypes() throws Exception {
+        //TODO enforce some assertion
+        this.mockMvc.perform(get("/scripts/moduleTypes"))
+                .andDo(print());
+    }
+
 }
