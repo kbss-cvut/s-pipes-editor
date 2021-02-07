@@ -14,8 +14,10 @@
  */
 package og_spipes.rest;
 
+import cz.cvut.kbss.jsonld.JsonLd;
 import og_spipes.model.filetree.SubTree;
 import og_spipes.model.spipes.ModuleType;
+import og_spipes.model.spipes.TestJSONLD;
 import og_spipes.service.FileTreeService;
 import og_spipes.service.ScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +49,12 @@ public class ScriptController {
         return fileTreeService.getTtlFileTree(new File("/home/chlupnoha/IdeaProjects/s-pipes-newgen/src/test/resources/ttl_files"));
     }
 
-    @GetMapping("/moduleTypes")
+    @GetMapping(path = "/dummy", produces = JsonLd.MEDIA_TYPE)
+    public TestJSONLD getDummy() {
+        return new TestJSONLD("label");
+    }
+
+    @GetMapping(path = "/moduleTypes", produces = JsonLd.MEDIA_TYPE)
     public List<ModuleType> getModuleTypes() {
         //TODO parametrize later
         String filepath = "/home/chlupnoha/IdeaProjects/og-spipes/src/test/resources/scripts_test/sample/simple-import/script.ttl";
