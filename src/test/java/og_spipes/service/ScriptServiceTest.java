@@ -31,14 +31,12 @@ public class ScriptServiceTest {
 
     @Test
     public void getModuleTypes() {
-//        //TODO parametrize later; not working for hello-world script due to HttpError
-//        ArrayList<ModuleType> mockModuleTypes = new ArrayList<>();
-//        mockModuleTypes.add(new ModuleType());
-//        when(scriptDao.getModuleTypes(any())).thenReturn(mockModuleTypes);
-//
-//        List<ModuleType> moduleTypes = scriptService.getModuleTypes("/dummy.ttl");
-//        assertEquals(1, moduleTypes.size());
-        assertEquals(1, 1);
+        ArrayList<ModuleType> mockModuleTypes = new ArrayList<>();
+        mockModuleTypes.add(new ModuleType());
+        when(scriptDao.getModuleTypes(any())).thenReturn(mockModuleTypes);
+
+        List<ModuleType> moduleTypes = scriptService.getModuleTypes("/dummy.ttl");
+        assertEquals(1, moduleTypes.size());
     }
 
 }

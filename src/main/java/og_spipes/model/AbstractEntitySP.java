@@ -1,4 +1,4 @@
-package og_spipes.model.spipes;
+package og_spipes.model;
 
 import cz.cvut.kbss.jopa.model.annotations.Id;
 import cz.cvut.kbss.jopa.model.annotations.MappedSuperclass;

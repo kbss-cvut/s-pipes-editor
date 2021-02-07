@@ -1,6 +1,7 @@
 package og_spipes.model.spipes;
 
 import cz.cvut.kbss.jopa.model.annotations.*;
+import og_spipes.model.AbstractEntitySP;
 
 import java.net.URI;
 import java.util.Set;

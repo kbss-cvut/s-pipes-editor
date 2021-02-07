@@ -9,6 +9,8 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class OntologyHelper {
 
-//    private static final Logger LOG = LoggerFactory.getLogger(OntologyHelper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OntologyHelper.class);
     private final ScriptDao scriptDao;
 
     @Autowired
@@ -33,10 +35,7 @@ public class OntologyHelper {
 
         OntDocumentManager documentManager = OntDocumentManager.getInstance();
         documentManager.clearCache();
-        documentManager.setReadFailureHandler((s, model, e) -> {
-//            LOG.info(e.getLocalizedMessage());
-            System.out.println(e.getLocalizedMessage());
-        });
+        documentManager.setReadFailureHandler((s, model, e) -> LOG.info(e.getLocalizedMessage()));
         scripts.forEach(s -> {
             String ontologyUri = getOntologyUri(s);
             String absolutePath = s.getAbsolutePath();
@@ -48,28 +47,8 @@ public class OntologyHelper {
         return model;
     }
 
-//    public Map<String, File> collectOntologyUris(List<File> files) {
-//        HashMap<String, File> stringFileHashMap = new HashMap<>();
-//        files.forEach(f -> stringFileHashMap.put(getOntologyUri(f), f));
-//        return stringFileHashMap;
-//    }
-
-//    public OntDocumentManager getOntDocumentManager(List<File> scripts){
-//        OntDocumentManager documentManager = OntDocumentManager.getInstance();
-//        documentManager.clearCache();
-//        documentManager.setReadFailureHandler((s, model, e) -> {
-//            LOG.info(e.getLocalizedMessage());
-//        });
-//        scripts.forEach(s -> {
-//            String ontologyUri = getOntologyUri(s);
-//            String absolutePath = s.getAbsolutePath();
-//            documentManager.addAltEntry(ontologyUri, absolutePath);
-//        });
-//        return documentManager;
-//    }
-
     public String getOntologyUri(File f) {
-//        LOG.debug("Looking for an ontology in file " + f.getName());
+        LOG.debug("Looking for an ontology in file " + f.getName());
         Model defaultModel = ModelFactory.createDefaultModel();
         List<Statement> statements = defaultModel
                 .read(f.getAbsolutePath(), org.apache.jena.util.FileUtils.langTurtle)
