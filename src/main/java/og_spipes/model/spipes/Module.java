@@ -40,6 +40,15 @@ public class Module extends AbstractEntitySP {
         this.next = next;
     }
 
+    public Module(URI uri, String id, String label, Set<Module> next, ModuleType specificType, Set<String> types) {
+        this.uri = uri;
+        this.id = id;
+        this.label = label;
+        this.next = next;
+        this.specificType = specificType;
+        this.types = types;
+    }
+
     public String getLabel() {
         return label;
     }

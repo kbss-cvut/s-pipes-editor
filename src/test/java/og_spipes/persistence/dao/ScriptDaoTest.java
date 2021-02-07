@@ -1,5 +1,6 @@
 package og_spipes.persistence.dao;
 
+import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -37,7 +38,6 @@ public class ScriptDaoTest {
         );
     }
 
-
     @Test
     public void getModulesTypes(){
         List<ModuleType> moduleTypes = scriptDao.getModuleTypes(defaultModel);
@@ -46,9 +46,16 @@ public class ScriptDaoTest {
     }
 
     @Test
+    public void getModules() {
+        List<Module> modules = scriptDao.getModules(defaultModel);
+
+        assertEquals(18, modules.size());
+    }
+
+    @Test
     public void getScripts() {
         List<File> files = scriptDao.getScripts();
 
-        assertEquals(10, files.size());
+        assertEquals(13, files.size());
     }
 }

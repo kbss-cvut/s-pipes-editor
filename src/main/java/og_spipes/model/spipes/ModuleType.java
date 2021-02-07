@@ -50,14 +50,14 @@ public class ModuleType extends AbstractEntitySP {
         this.icon = icon;
     }
 
-//    @Override
-//    public String toString() {
-//        return "ModuleType{" +
-//                "label='" + label + '\'' +
-//                ", comment=" + comment +
-//                ", icon='" + icon + '\'' +
-//                ", uri=" + uri +
-//                ", id='" + id + '\'' +
-//                '}';
-//    }
+    @Override
+    public String toString() {
+        return "ModuleType{" +
+                "label='" + label + '\'' +
+                ", comment=" + comment +
+                ", icon='" + icon + '\'' +
+                ", uri=" + uri +
+                ", id='" + id + '\'' +
+                '}';
+    }
 }

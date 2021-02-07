@@ -18,7 +18,6 @@ import og_spipes.model.filetree.FileTree;
 import og_spipes.model.filetree.Leaf;
 import og_spipes.model.filetree.SubTree;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ import java.util.List;
 @Service
 public class FileTreeService {
 
-    @Transactional
+//    @Transactional - [QUESTION] why is not working?
     public SubTree getTtlFileTree(File file) {
         List<FileTree> fileTrees = new ArrayList<>();
 

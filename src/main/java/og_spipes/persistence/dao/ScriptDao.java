@@ -9,6 +9,7 @@ import cz.cvut.kbss.ontodriver.config.OntoDriverProperties;
 import cz.cvut.kbss.ontodriver.jena.JenaDataSource;
 import cz.cvut.kbss.ontodriver.jena.config.JenaOntoDriverProperties;
 import og_spipes.model.Vocabulary;
+import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.query.Dataset;
@@ -25,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static og_spipes.model.Vocabulary.s_c_Modules;
+
 @Repository
 public class ScriptDao {
 
@@ -32,6 +35,7 @@ public class ScriptDao {
     //TODO parametrize later - root folder
     private final File rootFolder = new File("/home/chlupnoha/IdeaProjects/og-spipes/src/test/resources/scripts_test/sample");
 
+    //TODO consider if always create a new EM!
     final EntityManagerFactory emf;
 
     public ScriptDao() {
@@ -61,6 +65,43 @@ public class ScriptDao {
                 .setParameter("type", URI.create(Vocabulary.s_c_Module)).getResultList();
         em.close();
         return moduleTypes;
+    }
+
+    public List<Module> getModules(Model m) {
+        EntityManager em = emf.createEntityManager();
+        InfModel infModel = ModelFactory.createRDFSModel(m);
+        Dataset dataset = em.unwrap(Dataset.class);
+        dataset.setDefaultModel(infModel);
+        emf.getCache().evict(Module.class);
+
+        List<Module> modules = em.createNativeQuery("select ?s where { ?s a ?type }", Module.class)
+                .setParameter("type", URI.create(s_c_Modules)).getResultList();
+
+        System.out.println("total modules count: " + modules.size());
+
+        for(Module module : modules){
+            List<ModuleType> ts = em.createNativeQuery(
+                    "prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>\n" +
+                            "           \n" +
+                            "           select distinct ?type where {\n" +
+                            "             ?module a ?type .\n" +
+                            "             filter not exists {\n" +
+                            "               ?module  a ?subtype .\n" +
+                            "               ?subtype rdfs:subClassOf ?type .\n" +
+                            "               filter ( ?subtype != ?type )\n" +
+                            "             }\n" +
+                            "           }",
+                    ModuleType.class
+            ).setParameter("module", module.getUri()).getResultList();
+            if(!ts.isEmpty()){
+                if(ts.size() > 1) System.out.println("MORE TYPES FOUND!!!");
+                module.setSpecificType(ts.get(0));
+            }else{
+                System.out.println("NO TYPE FOUND!!!");
+            }
+        }
+        em.close();
+        return modules;
     }
 
     public List<File> getScripts() {

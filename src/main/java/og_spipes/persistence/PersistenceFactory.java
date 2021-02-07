@@ -19,6 +19,7 @@ import cz.cvut.kbss.jopa.model.JOPAPersistenceProvider;
 import cz.cvut.kbss.ontodriver.config.OntoDriverProperties;
 import cz.cvut.kbss.ontodriver.jena.JenaDataSource;
 import cz.cvut.kbss.ontodriver.jena.config.JenaOntoDriverProperties;
+import cz.cvut.kbss.ontodriver.sesame.SesameDataSource;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,14 +39,12 @@ public class PersistenceFactory {
     private static final Logger LOG = LoggerFactory.getLogger(PersistenceFactory.class);
 
     private final Environment environment;
-    private final SchemaExporter schemaExporter;
 
     private EntityManagerFactory emf;
 
     @Autowired
-    public PersistenceFactory(Environment environment, SchemaExporter schemaExporter) {
+    public PersistenceFactory(Environment environment) {
         this.environment = environment;
-        this.schemaExporter = schemaExporter;
     }
 
     @PostConstruct
@@ -53,16 +52,15 @@ public class PersistenceFactory {
         final String repoPath = environment.getProperty("repositoryUrl");
         final String repoType = environment.getProperty("repository.type");
         LOG.info("Using repository path: {}.", repoPath);
-        schemaExporter.exportSchema();
 
         final Map<String, String> props = new HashMap<>();
         // Here we set up basic storage access properties - driver class, physical location of the storage
         props.put(JOPAPersistenceProperties.ONTOLOGY_PHYSICAL_URI_KEY, repoPath);
-        props.put(JOPAPersistenceProperties.DATA_SOURCE_CLASS, JenaDataSource.class.getName());
-        // Let's use Jena TDB for storage
-        props.put(JenaOntoDriverProperties.JENA_STORAGE_TYPE, repoType);
-        // Use Jena's rule-based RDFS reasoner
-        props.put(OntoDriverProperties.REASONER_FACTORY_CLASS, RDFSRuleReasonerFactory.class.getName());
+        props.put(JOPAPersistenceProperties.DATA_SOURCE_CLASS, SesameDataSource.class.getName());
+//        // Let's use Jena TDB for storage
+//        props.put(JenaOntoDriverProperties.JENA_STORAGE_TYPE, repoType);
+//        // Use Jena's rule-based RDFS reasoner
+//        props.put(OntoDriverProperties.REASONER_FACTORY_CLASS, RDFSRuleReasonerFactory.class.getName());
         // View transactional changes during transaction
         props.put(OntoDriverProperties.USE_TRANSACTIONAL_ONTOLOGY, Boolean.TRUE.toString());
         // Where to look for entities
