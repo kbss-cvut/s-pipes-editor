@@ -8,6 +8,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -17,10 +18,11 @@ class ReportControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void testGetReports() throws Exception {
+    public void testGetReportsMbForFurhterUser() throws Exception {
         //TODO enforce some assertion
         this.mockMvc.perform(get("/reports"))
-                .andDo(print());
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
     }
 
 }
