@@ -26,8 +26,6 @@ public class FormControllerTest {
     @Test
     @DisplayName("Get parsed s-form")
     public void testGetScriptModuleTypes() throws Exception {
-        //TODO inline JsonLD from object
-
         this.mockMvc.perform(post("/scripts/forms")
                 .content(
                         "{" +
