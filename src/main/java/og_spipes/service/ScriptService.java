@@ -54,38 +54,36 @@ public class ScriptService {
             throw new IllegalArgumentException("FROM MODULE: " + moduleFrom + " OR TO MODULE " + moduleTo + "CANT BE NULL");
         }
 
-        Model model = ModelFactory.createDefaultModel().read(scriptPath);
-        model.add(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
+        ontModel.add(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
         FileOutputStream os = new FileOutputStream(scriptPath);
-        model.write(os, FileUtils.langTurtle);
+        ontModel.write(os, FileUtils.langTurtle);
+
+        //TODO notification webhooks
     }
 
-    public void deleteDependency(String scriptPath, String from, String to) {
-//        log.info(f"""Deleting dependency from $from to $to in $scriptPath""")
-//        helper.getFileDefiningTriple(from, Vocabulary.s_p_next, to)(new File(scriptPath)) match {
-//            case Success(file) =>
-//                val m = ModelFactory.createDefaultModel().read(file)
-//                cleanly(new FileOutputStream(file))(_.close())(os => {
-//                    m.removeAll(m.getResource(from), new PropertyImpl(Vocabulary.s_p_next), m.getResource(to)).write(os, FileUtils.langTurtle)
-//            })
-//          .map(_ => NotificationController.notify(scriptPath))
-//            case failure => failure
-//        }
+    //TODO test later - quite hard now
+    public void deleteDependency(String scriptPath, String from, String to) throws FileNotFoundException {
+        OntModel ontModel = ontologyHelper.createOntModel(new File(scriptPath));
+        ontModel.removeAll(
+                ontModel.getResource(from),
+                new PropertyImpl(Vocabulary.s_p_next),
+                ontModel.getResource(to)
+        );
+        FileOutputStream os = new FileOutputStream(scriptPath);
+        ontModel.write(os, FileUtils.langTurtle);
+
+        //TODO notification webhooks
     }
 
-    public void deleteModule(String scriptPath, String module) {
-//        log.info(f"""Deleting module $module from $scriptPath""")
-//        helper.getFileDefiningSubject(module)(new File(scriptPath)) match {
-//            case Success(file) =>
-//                val m = ModelFactory.createDefaultModel().read(file)
-//                m.removeAll(m.getResource(module), null, null)
-//                m.removeAll(null, null, m.getResource(module))
-//                cleanly(new FileOutputStream(file))(_.close())(os => {
-//                    m.write(os, FileUtils.langTurtle)
-//            })
-//          .map(_ => NotificationController.notify(scriptPath))
-//            case f => f
-//        }
+    //TODO test later - quite hard now
+    public void deleteModule(String scriptPath, String module) throws FileNotFoundException {
+        OntModel ontModel = ontologyHelper.createOntModel(new File(scriptPath));
+        ontModel.removeAll(ontModel.getResource(module), null, null);
+        ontModel.removeAll(null, null, ontModel.getResource(module));
+        FileOutputStream os = new FileOutputStream(scriptPath);
+        ontModel.write(os, FileUtils.langTurtle);
+
+        //TODO notification webhooks
     }
 
 }

@@ -1,6 +1,7 @@
 package og_spipes.rest;
 
 import cz.cvut.kbss.jsonld.JsonLd;
+import og_spipes.model.dto.ModuleDTO;
 import og_spipes.model.dto.ScriptDTO;
 import og_spipes.model.filetree.SubTree;
 import og_spipes.model.spipes.DependencyDTO;
@@ -53,6 +54,21 @@ public class ScriptController {
     public void createDependency(@RequestBody DependencyDTO dto) throws FileNotFoundException {
         String script = dto.getAbsolutePath();
         scriptService.createDependency(script, dto.getModuleUri(), dto.getTargetModuleUri());
+    }
+
+    @PostMapping(path = "/modules/delete")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteModule(@RequestBody ModuleDTO dto) throws FileNotFoundException {
+        String scriptPath = dto.getAbsolutePath();
+        String moduleUri = dto.getModuleUri();
+        scriptService.deleteModule(scriptPath, moduleUri);
+    }
+
+    @PostMapping(path = "/modules/dependencies/delete")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteDependency(@RequestBody DependencyDTO dto) throws FileNotFoundException {
+        String scriptPath = dto.getAbsolutePath();
+        scriptService.deleteDependency(scriptPath, dto.getModuleUri(), dto.getTargetModuleUri());
     }
 
 }
