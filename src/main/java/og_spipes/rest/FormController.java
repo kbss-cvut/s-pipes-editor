@@ -2,6 +2,7 @@ package og_spipes.rest;
 
 import cz.cvut.sforms.model.Question;
 import og_spipes.model.dto.QuestionDTO;
+import og_spipes.rest.exception.NoRootQuestionException;
 import og_spipes.service.FormService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,19 @@ public class FormController {
                 requestDTO.getModuleUri(),
                 requestDTO.getModuleTypeUri()
         );
+    }
+
+    @PostMapping(path = "/forms/answers")
+    public void updateForm(@RequestBody QuestionDTO answerDto) throws NoRootQuestionException {
+        String scriptPath = answerDto.getScriptPath();
+        String moduleTypeUri = answerDto.getModuleTypeUri();
+        Question rootQuestion = answerDto.getRootQuestion();
+        if(rootQuestion != null){
+          formService.mergeFrom(scriptPath, rootQuestion, moduleTypeUri);
+        }else{
+            throw new NoRootQuestionException();
+        }
+
     }
 
 }

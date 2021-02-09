@@ -43,7 +43,6 @@ public class ScriptControllerTest {
     @BeforeEach
     public void init() throws Exception {
         File scriptsHomeTmp = new File(repositoryUrl);
-        System.out.println(scriptsHomeTmp);
         if(scriptsHomeTmp.exists()){
             FileSystemUtils.deleteRecursively(scriptsHomeTmp);
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));

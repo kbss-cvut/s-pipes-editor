@@ -5,8 +5,9 @@ import cz.cvut.spipes.transform.Transformer;
 import cz.cvut.spipes.transform.TransformerImpl;
 import og_spipes.model.Vocabulary;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.util.FileUtils;
 import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -31,6 +35,7 @@ public class FormService {
     }
 
     public Question generateModuleForm(String scriptPath, String moduleUri, String moduleTypeUri){
+        System.out.println("Generating form for script " + scriptPath + ", module " + moduleUri + ", moduleType " + moduleTypeUri);
         LOG.info("Generating form for script " + scriptPath + ", module " + moduleUri + ", moduleType " + moduleTypeUri);
         OntModel ontModel = helper.createOntModel(new File(scriptPath));
         Optional<Statement> moduleType = ontModel.listStatements(
@@ -44,6 +49,22 @@ public class FormService {
                 ontModel.getResource(moduleUri),
                 moduleType.map(x -> x.getObject().asResource()).orElse(ontModel.getResource(moduleTypeUri))
       );
+    }
+
+    public void mergeFrom(String scriptPath, Question rootQuestion, String moduleType) {
+        OntModel ontModel = helper.createOntModel(new File(scriptPath));
+        ontModel.loadImports();
+        Map<String, Model> modelMap = transformer.form2Script(ontModel, rootQuestion, moduleType);
+        modelMap.forEach((file, model) -> {
+            try {
+                FileOutputStream os = new FileOutputStream(scriptPath);
+                model.write(os, FileUtils.langTurtle);
+                //TODO notify later
+            } catch (FileNotFoundException e) {
+                LOG.error(e.getMessage());
+            }
+        });
+
     }
 
 }
