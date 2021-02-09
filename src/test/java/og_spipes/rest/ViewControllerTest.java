@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.File;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -24,12 +26,12 @@ public class ViewControllerTest {
     @DisplayName("Get file moduleTypes")
     public void testGetScriptModuleTypes() throws Exception {
         //TODO enforce some assertion
+        File scriptPath = new File("src/test/resources/scripts_test/sample/hello-world/hello-world.sms.ttl");
         this.mockMvc.perform(post("/views/new")
                 .content(
                         "{" +
                                 "\"@type\":\"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\":\"/home/chlupnoha/IdeaProjects/s-pipes-editor/src/test/resources/scripts/sample/hello-world/hello-world.sms.ttl\"" +
-//                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\":\"/home/chlupnoha/IdeaProjects/og-spipes/src/test/resources/scripts_test/sample/simple-import/script.ttl\"" +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\":\"" + scriptPath + "\"" +
                                 "}"
                 )
                 .contentType(MediaType.APPLICATION_JSON)
