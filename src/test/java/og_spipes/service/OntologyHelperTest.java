@@ -1,6 +1,5 @@
 package og_spipes.service;
 
-import og_spipes.model.spipes.ModuleType;
 import og_spipes.persistence.dao.ScriptDao;
 import org.apache.jena.ontology.OntModel;
 import org.junit.Test;
@@ -13,8 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -29,14 +27,14 @@ public class OntologyHelperTest {
     @Test
     public void getOntologyUri() {
         //TODO parametrize later
-        String res = ontologyHelper.getOntologyUri(new File("/home/chlupnoha/IdeaProjects/og-spipes/src/test/resources/scripts_test/sample/sample-script.ttl"));
+        String res = ontologyHelper.getOntologyUri(new File("src/test/resources/scripts_test/sample/sample-script.ttl"));
 
         assertEquals("http://www.semanticweb.org/sample-script", res);
     }
 
     @Test
     public void createOntModel() {
-        File script = new File("/home/chlupnoha/IdeaProjects/og-spipes/src/test/resources/scripts_test/sample/sample-script.ttl");
+        File script = new File("src/test/resources/scripts_test/sample/sample-script.ttl");
         List<File> mockScripts = new ArrayList<>();
         //TODO parametrize later
         mockScripts.add(script);

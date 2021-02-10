@@ -5,7 +5,6 @@ import cz.cvut.kbss.jopa.model.EntityManager;
 import cz.cvut.kbss.jopa.model.EntityManagerFactory;
 import cz.cvut.kbss.jopa.model.JOPAPersistenceProperties;
 import cz.cvut.kbss.jopa.model.JOPAPersistenceProvider;
-import cz.cvut.kbss.ontodriver.config.OntoDriverProperties;
 import cz.cvut.kbss.ontodriver.jena.JenaDataSource;
 import cz.cvut.kbss.ontodriver.jena.config.JenaOntoDriverProperties;
 import og_spipes.model.Vocabulary;
@@ -16,7 +15,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
@@ -31,14 +30,12 @@ import static og_spipes.model.Vocabulary.s_c_Modules;
 @Repository
 public class ScriptDao {
 
-
-    //TODO parametrize later - root folder
-    private final File rootFolder = new File("/home/chlupnoha/IdeaProjects/og-spipes/src/test/resources/scripts_test/sample");
+    private final String repositoryURL;
 
     //TODO consider if always create a new EM!
     final EntityManagerFactory emf;
 
-    public ScriptDao() {
+    public ScriptDao(@Value("${repositoryUrl}") String repositoryURL) {
         final Map<String, String> props = new HashMap<>();
         // Here we set up basic storage access properties - driver class, physical location of the storage
         props.put(JOPAPersistenceProperties.ONTOLOGY_PHYSICAL_URI_KEY, "local://temporary"); // jopa uses the URI scheme to choose between local and remote repo, file and (http, https and ftp)resp.
@@ -53,6 +50,8 @@ public class ScriptDao {
         props.put(JenaOntoDriverProperties.IN_MEMORY, "true");
 
         this.emf = Persistence.createEntityManagerFactory("og_spipesPU", props);
+        System.out.println(repositoryURL);
+        this.repositoryURL = repositoryURL;
     }
 
     public List<ModuleType> getModuleTypes(Model m) {
@@ -105,6 +104,7 @@ public class ScriptDao {
     }
 
     public List<File> getScripts() {
+        File rootFolder = new File(repositoryURL);
         return new ArrayList<>(FileUtils.listFiles(rootFolder, new String[]{"ttl"}, true));
     }
 
