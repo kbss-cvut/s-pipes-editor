@@ -1,16 +1,22 @@
 package og_spipes.rest;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,14 +25,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class ViewControllerTest {
 
+    @Value("${repositoryUrl}")
+    private String repositoryUrl;
+
     @Autowired
     private MockMvc mockMvc;
+
+    /**
+     * This test requires whole sample folder because it contains necessary import dependencies.
+     *
+     * @throws Exception
+     */
+    @BeforeEach
+    public void init() throws Exception {
+        File scriptsHomeTmp = new File(repositoryUrl);
+        if (scriptsHomeTmp.exists()) {
+            FileSystemUtils.deleteRecursively(scriptsHomeTmp);
+            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
+        }
+        FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
+    }
+
 
     @Test
     @DisplayName("Get file moduleTypes")
     public void testGetScriptModuleTypes() throws Exception {
         //TODO enforce some assertion
-        File scriptPath = new File("src/test/resources/scripts_test/sample/hello-world/hello-world.sms.ttl");
+        File scriptPath = new File(repositoryUrl + "/hello-world/hello-world.sms.ttl");
         this.mockMvc.perform(post("/views/new")
                 .content(
                         "{" +
@@ -38,6 +63,11 @@ public class ViewControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @AfterEach
+    public void after() {
+        FileSystemUtils.deleteRecursively(new File(repositoryUrl));
     }
 
 }

@@ -15,13 +15,13 @@ import static org.junit.Assert.assertEquals;
 
 public class ScriptDaoTest {
 
-    Model defaultModel =  ModelFactory.createDefaultModel().read(
+    private final ScriptDao scriptDao = new ScriptDao(new File("src/test/resources/scripts_test/sample/").getAbsolutePath());
+    Model defaultModel = ModelFactory.createDefaultModel().read(
             new File("src/test/resources/scripts_test/sample/simple-import/script.ttl").getAbsolutePath()
     );
-    private final ScriptDao scriptDao = new ScriptDao();
 
     @Test
-    public void correctInitOfEntityManagerFactory(){
+    public void correctInitOfEntityManagerFactory() {
         Map<String, String> expectedMap = new HashMap<>();
         expectedMap.put("cz.cvut.jopa.scanPackage", "og_spipes.model");
         expectedMap.put("javax.persistence.provider", "cz.cvut.kbss.jopa.model.JOPAPersistenceProvider");
@@ -29,7 +29,7 @@ public class ScriptDaoTest {
         expectedMap.put("cz.cvut.jopa.lang", "en");
         expectedMap.put("in-memory", "true");
         expectedMap.put("cz.cvut.jopa.ontology.logicalUri", "http://temporary");
-        expectedMap.put("cz.cvut.jopa.ontology.physicalURI",  "local://temporary");
+        expectedMap.put("cz.cvut.jopa.ontology.physicalURI", "local://temporary");
 
         assertEquals(
                 "configuration should be as expected",
