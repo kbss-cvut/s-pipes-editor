@@ -41,7 +41,7 @@ CONSTRUCT {
     ?person :is-greeted-by-message ?greetingMessage . 
 }
 WHERE {
-    BIND(concat(str(:), ?personName) as ?person) 
+    BIND(iri(concat(str(:), ?personName)) as ?person)
     BIND(concat("Hello ", ?personName, ".") as ?greetingMessage)
 }"""^^xsd:string ;
     ] ;
