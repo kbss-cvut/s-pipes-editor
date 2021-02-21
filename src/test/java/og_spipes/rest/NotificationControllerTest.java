@@ -73,7 +73,7 @@ public class NotificationControllerTest {
         file.delete();
         Thread.sleep(2000);
 
-        Assert.assertEquals(2, myWebSocketClient.getOnMessageCounter().get());
+        Assert.assertTrue(myWebSocketClient.getOnMessageCounter().get() > 1);
         myWebSocketClient.close();
     }
 
