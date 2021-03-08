@@ -53,13 +53,11 @@ public class FormService {
 
     public void mergeFrom(String scriptPath, Question rootQuestion, String moduleType) {
         OntModel ontModel = helper.createOntModel(new File(scriptPath));
-        ontModel.loadImports();
         Map<String, Model> modelMap = transformer.form2Script(ontModel, rootQuestion, moduleType);
         modelMap.forEach((file, model) -> {
             try {
                 FileOutputStream os = new FileOutputStream(scriptPath);
                 model.write(os, FileUtils.langTurtle);
-                //TODO notify later
             } catch (FileNotFoundException e) {
                 LOG.error(e.getMessage());
             }
