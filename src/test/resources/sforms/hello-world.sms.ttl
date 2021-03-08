@@ -14,7 +14,7 @@
 [ sp:varName  "firstName" ] .
 
 :bind-firstname  a         sml:BindWithConstant ;
-        rdfs:label         "Bind person name" ;
+        rdfs:label         "Bind person name karel" ;
         sm:next            :construct-greeding ;
         sm:outputVariable  "personName" ;
         sml:value          "?firstName" .

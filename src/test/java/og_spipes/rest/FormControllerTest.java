@@ -1,6 +1,8 @@
 package og_spipes.rest;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,7 +80,7 @@ public class FormControllerTest {
     }
 
     @Test
-    @DisplayName("Update form by sforms. However not working on sforms side.")
+    @DisplayName("Update hello-world.sms.ttl :bind-firstname label to 'Bind person name karel'.")
     public void testEditForm() throws Exception {
         String tmpScripts = repositoryUrl + "/hello-world/hello-world.sms.ttl";
         String jsonSForms = readFileToString(new File("src/test/resources/sforms/sforms_update.json"), "UTF-8");
@@ -89,7 +91,10 @@ public class FormControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
-        Assert.assertEquals(1, 0);
+
+        Model expectedModel = ModelFactory.createDefaultModel().read("src/test/resources/sforms/hello-world.sms.ttl");
+        Model resModel = ModelFactory.createDefaultModel().read(tmpScripts);
+        Assert.assertTrue(expectedModel.isIsomorphicWith(resModel));
     }
 
     @AfterEach
