@@ -14,7 +14,7 @@
         <maven.compiler.target>${jdk.version}</maven.compiler.target>
         <!-- problem with murmurhash in 16 version -->
 <!--        <cz.cvut.kbss.jopa.version>0.16.2</cz.cvut.kbss.jopa.version>-->
-        <cz.cvut.kbss.jopa.version>0.13.1</cz.cvut.kbss.jopa.version>
+        <cz.cvut.kbss.jopa.version>0.13.5</cz.cvut.kbss.jopa.version>
         <!-- 8.2 is not working - cant cast current classes -->
         <cz.cvut.kbss.jb4jsonld.version>0.6.0</cz.cvut.kbss.jb4jsonld.version>
         <cz.cvut.kbss.s-pipes.forms.version>0.3.0</cz.cvut.kbss.s-pipes.forms.version>
@@ -25,6 +25,7 @@
 
         <org.springframework.version>5.3.1</org.springframework.version>
         <org.springframework.boot.version>2.4.0</org.springframework.boot.version>
+        <org.hibernate.validator.version>6.1.7.Final</org.hibernate.validator.version>
     </properties>
 
     <repositories>
@@ -217,6 +218,49 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${org.springframework.boot.version}</version>
             </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>og_spipes.Main</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                            <outputDirectory>${basedir}/target/classes</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>profile</directory>
+                                    <includes>
+                                        <include>query/*.rq</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>

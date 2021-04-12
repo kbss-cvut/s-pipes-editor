@@ -1,0 +1,30 @@
+version: '3.7'
+
+#docker-compose up --build
+
+services:
+  # App backend service
+  spipes-editor-rest:
+    image: spipes-editor:latest
+    ports:
+      - '18115:18115'
+    volumes:
+      - /home:/home
+#    networks:
+#      - backend
+
+  # Frontend Service
+  spipes-ui:
+    image: spipes-ui:latest
+    ports:
+      - '3000:80'
+    depends_on:
+      - spipes-editor-rest
+    environment:
+      SERVICE_URL: "spipes-editor-rest:18115"
+#    networks:
+#      - backend
+
+#networks:
+#  backend:
+
