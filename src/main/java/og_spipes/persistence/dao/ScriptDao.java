@@ -8,22 +8,21 @@ import cz.cvut.kbss.jopa.model.JOPAPersistenceProvider;
 import cz.cvut.kbss.ontodriver.jena.JenaDataSource;
 import cz.cvut.kbss.ontodriver.jena.config.JenaOntoDriverProperties;
 import og_spipes.model.Vocabulary;
+import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.rdf.model.InfModel;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static og_spipes.model.Vocabulary.s_c_Modules;
 
@@ -50,7 +49,6 @@ public class ScriptDao {
         props.put(JenaOntoDriverProperties.IN_MEMORY, "true");
 
         this.emf = Persistence.createEntityManagerFactory("og_spipesPU", props);
-        System.out.println(repositoryURL);
         this.repositoryURL = repositoryURL;
     }
 
@@ -103,9 +101,22 @@ public class ScriptDao {
         return modules;
     }
 
+    public StmtIterator getFunctionStatements(Model m) {
+        return m.listStatements(null, RDF.type, m.createResource("http://topbraid.org/sparqlmotion#Function"));
+    }
+
     public List<File> getScripts() {
         File rootFolder = new File(repositoryURL);
         return new ArrayList<>(FileUtils.listFiles(rootFolder, new String[]{"ttl"}, true));
+    }
+
+    public List<FunctionDTO> moduleFunctions(Model m) {
+        List<FunctionDTO> functionDTOS = getFunctionStatements(m).toList().stream().map(statement -> {
+            Resource subject = statement.getSubject();
+            Set<String> statements = subject.listProperties(RDFS.comment).toList().stream().map(Statement::getString).collect(Collectors.toSet());
+            return new FunctionDTO(subject.getURI(), subject.getLocalName(), statements);
+        }).collect(Collectors.toList());
+        return functionDTOS;
     }
 
 }
