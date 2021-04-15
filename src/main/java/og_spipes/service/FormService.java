@@ -48,7 +48,7 @@ public class FormService {
         return transformer.script2Form(
                 ontModel.getResource(moduleUri),
                 moduleType.map(x -> x.getObject().asResource()).orElse(ontModel.getResource(moduleTypeUri))
-      );
+        );
     }
 
     public void mergeFrom(String scriptPath, Question rootQuestion, String moduleType) {
@@ -62,7 +62,6 @@ public class FormService {
                 LOG.error(e.getMessage());
             }
         });
-
     }
 
 }

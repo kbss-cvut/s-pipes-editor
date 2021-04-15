@@ -1,9 +1,11 @@
 package og_spipes.persistence.dao;
 
+import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.junit.Test;
 
 import java.io.File;
@@ -58,4 +60,19 @@ public class ScriptDaoTest {
 
         assertEquals(13, files.size());
     }
+
+    @Test
+    public void getFunctionStatements() {
+        StmtIterator iterator = scriptDao.getFunctionStatements(defaultModel);
+
+        assertEquals(3, iterator.toList().size());
+    }
+
+    @Test
+    public void moduleFunctions() {
+        List<FunctionDTO> functionDTOS = scriptDao.moduleFunctions(defaultModel);
+
+        assertEquals(3, functionDTOS.size());
+    }
+
 }

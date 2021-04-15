@@ -4,10 +4,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.Ignore;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -80,6 +78,7 @@ public class FormControllerTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("Update hello-world.sms.ttl :bind-firstname label to 'Bind person name karel'.")
     public void testEditForm() throws Exception {
         String tmpScripts = repositoryUrl + "/hello-world/hello-world.sms.ttl";
@@ -94,6 +93,9 @@ public class FormControllerTest {
 
         Model expectedModel = ModelFactory.createDefaultModel().read("src/test/resources/sforms/hello-world.sms.ttl");
         Model resModel = ModelFactory.createDefaultModel().read(tmpScripts);
+
+        //form2Script delete imports
+        //viz. https://email.seznam.cz/?hp#search/blasko%20prefix%3Aform/89014 - konversation
         Assert.assertTrue(expectedModel.isIsomorphicWith(resModel));
     }
 

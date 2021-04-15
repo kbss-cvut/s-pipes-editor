@@ -25,7 +25,6 @@
 
         <org.springframework.version>5.3.1</org.springframework.version>
         <org.springframework.boot.version>2.4.0</org.springframework.boot.version>
-        <org.hibernate.validator.version>6.1.7.Final</org.hibernate.validator.version>
     </properties>
 
     <repositories>

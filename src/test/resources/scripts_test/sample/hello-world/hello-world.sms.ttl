@@ -35,3 +35,7 @@
 :execute-greeding  a     sm:Function ;
         rdfs:subClassOf  sm:Functions ;
         sm:returnModule  :express-greeding_Return .
+
+#SAMPLE s-pipes executor
+#http://localhost:8080/s_pipes_web_war_exploded/service?id=execute-greeding&repositoryName=http://vfn.cz/ontologies/fss-form-generation-0.1,%20http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1&firstName=karel
+#http://localhost:8080/s_pipes_web_war_exploded/service?id=execute-greeding&repositoryName=http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1&firstName=karel
