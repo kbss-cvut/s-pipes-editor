@@ -3,10 +3,8 @@ package og_spipes.service;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
-import og_spipes.persistence.dao.ScriptDao;
+import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.jena.ontology.OntModel;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.util.FileUtils;
@@ -24,11 +22,11 @@ import java.util.stream.Collectors;
 @Service
 public class ScriptService {
 
-    private final ScriptDao scriptDao;
+    private final ScriptDAO scriptDao;
     private final OntologyHelper ontologyHelper;
 
     @Autowired
-    public ScriptService(ScriptDao scriptDao, OntologyHelper ontologyHelper) {
+    public ScriptService(ScriptDAO scriptDao, OntologyHelper ontologyHelper) {
         this.scriptDao = scriptDao;
         this.ontologyHelper = ontologyHelper;
     }

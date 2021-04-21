@@ -15,29 +15,6 @@
 package og_spipes.model;
 
 public class Vocabulary {
-
-    public static final String BASE = "http://onto.fel.cvut.cz/ontologies/jopa/example08/";
-
-    public static final String C_REPORT = BASE + "report";
-    public static final String C_OCCURRENCE_REPORT = BASE + "occurrence-report";
-    public static final String C_AUDIT_REPORT = BASE + "audit-report";
-    public static final String C_EVENT = "http://onto.fel.cvut.cz/ontologies/ufo/event";
-    public static final String C_OCCURRENCE = BASE + "occurrence";
-    public static final String C_AUDIT = BASE + "audit";
-    public static final String C_AUDIT_FINDING = BASE + "audit-finding";
-
-    public static final String P_CREATED = "http://purl.org/dc/terms/created";
-    public static final String P_MODIFIED = "http://purl.org/dc/terms/modified";
-    public static final String P_DESCRIPTION = "http://purl.org/dc/terms/description";
-    public static final String P_START = BASE + "start";
-    public static final String P_END = BASE + "end";
-    public static final String P_HAS_PART = "http://onto.fel.cvut.cz/ontologies/ufo/has-part";
-    public static final String P_HAS_FINDING = BASE + "has-finding";
-    public static final String P_SEVERITY = BASE + "severity";
-    public static final String P_DOCUMENTS = BASE + "documents";
-    public static final String P_KEY = BASE + "key";
-
-
     public final static String ONTOLOGY_IRI_editor_model = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/editor-model";
     public final static String ONTOLOGY_IRI_model_generated = "http://onto.fel.cvut.cz/ontologies/s-pipes/model-generated";
     public final static String s_c_Thing = "http://www.w3.org/2002/07/owl#Thing";
@@ -50,6 +27,7 @@ public class Vocabulary {
     public final static String s_c_context = "http://onto.fel.cvut.cz/ontologies/s-pipes/context";
     public final static String s_c_dependency_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/dependency-dto";
     public final static String s_c_execution_event_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/execution-event-dto";
+    public final static String s_c_execution_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/execution-dto";
     public final static String s_c_function_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/function-dto";
     public final static String s_c_functions_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/functions-dto";
     public final static String s_c_module_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/module-dto";
@@ -87,6 +65,8 @@ public class Vocabulary {
     public final static String s_p_has_x_coordinate = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-x-coordinate";
     public final static String s_p_has_y_coordinate = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-y-coordinate";
     public final static String s_p_has_absolute_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path";
+    public final static String s_p_has_display_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-display-name";
+    public final static String s_p_has_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-name";
     public final static String s_p_has_data_value = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-data-value";
     public final static String s_p_has_execution_id = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-execution-id";
     public final static String s_p_has_function_local_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-local-name";

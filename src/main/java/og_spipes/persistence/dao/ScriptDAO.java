@@ -11,15 +11,19 @@ import og_spipes.model.Vocabulary;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
+import og_spipes.persistence.SesamePersistenceProvider;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,14 +31,17 @@ import java.util.stream.Collectors;
 import static og_spipes.model.Vocabulary.s_c_Modules;
 
 @Repository
-public class ScriptDao {
+public class ScriptDAO {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ScriptDAO.class);
 
     private final String repositoryURL;
 
     //TODO consider if always create a new EM!
     final EntityManagerFactory emf;
 
-    public ScriptDao(@Value("${repositoryUrl}") String repositoryURL) {
+    //TODO try to use created EM - check if working while editing
+    public ScriptDAO(@Value("${repositoryUrl}") String repositoryURL) {
         final Map<String, String> props = new HashMap<>();
         // Here we set up basic storage access properties - driver class, physical location of the storage
         props.put(JOPAPersistenceProperties.ONTOLOGY_PHYSICAL_URI_KEY, "local://temporary"); // jopa uses the URI scheme to choose between local and remote repo, file and (http, https and ftp)resp.
@@ -108,6 +115,23 @@ public class ScriptDao {
     public List<File> getScripts() {
         File rootFolder = new File(repositoryURL);
         return new ArrayList<>(FileUtils.listFiles(rootFolder, new String[]{"ttl"}, true));
+    }
+
+    public File findScriptByOntologyName(String ontologyName) throws IOException {
+        File script = null;
+        for(File f: getScripts()){
+            if(FileUtils.readFileToString(f, "UTF-8").contains("<" + ontologyName + ">")){
+                if(script == null){
+                    script = f;
+                }else{
+                    LOG.warn("Two files with same ontology founded in {}", script.getAbsolutePath());
+                }
+            }
+        }
+        if(script == null){
+            throw new IOException("File with onlogy: " + ontologyName + " not found");
+        }
+        return script;
     }
 
     public List<FunctionDTO> moduleFunctions(Model m) {

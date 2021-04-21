@@ -1,37 +1,36 @@
 package og_spipes.service;
 
-import com.google.common.collect.ImmutableMap;
-import og_spipes.model.spipes.FunctionDTO;
-import og_spipes.persistence.dao.ScriptDao;
+import og_spipes.model.spipes.ExecutionDTO;
+import og_spipes.model.spipes.TransformationDTO;
+import og_spipes.persistence.dao.ScriptDAO;
+import og_spipes.persistence.dao.TransformationDAO;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URISyntaxException;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-
 public class SPipesExecutionServiceTest {
 
     private final RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 
-    private final SPipesExecutionService service = new SPipesExecutionService("http://localhost:1111", restTemplate);
+    private final ScriptDAO scriptDAO = Mockito.mock(ScriptDAO.class);
+
+    private final TransformationDAO transformationDAO = Mockito.mock(TransformationDAO.class);
+
+    private final SPipesExecutionService service = new SPipesExecutionService("http://localhost:1111", restTemplate, transformationDAO, scriptDAO);
 
     @Test
     public void serviceExecution(){
@@ -53,6 +52,25 @@ public class SPipesExecutionServiceTest {
         );
 
         assertEquals(new ResponseEntity<>("body", HttpStatus.ACCEPTED), entity);
+    }
+
+
+    @Test
+    public void getAllExecution() throws IOException {
+        Map<String, Set<Object>> properties = new HashMap<>();
+        properties.put("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name", Collections.singleton("http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.3"));
+        properties.put("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-start-date", Collections.singleton(new Date(1619039405731L)));
+        properties.put("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-finish-date", Collections.singleton(new Date(1619039432986L)));
+        properties.put("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-duration", Collections.singleton(642));
+        when(transformationDAO.getAllExecutionTransformation()).thenReturn(Stream.of(
+                new TransformationDTO("http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1618874296751000", properties)
+        ).collect(Collectors.toList()));
+        File file = new File(getClass().getClassLoader().getResource("scripts_test/sample/hello-world/hello-world2.sms.ttl").getFile());
+        when(scriptDAO.findScriptByOntologyName(any())).thenReturn(file);
+
+        List<ExecutionDTO> allExecution = service.getAllExecution();
+
+        assertEquals(1, allExecution.size());
     }
 
 }

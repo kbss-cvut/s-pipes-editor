@@ -2,12 +2,13 @@ package og_spipes.service;
 
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
-import og_spipes.persistence.dao.ScriptDao;
+import og_spipes.persistence.dao.ScriptDAO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -23,7 +24,7 @@ import static org.junit.Assert.*;
 public class ScriptServiceTest {
 
     @Mock
-    private ScriptDao scriptDao;
+    private ScriptDAO scriptDao;
 
     @Mock
     private OntologyHelper ontologyHelper;

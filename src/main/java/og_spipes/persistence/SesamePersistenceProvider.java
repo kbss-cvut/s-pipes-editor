@@ -27,13 +27,16 @@ public class SesamePersistenceProvider {
 
     private final String repositoryUrl;
 
+    private final String repositoryName;
+
     private final EntityManagerFactory emf;
 
     private Repository repository;
 
     @Autowired
-    public SesamePersistenceProvider(@Value("${sesame.repositoryUrl}") String repositoryUrl, @Qualifier("sesameEMF") EntityManagerFactory emf) {
+    public SesamePersistenceProvider(@Value("${sesame.repositoryUrl}") String repositoryUrl, @Value("${sesame.repositoryName}") String repositoryName, @Qualifier("sesameEMF") EntityManagerFactory emf) {
         this.repositoryUrl = repositoryUrl;
+        this.repositoryName = repositoryName;
         this.emf = emf;
     }
 
@@ -45,7 +48,7 @@ public class SesamePersistenceProvider {
     @PostConstruct
     private void initializeStorage() {
         forceRepoInitialization();
-        final String repoUrl = repositoryUrl;
+        final String repoUrl = repositoryUrl + "/" + repositoryName;
         try {
             this.repository = RepositoryProvider.getRepository(repoUrl);
             assert repository.isInitialized();
@@ -58,7 +61,6 @@ public class SesamePersistenceProvider {
         final EntityManager em = emf.createEntityManager();
         try {
             // The URI doesn't matter, we just need to trigger repository connection initialization
-            //TODO tady pak zkopirovat a Transformation
             em.find(TestJSONLD.class, URI.create("http://unknown"));
         } finally {
             em.close();

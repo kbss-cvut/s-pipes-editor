@@ -56,7 +56,7 @@ public class ScriptControllerTest {
         this.mockMvc.perform(get("/scripts"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"children\":[{\"file\":\""+repositoryUrl+"/hello-world.sms.ttl\",\"name\":\"hello-world.sms.ttl\"}],\"name\":\"og_spipes\"}"));
+                .andExpect(content().json("{\"children\":[{\"file\":\""+repositoryUrl+"/hello-world.sms.ttl\",\"name\":\"hello-world.sms.ttl\"},{\"file\":\""+repositoryUrl+"/hello-world2.sms.ttl\",\"name\":\"hello-world2.sms.ttl\"}],\"name\":\"og_spipes\"}"));
     }
 
     @Test

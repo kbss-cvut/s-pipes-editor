@@ -9,11 +9,13 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -33,6 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @TestPropertySource(locations="classpath:application.properties")
 public class FormControllerTest {
+
+    //TODO resolver blicking test
 
     @Value("${repositoryUrl}")
     private String repositoryUrl;
@@ -78,7 +82,6 @@ public class FormControllerTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("Update hello-world.sms.ttl :bind-firstname label to 'Bind person name karel'.")
     public void testEditForm() throws Exception {
         String tmpScripts = repositoryUrl + "/hello-world/hello-world.sms.ttl";

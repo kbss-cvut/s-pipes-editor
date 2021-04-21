@@ -3,7 +3,6 @@ package og_spipes.service;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.model.view.View;
-import og_spipes.persistence.dao.ScriptDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -49,4 +48,5 @@ public class ViewServiceTest {
         assertNotNull("URI is generated", view.getUri());
         assertNotNull("ID is generated", view.getId());
     }
+
 }

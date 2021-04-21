@@ -1,6 +1,6 @@
 package og_spipes.service;
 
-import og_spipes.persistence.dao.ScriptDao;
+import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 public class OntologyHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(OntologyHelper.class);
-    private final ScriptDao scriptDao;
+    private final ScriptDAO scriptDao;
 
     @Autowired
-    public OntologyHelper(ScriptDao scriptDao) {
+    public OntologyHelper(ScriptDAO scriptDao) {
         this.scriptDao = scriptDao;
     }
 

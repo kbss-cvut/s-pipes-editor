@@ -41,4 +41,7 @@ public class PersistenceConfig {
                                                          DelegatingEntityManager emProxy) {
         return new JopaTransactionManager(emf, emProxy);
     }
+
+
+
 }
