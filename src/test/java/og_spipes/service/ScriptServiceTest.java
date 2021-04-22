@@ -3,7 +3,8 @@ package og_spipes.service;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.persistence.dao.ScriptDAO;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -20,7 +21,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 public class ScriptServiceTest {
 
     @Mock
@@ -40,7 +41,7 @@ public class ScriptServiceTest {
 
         List<ModuleType> moduleTypes = scriptService.getModuleTypes("/dummy.ttl");
 
-        assertEquals(1, moduleTypes.size());
+        Assertions.assertEquals(1, moduleTypes.size());
     }
 
     @Test
@@ -51,6 +52,6 @@ public class ScriptServiceTest {
 
         List<Module> modules = scriptService.getModules("/module.ttl");
 
-        assertEquals(1, modules.size());
+        Assertions.assertEquals(1, modules.size());
     }
 }

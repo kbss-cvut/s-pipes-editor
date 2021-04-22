@@ -4,7 +4,8 @@ import og_spipes.model.spipes.ExecutionDTO;
 import og_spipes.model.spipes.TransformationDTO;
 import og_spipes.persistence.dao.ScriptDAO;
 import og_spipes.persistence.dao.TransformationDAO;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest
 public class SPipesExecutionServiceTest {
 
     private final RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
@@ -51,7 +53,7 @@ public class SPipesExecutionServiceTest {
                 }}
         );
 
-        assertEquals(new ResponseEntity<>("body", HttpStatus.ACCEPTED), entity);
+        Assertions.assertEquals(new ResponseEntity<>("body", HttpStatus.ACCEPTED), entity);
     }
 
 
@@ -65,12 +67,12 @@ public class SPipesExecutionServiceTest {
         when(transformationDAO.getAllExecutionTransformation()).thenReturn(Stream.of(
                 new TransformationDTO("http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1618874296751000", properties)
         ).collect(Collectors.toList()));
-        File file = new File(getClass().getClassLoader().getResource("scripts_test/sample/hello-world/hello-world2.sms.ttl").getFile());
+        File file = new File(Objects.requireNonNull(getClass().getClassLoader().getResource("scripts_test/sample/hello-world/hello-world2.sms.ttl")).getFile());
         when(scriptDAO.findScriptByOntologyName(any())).thenReturn(file);
 
         List<ExecutionDTO> allExecution = service.getAllExecution();
 
-        assertEquals(1, allExecution.size());
+        Assertions.assertEquals(1, allExecution.size());
     }
 
 }

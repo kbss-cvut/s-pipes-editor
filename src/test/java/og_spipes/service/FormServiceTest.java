@@ -1,15 +1,17 @@
 package og_spipes.service;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.mockito.ArgumentMatchers.any;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 public class FormServiceTest {
 
     @Mock
@@ -21,7 +23,7 @@ public class FormServiceTest {
     @Test
     public void generateModuleForm() {
         //TODO consider how to test!
-        Assert.assertEquals(1, 1);
+        Assertions.assertEquals(1, 1);
     }
 
 

@@ -2,11 +2,13 @@ package og_spipes.service;
 
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.persistence.dao.ScriptDAO;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URISyntaxException;
@@ -19,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 public class FunctionServiceTest {
 
     @Mock
@@ -42,7 +44,7 @@ public class FunctionServiceTest {
                 Paths.get(resource.toURI()).toFile().getAbsolutePath()
         );
 
-        assertEquals(1, functionDTOS.size());
+        Assertions.assertEquals(1, functionDTOS.size());
     }
 
 }
