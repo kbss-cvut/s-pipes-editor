@@ -26,7 +26,6 @@ public class FormController {
         this.formService = formService;
     }
 
-    //TODO TEST- quite hard due to massive question class
     @PostMapping(path = "/forms")
     public Question generateModuleForm(@RequestBody QuestionDTO requestDTO) {
         String script = requestDTO.getScriptPath();

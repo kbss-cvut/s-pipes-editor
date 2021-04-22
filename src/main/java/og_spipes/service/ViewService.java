@@ -4,7 +4,6 @@ import og_spipes.model.spipes.Module;
 import og_spipes.model.view.Edge;
 import og_spipes.model.view.Node;
 import og_spipes.model.view.View;
-import og_spipes.persistence.dao.ViewDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class ViewService {

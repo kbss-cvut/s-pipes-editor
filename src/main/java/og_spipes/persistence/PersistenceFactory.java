@@ -24,8 +24,10 @@ import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.PostConstruct;
@@ -52,6 +54,7 @@ public class PersistenceFactory {
         final String repoPath = environment.getProperty("repositoryUrl");
         final String repoType = environment.getProperty("repository.type");
         LOG.info("Using repository path: {}.", repoPath);
+        LOG.info("Using repository type: {}.", repoType);
 
         final Map<String, String> props = new HashMap<>();
         // Here we set up basic storage access properties - driver class, physical location of the storage
@@ -74,6 +77,7 @@ public class PersistenceFactory {
     }
 
     @Bean
+    @Qualifier("localEM")
     public EntityManagerFactory entityManagerFactory() {
         return emf;
     }

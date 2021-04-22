@@ -1,0 +1,241 @@
+
+<http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003>
+  a <http://www.w3.org/2002/07/owl#Thing>, <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-start-date> "2021-04-22T00:24:14.905+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/advanced-logging-progress-listener/has-pipeline-execution-group-id>
+    "s-pipes-hello-world-testing";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-start-date-unix>
+    "1619043854905"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-part> <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-845999858-399429203>,
+    <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-1312806988-399429203>,
+    <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-1304810422-399429203>,
+    <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-2097466294-399429203>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-finish-date> "2021-04-22T00:24:15.186+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-finish-date-unix>
+    "1619043855186"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-duration> "281"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043854967> a <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_binding> <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043854967/repositoryName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043854967/lastName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043854967/firstName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043854967/_pId> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043854967/repositoryName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "repositoryName" .
+
+<file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_14.949Z-module-1619043854875003-845999858-399429203-input-binding.ttl>
+  a <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/source-dataset-snapshot> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043854967/lastName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "Plant";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "lastName" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043854967/firstName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "Robert";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "firstName" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043854967/_pId> <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value>
+    "execute-greeding";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "_pId" .
+
+<http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-845999858-399429203>
+  a <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-output> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_14.930Z-module-1619043854875003-845999858-399429203-output.ttl>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_14.926Z-module-1619043854875003-845999858-399429203-input.ttl>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input-binding> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_14.949Z-module-1619043854875003-845999858-399429203-input-binding.ttl>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-output-model-triple-count> "0"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-id> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/bind-person-name>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date> "2021-04-22T00:24:14.930+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date-unix>
+    "1619043854930"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-start-date> "2021-04-22T00:24:14.926+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-start-date-unix>
+    "1619043854926"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-next> <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-1312806988-399429203>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-input-model-triple-count> "0"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type> <http://topbraid.org/sparqlmotionlib#BindWithConstant>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-duration> "4"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
+
+<http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-1312806988-399429203>
+  a <http://www.w3.org/2002/07/owl#Thing>, <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-output> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_14.997Z-module-1619043854875003-1312806988-399429203-output.ttl>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_14.994Z-module-1619043854875003-1312806988-399429203-input.ttl>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input-binding> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.013Z-module-1619043854875003-1312806988-399429203-input-binding.ttl>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-output-model-triple-count> "0"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-id> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/bind-person-id>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date> "2021-04-22T00:24:14.997+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date-unix>
+    "1619043854997"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-start-date> "2021-04-22T00:24:14.994+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-start-date-unix>
+    "1619043854994"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-next> <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-1304810422-399429203>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-input-model-triple-count> "0"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type> <http://topbraid.org/sparqlmotionlib#BindWithConstant>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-duration> "3"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
+
+<file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_14.926Z-module-1619043854875003-845999858-399429203-input.ttl>
+  a <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/source-dataset-snapshot> .
+
+<file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_14.930Z-module-1619043854875003-845999858-399429203-output.ttl>
+  a <http://www.w3.org/2002/07/owl#Thing> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855034/repositoryName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "repositoryName" .
+
+<file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.013Z-module-1619043854875003-1312806988-399429203-input-binding.ttl>
+  a <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/source-dataset-snapshot> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855034/personName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "Robert Plant";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "personName" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855034> a <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_binding> <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855034/repositoryName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855034/personName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855034/lastName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855034/firstName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855034/_pId> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855034/lastName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "Plant";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "lastName" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855034/firstName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "Robert";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "firstName" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855034/_pId> <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value>
+    "execute-greeding";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "_pId" .
+
+<http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-1304810422-399429203>
+  a <http://www.w3.org/2002/07/owl#Thing>, <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-output> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.063Z-module-1619043854875003-1304810422-399429203-output.ttl>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.059Z-module-1619043854875003-1304810422-399429203-input.ttl>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input-binding> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.077Z-module-1619043854875003-1304810422-399429203-input-binding.ttl>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-output-model-triple-count> "1"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-id> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/construct-greeding>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date> "2021-04-22T00:24:15.063+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date-unix>
+    "1619043855063"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-start-date> "2021-04-22T00:24:15.059+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-start-date-unix>
+    "1619043855059"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-next> <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-2097466294-399429203>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-input-model-triple-count> "0"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type> <http://topbraid.org/sparqlmotionlib#ApplyConstruct>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-duration> "4"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
+
+<file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_14.994Z-module-1619043854875003-1312806988-399429203-input.ttl>
+  a <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/source-dataset-snapshot> .
+
+<file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_14.997Z-module-1619043854875003-1312806988-399429203-output.ttl>
+  a <http://www.w3.org/2002/07/owl#Thing> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/_pId> <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value>
+    "execute-greeding";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "_pId" .
+
+<file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.077Z-module-1619043854875003-1304810422-399429203-input-binding.ttl>
+  a <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/source-dataset-snapshot> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/personName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "Robert Plant";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "personName" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/firstName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "Robert";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "firstName" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100> a <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_binding> <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/_pId>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/personName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/firstName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/repositoryName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/personId>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/lastName> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/repositoryName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "repositoryName" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/personId>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "robert-plant";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "personId" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/lastName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "Plant";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "lastName" .
+
+<http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-2097466294-399429203>
+  a <http://www.w3.org/2002/07/owl#Thing>, <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-output> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.127Z-module-1619043854875003-2097466294-399429203-output.ttl>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.125Z-module-1619043854875003-2097466294-399429203-input.ttl>;
+  <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input-binding> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.141Z-module-1619043854875003-2097466294-399429203-input-binding.ttl>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-output-model-triple-count> "1"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-id> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/express-greeding_Return>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date> "2021-04-22T00:24:15.127+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date-unix>
+    "1619043855127"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-start-date> "2021-04-22T00:24:15.125+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-start-date-unix>
+    "1619043855125"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-input-model-triple-count> "1"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type> <http://topbraid.org/sparqlmotionlib#ReturnRDF>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-duration> "2"^^<http://www.w3.org/2001/XMLSchema#long>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
+
+<file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.059Z-module-1619043854875003-1304810422-399429203-input.ttl>
+  a <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/source-dataset-snapshot> .
+
+<file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.063Z-module-1619043854875003-1304810422-399429203-output.ttl>
+  a <http://www.w3.org/2002/07/owl#Thing> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/_pId> <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value>
+    "execute-greeding";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "_pId" .
+
+<file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.141Z-module-1619043854875003-2097466294-399429203-input-binding.ttl>
+  a <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/source-dataset-snapshot> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/repositoryName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "repositoryName" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/personName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "Robert Plant";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "personName" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/personId>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "robert-plant";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "personId" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/lastName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "Plant";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "lastName" .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162> a <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_binding> <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/_pId>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/repositoryName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/personName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/personId>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/lastName>,
+    <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/firstName> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/firstName>
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value> "Robert";
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "firstName" .
+
+<file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.125Z-module-1619043854875003-2097466294-399429203-input.ttl>
+  a <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/source-dataset-snapshot> .
+
+<file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.127Z-module-1619043854875003-2097466294-399429203-output.ttl>
+  a <http://www.w3.org/2002/07/owl#Thing> .

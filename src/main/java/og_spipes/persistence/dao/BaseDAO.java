@@ -17,13 +17,11 @@ package og_spipes.persistence.dao;
 import cz.cvut.kbss.jopa.exceptions.NoResultException;
 import cz.cvut.kbss.jopa.model.EntityManager;
 import cz.cvut.kbss.jopa.model.annotations.OWLClass;
-import og_spipes.model.AbstractEntitySP;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.util.EntityToOwlClassMapper;
 import og_spipes.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.URI;
 import java.util.Collection;
@@ -33,17 +31,16 @@ import java.util.Objects;
 /**
  * Base implementation of the generic DAO.
  */
-public abstract class BaseDao<T extends AbstractEntitySP> {
+public abstract class BaseDAO<T> {
 
-    static final Logger LOG = LoggerFactory.getLogger(BaseDao.class);
+    static final Logger LOG = LoggerFactory.getLogger(BaseDAO.class);
 
-    final Class<T> type;
-    final URI typeUri;
+    protected EntityManager em;
+    protected final Class<T> type;
+    protected final URI typeUri;
 
-    @Autowired
-    EntityManager em;
-
-    BaseDao(Class<T> type) {
+    protected BaseDAO(EntityManager em, Class<T> type) {
+        this.em = em;
         this.type = type;
         this.typeUri = URI.create(EntityToOwlClassMapper.getOwlClassForEntity(type));
     }
@@ -66,6 +63,8 @@ public abstract class BaseDao<T extends AbstractEntitySP> {
     }
 
     public List<T> findAll() {
+        System.out.println(typeUri);
+        System.out.println(em);
         return em.createNativeQuery("SELECT ?x WHERE { ?x a ?type . }", type).setParameter("type", typeUri)
                  .getResultList();
     }
@@ -73,7 +72,6 @@ public abstract class BaseDao<T extends AbstractEntitySP> {
     public void persist(T entity) {
         Objects.requireNonNull(entity);
         try {
-            entity.setId(Long.toString(System.currentTimeMillis()));
             em.persist(entity);
         } catch (Exception e) {
             LOG.error("Error when persisting entity.", e);

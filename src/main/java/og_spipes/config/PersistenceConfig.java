@@ -18,9 +18,11 @@ import com.github.ledsoft.jopa.spring.transaction.DelegatingEntityManager;
 import com.github.ledsoft.jopa.spring.transaction.JopaTransactionManager;
 import cz.cvut.kbss.jopa.model.EntityManagerFactory;
 import og_spipes.persistence.PersistenceFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -35,8 +37,11 @@ public class PersistenceConfig {
     }
 
     @Bean(name = "txManager")
-    public PlatformTransactionManager transactionManager(EntityManagerFactory emf,
+    public PlatformTransactionManager transactionManager(@Qualifier("localEM") EntityManagerFactory emf,
                                                          DelegatingEntityManager emProxy) {
         return new JopaTransactionManager(emf, emProxy);
     }
+
+
+
 }

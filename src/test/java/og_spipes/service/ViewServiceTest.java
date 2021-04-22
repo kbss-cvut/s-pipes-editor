@@ -3,12 +3,13 @@ package og_spipes.service;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.model.view.View;
-import og_spipes.persistence.dao.ScriptDao;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,7 +20,7 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
 public class ViewServiceTest {
 
     @Mock
@@ -44,9 +45,10 @@ public class ViewServiceTest {
 
         View view = viewService.newViewFromSpipes("dummy.ttl");
 
-        assertEquals("dummy.ttl", view.getLabel());
-        assertEquals(1, view.getNodes().size());
-        assertNotNull("URI is generated", view.getUri());
-        assertNotNull("ID is generated", view.getId());
+        Assertions.assertEquals("dummy.ttl", view.getLabel());
+        Assertions.assertEquals(1, view.getNodes().size());
+        Assertions.assertNotNull(view.getUri(), "URI is generated");
+        Assertions.assertNotNull(view.getId(), "ID is generated");
     }
+
 }

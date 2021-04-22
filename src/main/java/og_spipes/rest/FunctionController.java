@@ -42,7 +42,8 @@ public class FunctionController {
 
     @PostMapping(path = "/execute", produces = JsonLd.MEDIA_TYPE)
     public String executeFunction(@RequestBody ScriptDTO dto) {
-        //only BindWithConstant are input params? - zeptat se, jestli se nejak maji pouzivat s-forms
+        //TODO only BindWithConstant are input params? - how to pass them?
+        //TODO how to use S-Forms?
 //        executorService.serviceExecution("")
 //        return functionService.moduleFunctions(dto.getAbsolutePath());
         return null;

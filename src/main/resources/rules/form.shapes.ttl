@@ -1,0 +1,103 @@
+# baseURI: http://onto.fel.cvut.cz/ontologies/shapes/form
+# imports: http://datashapes.org/dash
+
+@prefix : <http://onto.fel.cvut.cz/ontologies/shapes/form/> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix doc: <http://onto.fel.cvut.cz/ontologies/documentation/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix kbss-module: <http://onto.fel.cvut.cz/ontologies/lib/module/> .
+@prefix km-sesame: <http://onto.fel.cvut.cz/ontologies/lib/module/sesame/> .
+@prefix sm: <http://topbraid.org/sparqlmotion#> .
+@prefix sml: <http://topbraid.org/sparqlmotionlib#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix spif: <http://spinrdf.org/spif#> .
+@prefix spin: <http://spinrdf.org/spin#> .
+@prefix spl: <http://spinrdf.org/spl#> .
+
+
+
+<http://onto.fel.cvut.cz/ontologies/shapes/form>
+  a owl:Ontology ;
+  owl:imports <http://datashapes.org/dash> ;
+.
+
+:function-shape
+  a sh:NodeShape ;
+  sh:targetClass sm:Function ;
+  sh:property [
+      sh:path sm:returnModule ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+      sh:nodeKind sh:IRI ;
+    ] ;
+.
+
+
+# kazdy modul musi mit rdfs:label - tady mi nefunguje targetClass, u Vas to podle me fungovalo
+:module-requires-rdfs_label:
+  a sh:NodeShape ;
+#  sh:targetClass sm:Modules ; - tohle z nejakeho duvodu nefunuje :/
+  sh:targetClass sml:ApplyConstruct, sml:BindBySelect, sml:BindWithConstant, sml:ExportToRDFFile, sml:Merge, sml:PerformUpdate, sml:ReturnRDF ;
+  sh:property [
+      sh:path rdfs:label ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+    ] ;
+.
+
+
+# sml:ApplyConstruct musi mit alespon 1 sml:constructQuery s prave jednou hodnotou sp:text - OK
+:apply-construct-check
+  a sh:NodeShape ;
+  sh:targetClass sml:ApplyConstruct;
+  sh:property [
+      sh:path sml:constructQuery ;
+      sh:minCount 1 ;
+      sh:property [
+                  sh:path sp:text ;
+                  sh:minCount 1 ;
+                  sh:maxCount 1 ;
+              ] ;
+    ] ;
+.
+
+# kazda cesta sm:next musi koncit funkci
+:connected-to-function
+  a sh:NodeShape ;
+  sh:targetClass sm:Modules ;
+  sh:property [
+      sh:path [ sh:zeroOrMorePath sm:next  ] ;
+      sh:minCount 1 ;
+      sh:class sm:Function ;
+    ] ;
+.
+
+
+:must-have-function-shape
+  a sh:NodeShape ;
+  #sh:targetClass ex:Country ;
+  sh:sparql [
+      	a sh:SPARQLConstraint ;
+	sh:message "File must contain at least one instance of type sm:Function." ;
+	sh:ask """
+		ASK {
+			FILTER NOT EXISTS {
+				?x a sm:Function .
+		    }
+		}""" ;
+  ] .
+
+
+:connected-to-function
+  a sh:NodeShape ;
+  sh:targetClass sm:Modules ;
+  sh:property [
+      sh:path [ sh:zeroOrMorePath sm:next  ] ;
+      sh:minCount 1 ;
+      sh:class sml:ReturnRDF ;
+    ] ;
+.
