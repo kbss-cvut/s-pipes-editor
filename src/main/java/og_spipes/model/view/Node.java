@@ -10,9 +10,6 @@ import java.util.Set;
 
 import static og_spipes.model.Vocabulary.*;
 
-/**
- * Created by Yan Doroshenko (yandoroshenko@protonmail.com) on 10.11.16.
- */
 @OWLClass(iri = s_c_node)
 public class Node extends AbstractEntitySP {
 
@@ -21,13 +18,11 @@ public class Node extends AbstractEntitySP {
     @OWLDataProperty(iri = s_p_component)
     private String component;
     @OWLDataProperty(iri = s_p_has_x_coordinate)
-    private Double x = 0.0;
+    private Integer x;
     @OWLDataProperty(iri = s_p_has_y_coordinate)
-    private Double y = 0.0;
-
-    /**
-     * Types that correspond to the-graph library types and specify icon & stuff
-     */
+    private Integer y;
+    @OWLDataProperty(iri = s_p_group)
+    private String group;
     @OWLDataProperty(iri = s_p_has_module_type)
     private Set<String> moduleTypes;
     @OWLDataProperty(iri = s_p_has_input_parameter)
@@ -38,13 +33,27 @@ public class Node extends AbstractEntitySP {
     public Node() {
     }
 
-    public Node(URI uri, String id, String label, String component, Double x, Double y, Set<String> moduleTypes, Set<String> inParameters, Set<String> outParameters) {
+    public Node(URI uri, String id, String label, String component, String x, String y, String group, Set<String> moduleTypes, Set<String> inParameters, Set<String> outParameters) {
+        this.uri = uri;
+        this.id = id;
+        this.label = label;
+        this.component = component;
+        this.x = x != null ? Integer.parseInt(x) : null;
+        this.y = y != null ? Integer.parseInt(x) : null;
+        this.group = group;
+        this.moduleTypes = moduleTypes;
+        this.inParameters = inParameters;
+        this.outParameters = outParameters;
+    }
+
+    public Node(URI uri, String id, String label, String component, Integer x, Integer y, String group, Set<String> moduleTypes, Set<String> inParameters, Set<String> outParameters) {
         this.uri = uri;
         this.id = id;
         this.label = label;
         this.component = component;
         this.x = x;
         this.y = y;
+        this.group = group;
         this.moduleTypes = moduleTypes;
         this.inParameters = inParameters;
         this.outParameters = outParameters;
@@ -66,19 +75,15 @@ public class Node extends AbstractEntitySP {
         this.component = component;
     }
 
-    public double getX() {
+    public Integer getX() {
         return x;
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getY() {
+    public Integer getY() {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(int y) {
         this.y = y;
     }
 
@@ -106,23 +111,32 @@ public class Node extends AbstractEntitySP {
         this.outParameters = outParameters;
     }
 
+    public void setX(Integer x) {
+        this.x = x;
+    }
+
+    public void setY(Integer y) {
+        this.y = y;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Node)) return false;
         Node node = (Node) o;
-        return Objects.equals(getLabel(), node.getLabel()) &&
-                Objects.equals(getComponent(), node.getComponent()) &&
-                Objects.equals(getX(), node.getX()) &&
-                Objects.equals(getY(), node.getY()) &&
-                Objects.equals(getModuleTypes(), node.getModuleTypes()) &&
-                Objects.equals(getInParameters(), node.getInParameters()) &&
-                Objects.equals(getOutParameters(), node.getOutParameters());
+        return Objects.equals(getLabel(), node.getLabel()) && Objects.equals(getComponent(), node.getComponent()) && Objects.equals(getX(), node.getX()) && Objects.equals(getY(), node.getY()) && Objects.equals(group, node.group) && Objects.equals(getModuleTypes(), node.getModuleTypes()) && Objects.equals(getInParameters(), node.getInParameters()) && Objects.equals(getOutParameters(), node.getOutParameters());
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(getLabel(), getComponent(), getX(), getY(), getModuleTypes(), getInParameters(), getOutParameters());
+        return Objects.hash(getLabel(), getComponent(), getX(), getY(), group, getModuleTypes(), getInParameters(), getOutParameters());
     }
 }

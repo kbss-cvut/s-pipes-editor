@@ -11,7 +11,6 @@ import og_spipes.model.Vocabulary;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
-import og_spipes.persistence.SesamePersistenceProvider;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
@@ -84,6 +83,16 @@ public class ScriptDAO {
         System.out.println("total modules count: " + modules.size());
 
         for(Module module : modules){
+            System.out.println(module.getTypes());
+            System.out.println(module.getNodeX());
+            System.out.println(module.getNodeY());
+            System.out.println(module.getSource());
+//            module.getProperties().forEach((k, v) -> {
+//                System.out.println(v);
+//                v.forEach(x -> {
+//                    System.out.println(x.toString());
+//                });
+//            });
             List<ModuleType> ts = em.createNativeQuery(
                     "prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>\n" +
                             "           \n" +
@@ -98,10 +107,10 @@ public class ScriptDAO {
                     ModuleType.class
             ).setParameter("module", module.getUri()).getResultList();
             if(!ts.isEmpty()){
-                if(ts.size() > 1) System.out.println("MORE TYPES FOUND!!!");
+                if(ts.size() > 1) LOG.warn("MORE TYPES FOUND!!!");
                 module.setSpecificType(ts.get(0));
             }else{
-                System.out.println("NO TYPE FOUND!!!");
+                LOG.warn("NO TYPE FOUND!!!");
             }
         }
         em.close();

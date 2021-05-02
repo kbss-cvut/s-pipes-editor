@@ -4,9 +4,13 @@ import cz.cvut.sforms.model.Question;
 import cz.cvut.spipes.transform.Transformer;
 import cz.cvut.spipes.transform.TransformerImpl;
 import og_spipes.model.Vocabulary;
+import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.util.FileUtils;
 import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
@@ -17,6 +21,10 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,7 +43,6 @@ public class FormService {
     }
 
     public Question generateModuleForm(String scriptPath, String moduleUri, String moduleTypeUri){
-        System.out.println("Generating form for script " + scriptPath + ", module " + moduleUri + ", moduleType " + moduleTypeUri);
         LOG.info("Generating form for script " + scriptPath + ", module " + moduleUri + ", moduleType " + moduleTypeUri);
         OntModel ontModel = helper.createOntModel(new File(scriptPath));
         Optional<Statement> moduleType = ontModel.listStatements(
@@ -52,6 +59,7 @@ public class FormService {
     }
 
     public void mergeFrom(String scriptPath, Question rootQuestion, String moduleType) {
+        LOG.info("Generating form for script " + scriptPath + ", moduleType " + moduleType);
         OntModel ontModel = helper.createOntModel(new File(scriptPath));
         Map<String, Model> modelMap = transformer.form2Script(ontModel, rootQuestion, moduleType);
         modelMap.forEach((file, model) -> {

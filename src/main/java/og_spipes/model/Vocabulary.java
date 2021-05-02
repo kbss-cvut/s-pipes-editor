@@ -34,6 +34,7 @@ public class Vocabulary {
     public final static String s_c_question_A = "http://onto.fel.cvut.cz/ontologies/s-pipes/question";
     public final static String s_c_question_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/question-dto";
     public final static String s_c_script_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto";
+    public final static String s_c_module_log_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/module-log-dto";
     public final static String s_c_Module = "http://topbraid.org/sparqlmotion#Module";
     public final static String s_c_Modules = "http://topbraid.org/sparqlmotion#Modules";
     public final static String s_c_Person = "http://xmlns.com/foaf/0.1/Person";
@@ -54,7 +55,11 @@ public class Vocabulary {
     public final static String s_p_relates_to = "http://onto.fel.cvut.cz/ontologies/s-pipes/relates-to";
     public final static String s_p_next = "http://topbraid.org/sparqlmotion#next";
     public final static String s_p_specific_type = "http://topbraid.org/sparqlmotion#specific-type";
+    public final static String s_p_source = "http://topbraid.org/sparqlmotion#source";
+    public final static String s_p_node_x = "http://topbraid.org/sparqlmotion#nodeX";
+    public final static String s_p_node_y = "http://topbraid.org/sparqlmotion#nodeY";
     public final static String s_p_component = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/component";
+    public final static String s_p_group = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/group";
     public final static String s_p_has_content_hash = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-content-hash";
     public final static String s_p_has_context_hash = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-context-hash";
     public final static String s_p_has_coordinate = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-coordinate";
@@ -68,7 +73,7 @@ public class Vocabulary {
     public final static String s_p_has_display_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-display-name";
     public final static String s_p_has_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-name";
     public final static String s_p_has_data_value = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-data-value";
-    public final static String s_p_has_execution_id = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-execution-id";
+    public final static String s_p_has_transformation_id = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-transformation-id";
     public final static String s_p_has_function_local_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-local-name";
     public final static String s_p_has_function_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-uri";
     public final static String s_p_has_module_type_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type-uri";

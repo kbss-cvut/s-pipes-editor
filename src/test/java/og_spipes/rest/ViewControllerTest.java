@@ -1,5 +1,6 @@
 package og_spipes.rest;
 
+import og_spipes.service.ViewService;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,17 +47,38 @@ public class ViewControllerTest {
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
     }
 
-
     @Test
-    @DisplayName("Get file moduleTypes")
-    public void testGetScriptModuleTypes() throws Exception {
+    @DisplayName("Get graph view")
+    public void testViewOfScript() throws Exception {
         //TODO enforce some assertion
-        File scriptPath = new File(repositoryUrl + "/hello-world/hello-world.sms.ttl");
+        File scriptPath = new File(repositoryUrl + "/hello-world/hello-world2.sms.ttl");
         this.mockMvc.perform(post("/views/new")
                 .content(
                         "{" +
                                 "\"@type\":\"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\":\"" + scriptPath + "\"" +
+                                "}"
+                )
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @DisplayName("Get graph view with execution")
+    public void testViewOfScriptWithExecution() throws Exception {
+        //TODO enforce some assertion
+        File scriptPath = new File(repositoryUrl + "/hello-world/hello-world2.sms.ttl");
+        //TODO use testing repository - RDF4J export
+        String transformationId = "http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003";
+        this.mockMvc.perform(post("/views/new")
+                .content(
+                        "{" +
+                                "\"@type\":\"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\":\"" + scriptPath + "\", " +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-transformation-id\":\"" + transformationId + "\"" +
                                 "}"
                 )
                 .contentType(MediaType.APPLICATION_JSON)

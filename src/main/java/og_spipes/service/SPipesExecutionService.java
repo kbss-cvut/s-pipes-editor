@@ -60,7 +60,7 @@ public class SPipesExecutionService {
         return transformationDAO.getAllExecutionTransformation().stream().map(x -> {
             Map<String, Set<Object>> properties = x.getProperties();
             String pipelineURI = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name").stream().findFirst().orElse("").toString();
-            String name = pipelineURI.replaceAll(pipelineURI.replaceAll("\\/[^.]*$", ""), "");
+            String name = pipelineURI.substring(pipelineURI.lastIndexOf("/")+1);
             String duration = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-duration").stream().findFirst().orElse("").toString();
             Date startDate = (Date) properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-start-date").stream().findFirst().orElse(new Date());
             Date finishDate = (Date) properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-finish-date").stream().findFirst().orElse(new Date());
@@ -72,7 +72,7 @@ public class SPipesExecutionService {
                         Long.parseLong(duration),
                         startDate,
                         finishDate,
-                        x
+                        x.getId()
                 );
             } catch (IOException e) {
                 LOG.warn(e.getMessage());

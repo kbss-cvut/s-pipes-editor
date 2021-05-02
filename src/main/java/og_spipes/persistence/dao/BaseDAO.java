@@ -17,7 +17,9 @@ package og_spipes.persistence.dao;
 import cz.cvut.kbss.jopa.exceptions.NoResultException;
 import cz.cvut.kbss.jopa.model.EntityManager;
 import cz.cvut.kbss.jopa.model.annotations.OWLClass;
+import cz.cvut.kbss.jopa.model.query.TypedQuery;
 import og_spipes.model.Vocabulary;
+import og_spipes.model.spipes.TransformationDTO;
 import og_spipes.model.util.EntityToOwlClassMapper;
 import og_spipes.persistence.PersistenceException;
 import org.slf4j.Logger;
@@ -27,6 +29,10 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Base implementation of the generic DAO.
@@ -48,6 +54,16 @@ public abstract class BaseDAO<T> {
     public T find(URI uri) {
         Objects.requireNonNull(uri);
         return em.find(type, uri);
+    }
+
+    public List<T> find(Set<URI> uri) {
+        Objects.requireNonNull(uri);
+        List<String> collect = uri.stream().map(x -> "<" + x.toString() + ">").collect(Collectors.toList());
+        String uris = StringUtils.join(collect, ',');
+        //dunno how to pass uris
+        return em.createNativeQuery("SELECT ?s WHERE {?s a ?type . FILTER(?s IN (" + uris +"))}", type)
+                .setParameter("type", URI.create("http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation"))
+                .getResultList();
     }
 
     public T findByKey(String key) {

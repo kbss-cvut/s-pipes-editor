@@ -3,6 +3,7 @@ package og_spipes.model.spipes;
 import cz.cvut.kbss.jopa.model.annotations.OWLClass;
 import cz.cvut.kbss.jopa.model.annotations.OWLDataProperty;
 import og_spipes.model.AbstractEntitySP;
+import org.eclipse.rdf4j.query.algebra.Str;
 
 import java.util.Date;
 import java.util.Set;
@@ -31,19 +32,19 @@ public class ExecutionDTO extends AbstractEntitySP {
     @OWLDataProperty(iri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-finish-date-unix")
     private Date finishDate;
 
-    @OWLDataProperty(iri = "http://onto.fel.cvut.cz/ontologies/s-pipes/advanced-logging-progress-listener/has-pipeline-execution-group-id")
-    private TransformationDTO transformation;
+    @OWLDataProperty(iri = "http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation")
+    private String transformationId;
 
     public ExecutionDTO(){}
 
-    public ExecutionDTO(String name, String displayName, String absolutePath, Long duration, Date startDate, Date finishDate, TransformationDTO transformation) {
+    public ExecutionDTO(String name, String displayName, String absolutePath, Long duration, Date startDate, Date finishDate, String transformation) {
         this.name = name;
         this.displayName = displayName;
         this.absolutePath = absolutePath;
         this.duration = duration;
         this.startDate = startDate;
         this.finishDate = finishDate;
-        this.transformation = transformation;
+        this.transformationId = transformation;
     }
 
     public String getName() {
@@ -94,12 +95,12 @@ public class ExecutionDTO extends AbstractEntitySP {
         this.finishDate = finishDate;
     }
 
-    public TransformationDTO getTransformation() {
-        return transformation;
+    public String getTransformation() {
+        return transformationId;
     }
 
-    public void setTransformation(TransformationDTO transformation) {
-        this.transformation = transformation;
+    public void setTransformation(String transformation) {
+        this.transformationId = transformation;
     }
 
     @Override
@@ -111,7 +112,7 @@ public class ExecutionDTO extends AbstractEntitySP {
                 ", duration=" + duration +
                 ", startDate=" + startDate +
                 ", finishDate=" + finishDate +
-                ", transformation=" + transformation +
+                ", transformation=" + transformationId +
                 '}';
     }
 }

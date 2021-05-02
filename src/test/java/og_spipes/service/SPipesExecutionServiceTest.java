@@ -60,7 +60,7 @@ public class SPipesExecutionServiceTest {
     @Test
     public void getAllExecution() throws IOException {
         Map<String, Set<Object>> properties = new HashMap<>();
-        properties.put("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name", Collections.singleton("http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.3"));
+        properties.put("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name", Collections.singleton("http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2"));
         properties.put("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-start-date", Collections.singleton(new Date(1619039405731L)));
         properties.put("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-finish-date", Collections.singleton(new Date(1619039432986L)));
         properties.put("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-duration", Collections.singleton(642));
