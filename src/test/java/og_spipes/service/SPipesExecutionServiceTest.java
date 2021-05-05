@@ -32,28 +32,29 @@ public class SPipesExecutionServiceTest {
 
     private final TransformationDAO transformationDAO = Mockito.mock(TransformationDAO.class);
 
-    private final SPipesExecutionService service = new SPipesExecutionService("http://localhost:1111", restTemplate, transformationDAO, scriptDAO);
+    private final SPipesExecutionService service = new SPipesExecutionService(
+            "http://localhost:1111",
+            "pConfigURL",
+            restTemplate,
+            transformationDAO,
+            scriptDAO
+    );
 
     @Test
     public void serviceExecution(){
         when(restTemplate.getForEntity(
-                "http://localhost:1111/service?id=execute-greeding",
-                String.class,
-                new HashMap<String, String>() {{
-                    put("firstName","karel");
-                    put("repositoryName","http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1");
-                }})
-        ).thenReturn(new ResponseEntity<>("body", HttpStatus.ACCEPTED));
+                "http://localhost:1111/service?firstName=karel&_pConfigURL=pConfigURL&id=execute-greeding",
+                String.class
+        )).thenReturn(new ResponseEntity<>("body", HttpStatus.ACCEPTED));
 
-        ResponseEntity<String> entity = service.serviceExecution(
+        String entity = service.serviceExecution(
                 "execute-greeding",
-                "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1",
                 new HashMap<String, String>() {{
                     put("firstName","karel");
                 }}
         );
 
-        Assertions.assertEquals(new ResponseEntity<>("body", HttpStatus.ACCEPTED), entity);
+        Assertions.assertEquals("body", entity);
     }
 
 

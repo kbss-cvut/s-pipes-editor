@@ -34,6 +34,7 @@ public class Vocabulary {
     public final static String s_c_question_A = "http://onto.fel.cvut.cz/ontologies/s-pipes/question";
     public final static String s_c_question_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/question-dto";
     public final static String s_c_script_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto";
+    public final static String s_c_execution_function_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/execution-function-dto";
     public final static String s_c_module_log_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/module-log-dto";
     public final static String s_c_Module = "http://topbraid.org/sparqlmotion#Module";
     public final static String s_c_Modules = "http://topbraid.org/sparqlmotion#Modules";

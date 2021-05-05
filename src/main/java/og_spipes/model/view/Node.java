@@ -39,7 +39,7 @@ public class Node extends AbstractEntitySP {
         this.label = label;
         this.component = component;
         this.x = x != null ? Integer.parseInt(x) : null;
-        this.y = y != null ? Integer.parseInt(x) : null;
+        this.y = y != null ? Integer.parseInt(y) : null;
         this.group = group;
         this.moduleTypes = moduleTypes;
         this.inParameters = inParameters;

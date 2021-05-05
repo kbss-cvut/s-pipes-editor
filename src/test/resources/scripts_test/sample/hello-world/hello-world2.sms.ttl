@@ -13,12 +13,6 @@
 @prefix sp:    <http://spinrdf.org/sp#> .
 @prefix kbss-module: <http://onto.fel.cvut.cz/ontologies/lib/module/> .
 
-[ a        sp:concat ;
-  sp:arg1  [ sp:varName  "firstName" ] ;
-  sp:arg2  " " ;
-  sp:arg3  [ sp:varName  "lastName" ]
-] .
-
 [ a        sp:replace ;
   sp:arg1  [ a        sp:lcase ;
              sp:arg1  [ sp:varName  "personName" ]
@@ -38,23 +32,26 @@
 :bind-person-name  a       sml:BindWithConstant ;
         rdfs:label         "Bind person name" ;
         sm:next            :bind-person-id ;
-        sm:nodeX           "31" ;
-        sm:nodeY           "3123" ;
-        sm:source          "group1" ;
+        sm:nodeX           "0" ;
+        sm:nodeY           "0" ;
         sm:outputVariable  "personName" ;
+        sm:source          "group1" ;
         sml:value          "CONCAT(?firstName, \" \", ?lastName)" .
 
 :bind-person-id  a         sml:BindWithConstant ;
         rdfs:label         "Bind person id" ;
         sm:next            :construct-greeding ;
-        sm:source          "group1" ;
+        sm:nodeX           "200" ;
+        sm:nodeY           "0" ;
         sm:outputVariable  "personId" ;
+        sm:source          "group1" ;
         sml:value          "REPLACE(LCASE(?personName), \" \", \"-\")" .
 
 :construct-greeding  a      sml:ApplyConstruct ;
         rdfs:label          "Construct greeting" ;
-        sm:source          "group2" ;
         sm:next             :express-greeding_Return ;
+        sm:nodeX            "0" ;
+        sm:nodeY            "200" ;
         sml:constructQuery  [ a        sp:Construct ;
                               sp:text  "\nPREFIX : <http://vfn.cz/ontologies/s-pipes/hello-world-example-0.2/>\nCONSTRUCT {\n    ?person :is-greeted-by-message ?greetingMessage .\n} WHERE {\n    BIND(iri(concat(str(:), ?personId)) as ?person)\n    BIND(concat(\"Hello \", ?personName, \".\") as ?greetingMessage)\n}\n"
                             ] ;
@@ -63,5 +60,12 @@
 :express-greeding_Return
         a                  sml:ReturnRDF ;
         rdfs:label         "Return greeding statement" ;
-        sm:source          "group2" ;
+        sm:nodeX           "200" ;
+        sm:nodeY           "200" ;
         sml:serialization  sml:JSONLD .
+
+[ a        sp:concat ;
+  sp:arg1  [ sp:varName  "firstName" ] ;
+  sp:arg2  " " ;
+  sp:arg3  [ sp:varName  "lastName" ]
+] .
