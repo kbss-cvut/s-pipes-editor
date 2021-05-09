@@ -8,23 +8,38 @@ import og_spipes.model.spipes.DependencyDTO;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.model.spipes.TestJSONLD;
 import og_spipes.service.FileTreeService;
+import og_spipes.service.SHACLExecutorService;
 import og_spipes.service.ScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.topbraid.shacl.validation.SHACLException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/scripts")
 public class ScriptController {
 
+    private static SHACLExecutorService executorService = new SHACLExecutorService();
+
     @Value("${repositoryUrl}")
     private String repositoryURL;
+
+    @Value("${scriptRules}")
+    private String scriptRules;
 
     private final FileTreeService fileTreeService;
     private final ScriptService scriptService;
@@ -45,7 +60,6 @@ public class ScriptController {
     public List<ModuleType> getModuleTypes(@RequestBody ScriptDTO dto) {
         String script = dto.getAbsolutePath();
 
-        //[QUESTION]WHY??? - cz/cvut/kbss/jopa/model/MultilingualString
         return scriptService.getModuleTypes(script);
     }
 
@@ -71,4 +85,22 @@ public class ScriptController {
         scriptService.deleteDependency(scriptPath, dto.getModuleUri(), dto.getTargetModuleUri());
     }
 
+
+    @PostMapping(path = "/validate")
+    public void validateScript(@RequestBody ScriptDTO dto) throws IOException {
+        List<File> rules = Files.walk(new File(scriptRules).toPath())
+                .filter(Files::isRegularFile)
+                .map(Path::toFile)
+                .collect(Collectors.toList());
+        for(File f : rules){
+            try{
+                executorService.testModel(
+                        Collections.singleton(f.toURI().toURL()),
+                        dto.getAbsolutePath()
+                );
+            }catch (SHACLException e){
+                throw new ResponseStatusException(HttpStatus.OK, e.getMessage(), e);
+            }
+        }
+    }
 }

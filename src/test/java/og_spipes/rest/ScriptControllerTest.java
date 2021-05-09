@@ -156,6 +156,23 @@ public class ScriptControllerTest {
         Assert.assertEquals("After deletion is count 1 of next property", 1, afterExecutionCount);
     }
 
+    @Test
+    @DisplayName("Enforce script SHACL rules")
+    public void restSHACLRulesForScript() throws Exception {
+        String tmpScripts = repositoryUrl + "/hello-world.sms.ttl";
+        this.mockMvc.perform(post("/scripts/validate")
+                .content(
+                        "{" +
+                                "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \""+tmpScripts+"\"" +
+                                "}"
+                )
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
     @AfterEach
     public void after() {
         FileSystemUtils.deleteRecursively(new File(repositoryUrl));

@@ -35,7 +35,6 @@ public class FormService {
     }
 
     public Question generateModuleForm(String scriptPath, String moduleUri, String moduleTypeUri){
-        System.out.println("Generating form for script " + scriptPath + ", module " + moduleUri + ", moduleType " + moduleTypeUri);
         LOG.info("Generating form for script " + scriptPath + ", module " + moduleUri + ", moduleType " + moduleTypeUri);
         OntModel ontModel = helper.createOntModel(new File(scriptPath));
         Optional<Statement> moduleType = ontModel.listStatements(
@@ -46,12 +45,13 @@ public class FormService {
                 x -> x.getObject().asResource().getURI().equals(Vocabulary.s_c_Modules)
         ).nextOptional();
         return transformer.script2Form(
-                ontModel.getResource(moduleUri),
+                null, //TODO get dummy URL to get it work
                 moduleType.map(x -> x.getObject().asResource()).orElse(ontModel.getResource(moduleTypeUri))
         );
     }
 
     public void mergeFrom(String scriptPath, Question rootQuestion, String moduleType) {
+        LOG.info("Generating form for script " + scriptPath + ", moduleType " + moduleType);
         OntModel ontModel = helper.createOntModel(new File(scriptPath));
         Map<String, Model> modelMap = transformer.form2Script(ontModel, rootQuestion, moduleType);
         modelMap.forEach((file, model) -> {

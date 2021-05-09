@@ -39,11 +39,16 @@ public class ViewServiceTest {
                 "label",
                 new HashSet<>(),
                 new ModuleType(),
-                new HashSet<>()
+                new HashSet<>(),
+                null,
+                "21",
+                "31",
+                "source"
+
         ));
         when(scriptService.getModules(any())).thenReturn(mockModule);
 
-        View view = viewService.newViewFromSpipes("dummy.ttl");
+        View view = viewService.newViewFromSpipes("dummy.ttl", null);
 
         Assertions.assertEquals("dummy.ttl", view.getLabel());
         Assertions.assertEquals(1, view.getNodes().size());

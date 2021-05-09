@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.Date;
@@ -25,6 +26,8 @@ public class SPipesExecutionService {
 
     private final String engineUrl;
 
+    private final String pConfigURL;
+
     private final RestTemplate restTemplate;
 
     private final TransformationDAO transformationDAO;
@@ -34,33 +37,41 @@ public class SPipesExecutionService {
     @Autowired
     public SPipesExecutionService(
             @Value("${engineurl}") String engineUrl,
+            @Value("${sesame.pConfigURL}") String pConfigURL,
             RestTemplate restTemplate,
             TransformationDAO transformationDAO,
             ScriptDAO scriptDAO
     ) {
         this.engineUrl = engineUrl;
+        this.pConfigURL = pConfigURL;
         this.restTemplate = restTemplate;
         this.transformationDAO = transformationDAO;
         this.scriptDAO = scriptDAO;
     }
 
-    public ResponseEntity<String> serviceExecution (
+    public String serviceExecution (
             String functionId,
-            String repositoryName,
             Map<String, String> params
     ) {
         String serviceUrl = engineUrl + "/service";
+        params.put("id", functionId);
+        params.put("_pConfigURL", pConfigURL);
 
-        params.put("repositoryName", repositoryName);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUrl);
+        for (Map.Entry<String, String> pair : params.entrySet()) {
+            builder.queryParam(pair.getKey(), pair.getValue());
+        }
 
-        return restTemplate.getForEntity(serviceUrl + "?id=" + functionId, String.class, params);
+        String response = restTemplate.getForEntity(builder.build().toString(), String.class).getBody();
+        LOG.info(response);
+        return response;
     }
 
     public List<ExecutionDTO> getAllExecution() {
         return transformationDAO.getAllExecutionTransformation().stream().map(x -> {
             Map<String, Set<Object>> properties = x.getProperties();
             String pipelineURI = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name").stream().findFirst().orElse("").toString();
-            String name = pipelineURI.replaceAll(pipelineURI.replaceAll("\\/[^.]*$", ""), "");
+            String name = pipelineURI.substring(pipelineURI.lastIndexOf("/")+1);
             String duration = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-duration").stream().findFirst().orElse("").toString();
             Date startDate = (Date) properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-start-date").stream().findFirst().orElse(new Date());
             Date finishDate = (Date) properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-finish-date").stream().findFirst().orElse(new Date());
@@ -72,7 +83,7 @@ public class SPipesExecutionService {
                         Long.parseLong(duration),
                         startDate,
                         finishDate,
-                        x
+                        x.getId()
                 );
             } catch (IOException e) {
                 LOG.warn(e.getMessage());

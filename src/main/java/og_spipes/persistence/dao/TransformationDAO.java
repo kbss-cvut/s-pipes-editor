@@ -27,13 +27,13 @@ public class TransformationDAO extends BaseDAO<TransformationDTO> {
     }
 
     public List<TransformationDTO> getAllExecutionTransformation() {
-        return em.createNativeQuery("select ?s where { ?s a ?type . ?s ?part ?y . ?y ?input ?z . }", TransformationDTO.class)
+        return em.createNativeQuery("select distinct ?s where { ?s a ?type . ?s ?part ?y . ?y ?input ?z . }", TransformationDTO.class)
                 .setParameter("type", URI.create("http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation"))
                 .setParameter("part", URI.create("http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-part"))
                 .setParameter("input", URI.create("http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input"))
                 .getResultList();
     }
 
-    //TODO get all executions with paging
+    //TODO get all executions pagination
 
 }

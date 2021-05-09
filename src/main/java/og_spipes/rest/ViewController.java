@@ -27,8 +27,9 @@ public class ViewController {
     @PostMapping(path = "/new")
     public View generateModuleForm(@RequestBody ScriptDTO scriptDTO) {
         String script = scriptDTO.getScriptPath();
-        LOG.info("Creating a view for script " + script);
-        return viewService.newViewFromSpipes(script);
+        String transformationId = scriptDTO.getTransformationId();
+        LOG.info("Creating a view for script " + script + ", with transformationId: " + transformationId);
+        return viewService.newViewFromSpipes(script, transformationId);
     }
 
 }

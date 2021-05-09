@@ -4,6 +4,7 @@ import cz.cvut.kbss.jopa.model.annotations.*;
 import og_spipes.model.AbstractEntitySP;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,6 +24,18 @@ public class Module extends AbstractEntitySP {
     @Types
     private Set<String> types;
 
+    @Properties
+    private Map<String, Set<Object>> properties;
+
+    @OWLDataProperty(iri = s_p_node_x)
+    private String nodeX;
+
+    @OWLDataProperty(iri = s_p_node_y)
+    private String nodeY;
+
+    @OWLDataProperty(iri = s_p_source)
+    private String source;
+
     public Module() {
     }
 
@@ -33,20 +46,18 @@ public class Module extends AbstractEntitySP {
         this.next = next;
     }
 
-    public Module(URI uri, String id, String label, Set<Module> next) {
-        this.uri = uri;
-        this.id = id;
-        this.label = label;
-        this.next = next;
-    }
-
-    public Module(URI uri, String id, String label, Set<Module> next, ModuleType specificType, Set<String> types) {
+//    public Module(URI uri, String id, String label, Set<Module> next, ModuleType specificType, Set<String> types, String nodeX, String nodeY, String group) {
+    public Module(URI uri, String id, String label, Set<Module> next, ModuleType specificType, Set<String> types, Map<String, Set<Object>> properties, String nodeX, String nodeY, String source) {
         this.uri = uri;
         this.id = id;
         this.label = label;
         this.next = next;
         this.specificType = specificType;
         this.types = types;
+        this.properties = properties;
+        this.nodeX = nodeX;
+        this.nodeY = nodeY;
+        this.source = source;
     }
 
     public String getLabel() {
@@ -79,5 +90,37 @@ public class Module extends AbstractEntitySP {
 
     public void setSpecificType(ModuleType specificType) {
         this.specificType = specificType;
+    }
+
+    public Map<String, Set<Object>> getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Map<String, Set<Object>> properties) {
+        this.properties = properties;
+    }
+
+    public String getNodeX() {
+        return nodeX;
+    }
+
+    public void setNodeX(String nodeX) {
+        this.nodeX = nodeX;
+    }
+
+    public String getNodeY() {
+        return nodeY;
+    }
+
+    public void setNodeY(String nodeY) {
+        this.nodeY = nodeY;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

@@ -6,8 +6,7 @@ import cz.cvut.kbss.jopa.model.annotations.OWLDataProperty;
 import cz.cvut.sforms.model.AbstractEntity;
 import og_spipes.model.Vocabulary;
 
-import static og_spipes.model.Vocabulary.s_p_has_absolute_path;
-import static og_spipes.model.Vocabulary.s_p_has_script_path;
+import static og_spipes.model.Vocabulary.*;
 
 @MappedSuperclass
 @OWLClass(iri = Vocabulary.s_c_script_dto)
@@ -19,12 +18,16 @@ public class ScriptDTO extends AbstractEntity {
     @OWLDataProperty(iri = s_p_has_absolute_path)
     private String absolutePath;
 
+    @OWLDataProperty(iri = s_p_has_transformation_id)
+    private String transformationId;
+
     public ScriptDTO() {
     }
 
-    public ScriptDTO(String scriptPath, String absolutePath) {
+    public ScriptDTO(String scriptPath, String absolutePath, String executionId) {
         this.scriptPath = scriptPath;
         this.absolutePath = absolutePath;
+        this.transformationId = executionId;
     }
 
     public String getScriptPath() {
@@ -41,5 +44,22 @@ public class ScriptDTO extends AbstractEntity {
 
     public void setAbsolutePath(String absolutePath) {
         this.absolutePath = absolutePath;
+    }
+
+    public String getTransformationId() {
+        return transformationId;
+    }
+
+    public void setTransformationId(String transformationId) {
+        this.transformationId = transformationId;
+    }
+
+    @Override
+    public String toString() {
+        return "ScriptDTO{" +
+                "scriptPath='" + scriptPath + '\'' +
+                ", absolutePath='" + absolutePath + '\'' +
+                ", transformationId='" + transformationId + '\'' +
+                '}';
     }
 }

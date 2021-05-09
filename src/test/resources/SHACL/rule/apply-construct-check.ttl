@@ -1,0 +1,24 @@
+@prefix : <http://onto.fel.cvut.cz/ontologies/shapes/form/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sml: <http://topbraid.org/sparqlmotionlib#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix spif: <http://spinrdf.org/spif#> .
+@prefix spin: <http://spinrdf.org/spin#> .
+
+
+:apply-construct-check
+  a sh:NodeShape ;
+  rdfs:comment "sml:ApplyConstruct must have at least 1 sml:constructQuery with only 1 value sp:text"@cz ;
+  rdfs:comment "sml:ApplyConstruct musi mit alespon 1 sml:constructQuery s prave jednou hodnotou sp:text"@cz ;
+  sh:targetClass sml:ApplyConstruct;
+  sh:property [
+      sh:path sml:constructQuery ;
+      sh:minCount 1 ;
+      sh:property [
+                  sh:path sp:text ;
+                  sh:minCount 1 ;
+                  sh:maxCount 1 ;
+              ] ;
+    ] ;
+.
