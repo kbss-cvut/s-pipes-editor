@@ -7,6 +7,7 @@ import og_spipes.model.dto.ModuleLogDTO;
 import og_spipes.model.dto.QuestionDTO;
 import og_spipes.rest.exception.NoRootQuestionException;
 import og_spipes.service.FormService;
+import og_spipes.service.SHACLExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,6 @@ public class FormController {
         }else{
             throw new NoRootQuestionException();
         }
-
     }
 
     @PostMapping(path = "/load-log")

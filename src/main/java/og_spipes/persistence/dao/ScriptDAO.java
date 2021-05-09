@@ -83,16 +83,6 @@ public class ScriptDAO {
         System.out.println("total modules count: " + modules.size());
 
         for(Module module : modules){
-            System.out.println(module.getTypes());
-            System.out.println(module.getNodeX());
-            System.out.println(module.getNodeY());
-            System.out.println(module.getSource());
-//            module.getProperties().forEach((k, v) -> {
-//                System.out.println(v);
-//                v.forEach(x -> {
-//                    System.out.println(x.toString());
-//                });
-//            });
             List<ModuleType> ts = em.createNativeQuery(
                     "prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>\n" +
                             "           \n" +

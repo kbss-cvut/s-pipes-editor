@@ -1,0 +1,20 @@
+@prefix : <http://onto.fel.cvut.cz/ontologies/shapes/form/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sm: <http://topbraid.org/sparqlmotion#> .
+@prefix sml: <http://topbraid.org/sparqlmotionlib#> .
+@prefix spif: <http://spinrdf.org/spif#> .
+@prefix spin: <http://spinrdf.org/spin#> .
+
+:ends-function
+  a sh:NodeShape ;
+  rdfs:comment "every property sm:next must be terminated by function"@en ;
+  rdfs:comment "kazda property sm:next musi koncit funkci"@cz ;
+  sh:targetClass sm:Modules ;
+  sh:property [
+      sh:path [ sh:zeroOrMorePath sm:next  ]  ;
+      sh:minCount 1 ;
+      sh:class sml:ReturnRDF ;
+    ] ;
+.

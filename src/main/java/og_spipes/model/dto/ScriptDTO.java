@@ -53,4 +53,13 @@ public class ScriptDTO extends AbstractEntity {
     public void setTransformationId(String transformationId) {
         this.transformationId = transformationId;
     }
+
+    @Override
+    public String toString() {
+        return "ScriptDTO{" +
+                "scriptPath='" + scriptPath + '\'' +
+                ", absolutePath='" + absolutePath + '\'' +
+                ", transformationId='" + transformationId + '\'' +
+                '}';
+    }
 }

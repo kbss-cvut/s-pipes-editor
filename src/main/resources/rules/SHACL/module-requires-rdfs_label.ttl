@@ -1,0 +1,21 @@
+@prefix : <http://onto.fel.cvut.cz/ontologies/shapes/form/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix sm: <http://topbraid.org/sparqlmotion#> .
+@prefix sml: <http://topbraid.org/sparqlmotionlib#> .
+@prefix spif: <http://spinrdf.org/spif#> .
+@prefix spin: <http://spinrdf.org/spin#> .
+
+:module-requires-rdfs_label:
+  a sh:NodeShape ;
+  sh:targetClass sm:Modules ; #- this is not working in console :/
+#  sh:targetClass sml:ApplyConstruct, sml:BindBySelect, sml:BindWithConstant, sml:ExportToRDFFile, sml:Merge, sml:PerformUpdate, sml:ReturnRDF ;
+  rdfs:comment "Every modul must have rdfs:label."@en ;
+  rdfs:comment "Kazdy modul musi mit rdfs:label."@cz ;
+  sh:property [
+      sh:path rdfs:label ;
+      sh:minCount 1 ;
+      sh:maxCount 1 ;
+    ] ;
+.
