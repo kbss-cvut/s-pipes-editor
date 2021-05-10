@@ -1,37 +1,32 @@
-# JOPA + Jena Driver + Polymorphism
+# S-Pipes Editor Backend
 
-This example showcases usage of JOPA with the Jena OntoDriver working on top of Jena TDB/Fuseki server.
-It also uses a polymorphic object model.
-
+TODO
 ## Features
 
-* Spring boot application with REST services,
-* Publishing data in JSON-LD,
-* Consuming data in JSON-LD,
-* Declarative transactions,
-* Polymorphic object model,
-* Basic RDFS inference.
+TODO
 
-### JSON-LD Support
+### Dockerization
 
-The demo uses [JB4JSON-LD](https://github.com/kbss-cvut/jb4jsonld) to publish/consume JSON-LD data. More specifically,
-we are using the [JB4JSON-LD Jackson](https://github.com/kbss-cvut/jb4jsonld-jackson) integration, which allows the
-REST API to work with [Jackson](https://github.com/FasterXML/jackson) as most Spring applications do.
+The docker image of SPipes Editor Backend can be built by `docker build -t spipes-editor-rest: .`
+
+Then, SPipes Editor Backend can be run as `docker run -p 18115:18115 spipes-editor-rest`   
+
+The list of all configurable parameters which could be override by enviroment `-e` variables could be found in `application.properties`. Most important ones are:
+* REPOSITORYURL - The location of the SPipes scripts 
+* ENGINEURL - SPipes engine URL
+* SESAME_REPOSITORYURL - RDF4j repository URL 
+* SESAME_REPOSITORYNAME - RDF4j repository name
+* SESAME_PCONFIGURL - Override spies-engine logging configuration 
 
 
-### Persistence Setup
+### Docker-compose
+The docker-compose is composed of 4 services:
+* spipes-editor-rest
+* spipes-engine - manual build of the image is required [repository](https://github.com/kbss-cvut/s-pipes)
+* rdf4j - official [docker image](https://hub.docker.com/r/eclipse/rdf4j-workbench)
 
-The persistence is set up in `cz.cvut.kbss.jopa.example08.persistence.PersistenceFactory`. Repository type and location is specified
-in `application.properties` - either Fuseki or TDB storage can be selected.
+Manual required steps:
+* spipes-engine
+    * The service does not automatically create the repository in RDF4J, so manual creation of a repository is required.
+    * The logging configuration for RDF4j is hardcoded in the image, but it could override via `_pConfigURL` param. However, it is not a convenient format to work. Also both servies must to share volume or the config has to be exposed.
 
-### Declarative Transactions
-
-This demo makes use of the [JOPA-Spring-transaction](https://github.com/ledsoft/jopa-spring-transaction) library, 
-which enables JOPA to be used together with Spring's declarative transactions. See the services for usage example.
-To make the transactions work, it is necessary to instantiate the `JopaTransactionManager` and `DelegatingEntityManager` Spring beans.
-See `cz.cvut.kbss.jopa.example08.config.PersistenceConfig` for reference.
-
-## Running the Demo
-
-To run the demo, `mvn spring-boot:run` can be used. The REST API is available at [http://localhost:18115/og_spipes/rest](http://localhost:18115/example08/rest)
-(configured in `application.properties`).
