@@ -3,8 +3,8 @@ version: '3.7'
 #docker-compose up --build
 
 services:
-  spipes-editor-rest:
-    image: 'spipes-editor-rest:latest'
+  s-pipes-editor-rest:
+    image: 's-pipes-editor-rest:latest'
     container_name: spipes-editor-rest
     ports:
       - '18115:18115'
@@ -13,20 +13,21 @@ services:
     networks:
       - overlay
     depends_on:
-      - spipes-engine
+      - s-pipes-engine
       - rdf4j
     environment:
-      - REPOSITORYURL=/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/scripts_test/sample
-      - ENGINEURL=http://spipes-engine:8080/s_pipes_web_war/
-      - SESAME_REPOSITORYURL=http://rdf4j:8080/rdf4j-server/repositories
-      - SESAME_REPOSITORYNAME=s-pipes-hello-world
-      - SESAME_PCONFIGURL=/home/jordan/IdeaProjects/s-pipes/doc/examples/hello-world/config.ttl
+      - SCRIPTPATHS=/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/scripts_test/sample
+      - SCRIPTPATHS=/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/scripts_test/sample
+      - ENGINEURL=http://s-pipes-engine:8080/s_pipes_web_war/
+      - RDF4J_REPOSITORYURL=http://rdf4j:8080/rdf4j-server/repositories
+      - RDF4J_REPOSITORYNAME=s-pipes-hello-world
+      - RDF4J_PCONFIGURL=/home/jordan/IdeaProjects/s-pipes/doc/examples/hello-world/config.ttl
     volumes:
       - /home:/home
 
-  spipes-engine:
-    image: 'spipes-engine:latest'
-    container_name: spipes-engine
+  s-pipes-engine:
+    image: 's-pipes-engine:latest'
+    container_name: s-pipes-engine
     ports:
       - "8081:8080"
     expose:

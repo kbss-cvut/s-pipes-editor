@@ -51,14 +51,12 @@ public class PersistenceFactory {
 
     @PostConstruct
     private void init() {
-        final String repoPath = environment.getProperty("repositoryUrl");
-        final String repoType = environment.getProperty("repository.type");
-        LOG.info("Using repository path: {}.", repoPath);
-        LOG.info("Using repository type: {}.", repoType);
+        final String scriptPath = environment.getProperty("scriptPaths");
+        LOG.info("Using repository path: {}.", scriptPath);
 
         final Map<String, String> props = new HashMap<>();
         // Here we set up basic storage access properties - driver class, physical location of the storage
-        props.put(JOPAPersistenceProperties.ONTOLOGY_PHYSICAL_URI_KEY, repoPath);
+        props.put(JOPAPersistenceProperties.ONTOLOGY_PHYSICAL_URI_KEY, scriptPath);
         props.put(JOPAPersistenceProperties.DATA_SOURCE_CLASS, SesameDataSource.class.getName());
 //        // Let's use Jena TDB for storage
 //        props.put(JenaOntoDriverProperties.JENA_STORAGE_TYPE, repoType);

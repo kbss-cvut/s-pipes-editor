@@ -40,7 +40,7 @@ public class ScriptDAO {
     final EntityManagerFactory emf;
 
     //TODO try to use created EM - check if working while editing
-    public ScriptDAO(@Value("${repositoryUrl}") String repositoryURL) {
+    public ScriptDAO(@Value("${scriptPaths}") String scriptPaths) {
         final Map<String, String> props = new HashMap<>();
         // Here we set up basic storage access properties - driver class, physical location of the storage
         props.put(JOPAPersistenceProperties.ONTOLOGY_PHYSICAL_URI_KEY, "local://temporary"); // jopa uses the URI scheme to choose between local and remote repo, file and (http, https and ftp)resp.
@@ -55,7 +55,7 @@ public class ScriptDAO {
         props.put(JenaOntoDriverProperties.IN_MEMORY, "true");
 
         this.emf = Persistence.createEntityManagerFactory("og_spipesPU", props);
-        this.repositoryURL = repositoryURL;
+        this.repositoryURL = scriptPaths;
     }
 
     public List<ModuleType> getModuleTypes(Model m) {

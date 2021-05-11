@@ -39,8 +39,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations="classpath:application.properties")
 public class FunctionControllerTest {
 
-    @Value("${repositoryUrl}")
-    private String repositoryUrl;
+    @Value("${scriptPaths}")
+    private String scriptPaths;
 
     @MockBean
     private FunctionService functionService;
@@ -55,7 +55,7 @@ public class FunctionControllerTest {
 
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(repositoryUrl);
+        File scriptsHomeTmp = new File(scriptPaths);
         if(scriptsHomeTmp.exists()){
             FileSystemUtils.deleteRecursively(scriptsHomeTmp);
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
@@ -79,7 +79,7 @@ public class FunctionControllerTest {
                 .content(
                         "{" +
                                 "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \"" + repositoryUrl + "/hello-world.sms.ttl\"" +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \"" + scriptPaths + "/hello-world.sms.ttl\"" +
                                 "}"
                 )
                 .contentType(MediaType.APPLICATION_JSON))
@@ -114,7 +114,7 @@ public class FunctionControllerTest {
 
     @AfterEach
     public void after() {
-        FileSystemUtils.deleteRecursively(new File(repositoryUrl));
+        FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
 }

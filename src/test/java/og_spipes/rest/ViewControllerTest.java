@@ -1,15 +1,6 @@
 package og_spipes.rest;
 
-import og_spipes.model.spipes.TransformationDTO;
-import og_spipes.persistence.dao.TransformationDAO;
-import og_spipes.service.ViewService;
 import org.apache.commons.io.FileUtils;
-import org.eclipse.rdf4j.repository.Repository;
-import org.eclipse.rdf4j.repository.RepositoryConnection;
-import org.eclipse.rdf4j.repository.http.HTTPRepository;
-import org.eclipse.rdf4j.repository.sail.SailRepository;
-import org.eclipse.rdf4j.rio.RDFFormat;
-import org.eclipse.rdf4j.sail.nativerdf.NativeStore;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,11 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,8 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class ViewControllerTest {
 
-    @Value("${repositoryUrl}")
-    private String repositoryUrl;
+    @Value("${scriptPaths}")
+    private String scriptPaths;
 
     @Autowired
     private MockMvc mockMvc;
@@ -53,7 +41,7 @@ public class ViewControllerTest {
 
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(repositoryUrl);
+        File scriptsHomeTmp = new File(scriptPaths);
         if (scriptsHomeTmp.exists()) {
             FileSystemUtils.deleteRecursively(scriptsHomeTmp);
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
@@ -65,7 +53,7 @@ public class ViewControllerTest {
     @DisplayName("Get graph view")
     public void testViewOfScript() throws Exception {
         //TODO enforce some assertion
-        File scriptPath = new File(repositoryUrl + "/hello-world/hello-world2.sms.ttl");
+        File scriptPath = new File(scriptPaths + "/hello-world/hello-world2.sms.ttl");
         this.mockMvc.perform(post("/views/new")
                 .content(
                         "{" +
@@ -85,7 +73,7 @@ public class ViewControllerTest {
     @Disabled //TODO ask how to add data to sesame DB
     public void testViewOfScriptWithExecution() throws Exception {
         //TODO enforce some assertion
-        File scriptPath = new File(repositoryUrl + "/hello-world/hello-world2.sms.ttl");
+        File scriptPath = new File(scriptPaths + "/hello-world/hello-world2.sms.ttl");
         String transformationId = "http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003";
         this.mockMvc.perform(post("/views/new")
                 .content(
@@ -103,7 +91,7 @@ public class ViewControllerTest {
 
     @AfterEach
     public void after() {
-        FileSystemUtils.deleteRecursively(new File(repositoryUrl));
+        FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
 }

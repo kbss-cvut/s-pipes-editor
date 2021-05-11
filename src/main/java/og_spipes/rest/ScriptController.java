@@ -6,7 +6,6 @@ import og_spipes.model.dto.ScriptDTO;
 import og_spipes.model.filetree.SubTree;
 import og_spipes.model.spipes.DependencyDTO;
 import og_spipes.model.spipes.ModuleType;
-import og_spipes.model.spipes.TestJSONLD;
 import og_spipes.service.FileTreeService;
 import og_spipes.service.SHACLExecutorService;
 import og_spipes.service.ScriptService;
@@ -20,14 +19,11 @@ import org.topbraid.shacl.validation.SHACLException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/scripts")
@@ -35,8 +31,8 @@ public class ScriptController {
 
     private static SHACLExecutorService executorService = new SHACLExecutorService();
 
-    @Value("${repositoryUrl}")
-    private String repositoryURL;
+    @Value("${scriptPaths}")
+    private String scriptPaths;
 
     @Value("${scriptRules}")
     private String scriptRules;
@@ -53,7 +49,7 @@ public class ScriptController {
     @RequestMapping(method = RequestMethod.GET)
     public SubTree getScripts() {
         //TODO get direct root
-        return fileTreeService.getTtlFileTree(new File(repositoryURL));
+        return fileTreeService.getTtlFileTree(new File(scriptPaths));
     }
 
     @PostMapping(path = "/moduleTypes", produces = JsonLd.MEDIA_TYPE)

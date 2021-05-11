@@ -15,10 +15,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.File;
 import java.io.IOException;
@@ -36,8 +32,8 @@ public class NotificationHandler extends TextWebSocketHandler implements Initial
     private static final Logger LOG = LoggerFactory.getLogger(NotificationHandler.class);
     private static final Map<String, Set<WebSocketSession>> fileSubscribers = Collections.synchronizedMap(new HashMap<>());
 
-    @Value("${repositoryUrl}")
-    private String repositoryURL;
+    @Value("${scriptPaths}")
+    private String scriptPaths;
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -74,7 +70,7 @@ public class NotificationHandler extends TextWebSocketHandler implements Initial
     //TODO write to thesis about simplification
     @Override
     public void afterPropertiesSet() throws Exception {
-        FileAlterationObserver observer = new FileAlterationObserver(repositoryURL);
+        FileAlterationObserver observer = new FileAlterationObserver(scriptPaths);
         FileAlterationMonitor monitor = new FileAlterationMonitor(3000);
         FileAlterationListener listener = new FileAlterationListenerAdaptor() {
             @Override

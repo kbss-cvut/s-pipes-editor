@@ -27,15 +27,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations="classpath:application.properties")
 public class ExecutionControllerTest {
 
-    @Value("${repositoryUrl}")
-    private String repositoryUrl;
+    @Value("${scriptPaths}")
+    private String scriptPaths;
 
     @Autowired
     private MockMvc mockMvc;
 
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(repositoryUrl);
+        File scriptsHomeTmp = new File(scriptPaths);
         if(scriptsHomeTmp.exists()){
             FileSystemUtils.deleteRecursively(scriptsHomeTmp);
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
@@ -71,7 +71,7 @@ public class ExecutionControllerTest {
 
     @AfterEach
     public void after() {
-        FileSystemUtils.deleteRecursively(new File(repositoryUrl));
+        FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
 }

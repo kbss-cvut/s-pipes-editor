@@ -34,15 +34,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations="classpath:application.properties")
 public class ScriptControllerTest {
 
-    @Value("${repositoryUrl}")
-    private String repositoryUrl;
+    @Value("${scriptPaths}")
+    private String scriptPaths;
 
     @Autowired
     private MockMvc mockMvc;
 
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(repositoryUrl);
+        File scriptsHomeTmp = new File(scriptPaths);
         if(scriptsHomeTmp.exists()){
             FileSystemUtils.deleteRecursively(scriptsHomeTmp);
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
@@ -56,7 +56,7 @@ public class ScriptControllerTest {
         this.mockMvc.perform(get("/scripts"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"children\":[{\"file\":\""+repositoryUrl+"/hello-world.sms.ttl\",\"name\":\"hello-world.sms.ttl\"},{\"file\":\""+repositoryUrl+"/hello-world2.sms.ttl\",\"name\":\"hello-world2.sms.ttl\"}],\"name\":\"og_spipes\"}"));
+                .andExpect(content().json("{\"children\":[{\"file\":\""+ scriptPaths +"/hello-world.sms.ttl\",\"name\":\"hello-world.sms.ttl\"},{\"file\":\""+ scriptPaths +"/hello-world2.sms.ttl\",\"name\":\"hello-world2.sms.ttl\"}],\"name\":\"og_spipes\"}"));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class ScriptControllerTest {
                 .content(
                         "{" +
                             "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
-                            "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \""+repositoryUrl+"/hello-world.sms.ttl\"" +
+                            "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \""+ scriptPaths +"/hello-world.sms.ttl\"" +
                         "}"
                 )
                 .contentType(MediaType.APPLICATION_JSON))
@@ -79,7 +79,7 @@ public class ScriptControllerTest {
     @DisplayName("Add dependency between two modules in script")
     public void testAddModuleDependency() throws Exception {
         //TODO try inline JsonLD from object
-        String tmpScripts = repositoryUrl + "/hello-world.sms.ttl";
+        String tmpScripts = scriptPaths + "/hello-world.sms.ttl";
         this.mockMvc.perform(post("/scripts/modules/dependency")
                 .content(
                         "{\n" +
@@ -106,7 +106,7 @@ public class ScriptControllerTest {
     @Test
     @DisplayName("Delete module in script")
     public void testDeleteModule() throws Exception {
-        String tmpScripts = repositoryUrl + "/hello-world.sms.ttl";
+        String tmpScripts = scriptPaths + "/hello-world.sms.ttl";
         this.mockMvc.perform(post("/scripts/modules/delete")
                 .content("{\n" +
                             "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/module-dto\",\n" +
@@ -131,7 +131,7 @@ public class ScriptControllerTest {
     @Test
     @DisplayName("Delete dependency of module in script")
     public void testDeleteDependecyOfModule() throws Exception {
-        String tmpScripts = repositoryUrl + "/hello-world.sms.ttl";
+        String tmpScripts = scriptPaths + "/hello-world.sms.ttl";
         this.mockMvc.perform(post("/scripts/modules/dependencies/delete")
                 .content(
                         "{\n" +
@@ -159,7 +159,7 @@ public class ScriptControllerTest {
     @Test
     @DisplayName("Enforce script SHACL rules")
     public void restSHACLRulesForScript() throws Exception {
-        String tmpScripts = repositoryUrl + "/hello-world.sms.ttl";
+        String tmpScripts = scriptPaths + "/hello-world.sms.ttl";
         this.mockMvc.perform(post("/scripts/validate")
                 .content(
                         "{" +
@@ -175,7 +175,7 @@ public class ScriptControllerTest {
 
     @AfterEach
     public void after() {
-        FileSystemUtils.deleteRecursively(new File(repositoryUrl));
+        FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
 }

@@ -32,7 +32,7 @@ public class SesamePersistenceProvider {
     private Repository repository;
 
     @Autowired
-    public SesamePersistenceProvider(@Value("${sesame.repositoryUrl}") String repositoryUrl, @Value("${sesame.repositoryName}") String repositoryName, @Qualifier("sesameEMF") EntityManagerFactory emf) {
+    public SesamePersistenceProvider(@Value("${rdf4j.repositoryUrl}") String repositoryUrl, @Value("${rdf4j.repositoryName}") String repositoryName, @Qualifier("rdf4jEMF") EntityManagerFactory emf) {
         this.repositoryUrl = repositoryUrl;
         this.repositoryName = repositoryName;
         this.emf = emf;
@@ -51,7 +51,7 @@ public class SesamePersistenceProvider {
             this.repository = RepositoryProvider.getRepository(repoUrl);
             assert repository.isInitialized();
         } catch (RepositoryException | RepositoryConfigException e) {
-            log.error("Unable to connect to Sesame repository at " + repoUrl, e);
+            log.error("Unable to connect to rdf4j repository at " + repoUrl, e);
         }
     }
 

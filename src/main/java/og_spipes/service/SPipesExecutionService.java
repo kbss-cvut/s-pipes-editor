@@ -37,7 +37,7 @@ public class SPipesExecutionService {
     @Autowired
     public SPipesExecutionService(
             @Value("${engineurl}") String engineUrl,
-            @Value("${sesame.pConfigURL}") String pConfigURL,
+            @Value("${rdf4j.pConfigURL}") String pConfigURL,
             RestTemplate restTemplate,
             TransformationDAO transformationDAO,
             ScriptDAO scriptDAO

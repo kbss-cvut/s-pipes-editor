@@ -22,7 +22,7 @@ import static og_spipes.model.Vocabulary.s_c_Modules;
 @Repository
 public class TransformationDAO extends BaseDAO<TransformationDTO> {
 
-    protected TransformationDAO(@Qualifier("sesameEM") EntityManager em) {
+    protected TransformationDAO(@Qualifier("rdf4jEM") EntityManager em) {
         super(em, TransformationDTO.class);
     }
 

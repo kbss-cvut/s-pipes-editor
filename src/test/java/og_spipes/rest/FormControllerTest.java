@@ -3,24 +3,17 @@ package og_spipes.rest;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.FileSystemUtils;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -38,15 +31,15 @@ public class FormControllerTest {
 
     //TODO resolver blicking test - standalone working
 
-    @Value("${repositoryUrl}")
-    private String repositoryUrl;
+    @Value("${scriptPaths}")
+    private String scriptPaths;
 
     @Autowired
     private MockMvc mockMvc;
 
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(repositoryUrl);
+        File scriptsHomeTmp = new File(scriptPaths);
         if(scriptsHomeTmp.exists()){
             FileSystemUtils.deleteRecursively(scriptsHomeTmp);
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
@@ -58,7 +51,7 @@ public class FormControllerTest {
     @Disabled
     @DisplayName("Get parsed s-form")
     public void testGetScriptModuleTypes() throws Exception {
-        String tmpScripts = repositoryUrl + "/hello-world/hello-world.sms.ttl";
+        String tmpScripts = scriptPaths + "/hello-world/hello-world.sms.ttl";
 
         this.mockMvc.perform(post("/scripts/forms")
                 .content(
@@ -82,7 +75,7 @@ public class FormControllerTest {
     @Disabled
     @DisplayName("Update hello-world.sms.ttl :bind-firstname label to 'Bind person name karel'.")
     public void testEditForm() throws Exception {
-        String tmpScripts = repositoryUrl + "/hello-world/hello-world.sms.ttl";
+        String tmpScripts = scriptPaths + "/hello-world/hello-world.sms.ttl";
         String jsonSForms = readFileToString(new File("src/test/resources/sforms/sforms_update.json"), "UTF-8");
         jsonSForms = jsonSForms.replace("SCRIPT_PATH", tmpScripts);
 
@@ -102,7 +95,7 @@ public class FormControllerTest {
 
     @AfterEach
     public void after() {
-        FileSystemUtils.deleteRecursively(new File(repositoryUrl));
+        FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
 }

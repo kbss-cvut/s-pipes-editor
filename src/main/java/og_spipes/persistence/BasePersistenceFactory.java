@@ -26,9 +26,9 @@ public class BasePersistenceFactory {
     private EntityManagerFactory emf;
 
     public BasePersistenceFactory(
-            @Value("${sesame.repositoryUrl}") String repositoryUrl,
-            @Value("${sesame.repositoryName}") String repositoryName,
-            @Value("${sesame.driver}") String driver
+            @Value("${rdf4j.repositoryUrl}") String repositoryUrl,
+            @Value("${rdf4j.repositoryName}") String repositoryName,
+            @Value("${rdf4j.driver}") String driver
     ) {
         this.repositoryUrl = repositoryUrl;
         this.repositoryName = repositoryName;
@@ -36,13 +36,13 @@ public class BasePersistenceFactory {
     }
 
     @Bean
-    @Qualifier("sesameEMF")
+    @Qualifier("rdf4jEMF")
     public EntityManagerFactory getEntityManagerFactory() {
         return emf;
     }
 
     @Bean
-    @Qualifier("sesameEM")
+    @Qualifier("rdf4jEM")
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
@@ -54,7 +54,7 @@ public class BasePersistenceFactory {
         properties.put(JOPAPersistenceProperties.DATA_SOURCE_CLASS, driver);
         properties.put(JOPAPersistenceProperties.SCAN_PACKAGE, "og_spipes.model");
         properties.put(JOPAPersistenceProperties.JPA_PERSISTENCE_PROVIDER, JOPAPersistenceProvider.class.getName());
-        this.emf = Persistence.createEntityManagerFactory("og_spipes_sesame", properties);
+        this.emf = Persistence.createEntityManagerFactory("og_spipes_rdf4j", properties);
     }
 
     @PreDestroy

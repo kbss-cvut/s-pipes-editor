@@ -31,8 +31,8 @@ public class NotificationControllerTest {
 
     private String URL;
 
-    @Value("${repositoryUrl}")
-    private String repositoryUrl;
+    @Value("${scriptPaths}")
+    private String scriptPaths;
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
@@ -43,7 +43,7 @@ public class NotificationControllerTest {
 
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(repositoryUrl);
+        File scriptsHomeTmp = new File(scriptPaths);
         if(scriptsHomeTmp.exists()){
             FileSystemUtils.deleteRecursively(scriptsHomeTmp);
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
@@ -61,10 +61,10 @@ public class NotificationControllerTest {
             Thread.sleep(500);
         }
 
-        myWebSocketClient.send(repositoryUrl + "/sample-script.ttl");
+        myWebSocketClient.send(scriptPaths + "/sample-script.ttl");
         Thread.sleep(1000);
 
-        File file = new File(repositoryUrl + "/sample-script.ttl");
+        File file = new File(scriptPaths + "/sample-script.ttl");
         String fileContext = FileUtils.readFileToString(file, "UTF-8");
         fileContext = fileContext + "\nnew_line";
         FileUtils.write(file, fileContext, "UTF-8");
@@ -79,7 +79,7 @@ public class NotificationControllerTest {
 
     @AfterEach
     public void after() {
-        FileSystemUtils.deleteRecursively(new File(repositoryUrl));
+        FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
 }
