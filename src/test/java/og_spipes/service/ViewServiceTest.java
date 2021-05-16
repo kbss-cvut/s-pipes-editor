@@ -43,6 +43,7 @@ public class ViewServiceTest {
                 null,
                 "21",
                 "31",
+                "scriptPath",
                 "source"
 
         ));

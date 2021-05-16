@@ -45,6 +45,7 @@ public class ViewService {
                             m.getSpecificType().getUri().toString(),
                             m.getNodeX(),
                             m.getNodeY(),
+                            m.getScriptPath(),
                             m.getSource(),
                             m.getTypes(),
                             in,

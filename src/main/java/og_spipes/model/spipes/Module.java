@@ -33,6 +33,9 @@ public class Module extends AbstractEntitySP {
     @OWLDataProperty(iri = s_p_node_y)
     private String nodeY;
 
+    @OWLDataProperty(iri = s_p_has_script_path)
+    private String scriptPath;
+    
     @OWLDataProperty(iri = s_p_source)
     private String source;
 
@@ -47,7 +50,7 @@ public class Module extends AbstractEntitySP {
     }
 
 //    public Module(URI uri, String id, String label, Set<Module> next, ModuleType specificType, Set<String> types, String nodeX, String nodeY, String group) {
-    public Module(URI uri, String id, String label, Set<Module> next, ModuleType specificType, Set<String> types, Map<String, Set<Object>> properties, String nodeX, String nodeY, String source) {
+    public Module(URI uri, String id, String label, Set<Module> next, ModuleType specificType, Set<String> types, Map<String, Set<Object>> properties, String nodeX, String nodeY, String scriptPath, String source) {
         this.uri = uri;
         this.id = id;
         this.label = label;
@@ -57,6 +60,7 @@ public class Module extends AbstractEntitySP {
         this.properties = properties;
         this.nodeX = nodeX;
         this.nodeY = nodeY;
+        this.scriptPath = scriptPath;
         this.source = source;
     }
 
@@ -122,5 +126,13 @@ public class Module extends AbstractEntitySP {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getScriptPath() {
+        return scriptPath;
+    }
+
+    public void setScriptPath(String scriptPath) {
+        this.scriptPath = scriptPath;
     }
 }
