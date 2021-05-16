@@ -42,7 +42,7 @@ public class ViewService {
                             m.getUri(),
                             m.getId(),
                             m.getLabel(),
-                            m.getSpecificType().getUri().toString(),
+                            m.getSpecificType() == null ? null : m.getSpecificType().getUri().toString(),
                             m.getNodeX(),
                             m.getNodeY(),
                             m.getScriptPath(),

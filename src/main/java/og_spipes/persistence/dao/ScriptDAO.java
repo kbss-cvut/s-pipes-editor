@@ -87,6 +87,7 @@ public class ScriptDAO {
         Set<URI> collect = modules.stream().map(AbstractEntitySP::getUri).collect(Collectors.toSet());
         Map<URI, File> uriFileMap = groupsHelper.moduleFile(collect);
 
+        LOG.info("Modules count: " + modules.size());
         for(Module module : modules){
             List<ModuleType> ts = em.createNativeQuery(
                     "prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>\n" +
@@ -105,11 +106,15 @@ public class ScriptDAO {
                 if(ts.size() > 1) LOG.warn("MORE TYPES FOUND!!!");
                 module.setSpecificType(ts.get(0));
             }else{
-                LOG.warn("NO TYPE FOUND!!!");
+                LOG.error("No type found for module: " + module.getUri());
             }
             File scriptFile = uriFileMap.get(module.getUri());
-            module.setScriptPath(scriptFile.getAbsolutePath());
-            module.setSource(scriptFile.getName());
+            if(scriptFile != null){
+                module.setScriptPath(scriptFile.getAbsolutePath());
+                module.setSource(scriptFile.getName());
+            }else{
+                LOG.error("No file source found module: " + module.getUri());
+            }
         }
         em.close();
         return modules;

@@ -41,7 +41,6 @@ public class FunctionController {
 
     @PostMapping(path = "/script", produces = JsonLd.MEDIA_TYPE)
     public List<FunctionDTO> getScriptFunctions(@RequestBody ScriptDTO dto) {
-        System.out.println(functionService.hashCode());
         return functionService.moduleFunctions(dto.getAbsolutePath());
     }
 
