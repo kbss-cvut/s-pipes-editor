@@ -4,5 +4,3 @@ module-requires-rdfs_label.ttl      ,rule-test-cases/data.ttl                   
 module-requires-rdfs_label.ttl      ,rule-test-cases/data-without-label.ttl               ,Violation
 apply-construct-check.ttl           ,rule-test-cases/data.ttl                             ,Pass
 apply-construct-check.ttl           ,rule-test-cases/data-with-invalid-query.ttl          ,Violation
-connected-to-function.ttl           ,rule-test-cases/data.ttl                             ,Violation
-ends-function.ttl                   ,rule-test-cases/data.ttl                             ,Violation

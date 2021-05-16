@@ -1,15 +1,20 @@
 package og_spipes.rest;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
+import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
 import og_spipes.model.Vocabulary;
+import og_spipes.model.dto.SHACLValidationResultDTO;
+import og_spipes.model.spipes.FunctionDTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,11 +22,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -40,6 +49,8 @@ public class ScriptControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @BeforeEach
     public void init() throws Exception {
         File scriptsHomeTmp = new File(scriptPaths);
@@ -48,6 +59,7 @@ public class ScriptControllerTest {
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
         }
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/hello-world"), scriptsHomeTmp);
+        mapper.registerModule(new JsonLdModule());
     }
 
     @Test
@@ -157,8 +169,8 @@ public class ScriptControllerTest {
     }
 
     @Test
-    @DisplayName("Enforce script SHACL rules")
-    public void restSHACLRulesForScript() throws Exception {
+    @DisplayName("Enforce script SHACL rules on valid script")
+    public void restSHACLRulesForValidScript() throws Exception {
         String tmpScripts = scriptPaths + "/hello-world.sms.ttl";
         this.mockMvc.perform(post("/scripts/validate")
                 .content(
@@ -167,10 +179,40 @@ public class ScriptControllerTest {
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \""+tmpScripts+"\"" +
                                 "}"
                 )
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));
+    }
+
+    @Test
+    @DisplayName("Enforce script SHACL rules on valid script")
+    public void restSHACLRulesForInvalidScript() throws Exception {
+        String tmpScripts = scriptPaths + "/hello-world2.sms.ttl";
+        MvcResult mvcResult = this.mockMvc.perform(post("/scripts/validate")
+                .content(
+                        "{" +
+                                "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \"" + tmpScripts + "\"" +
+                                "}"
+                )
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = mvcResult.getResponse().getContentAsString();
+
+        List<SHACLValidationResultDTO> res = new ArrayList<>(
+                mapper.readValue(content, new TypeReference<Set<SHACLValidationResultDTO>>(){})
+        );
+
+        Assert.assertEquals(1, res.size());
+        SHACLValidationResultDTO resultDTO = res.get(0);
+        Assertions.assertEquals("http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/bind-person-name", resultDTO.getModuleURI());
+        Assertions.assertEquals("Violation", resultDTO.getSeverityMessage());
+        Assertions.assertEquals("Property needs to have at least 1 values, but found 0", resultDTO.getErrorMessage());
+        Assertions.assertEquals("file:/home/jordan/IdeaProjects/s-pipes-newgen/src/main/resources/rules/SHACL/module-requires-rdfs_label.ttl", resultDTO.getRuleURI());
     }
 
     @AfterEach

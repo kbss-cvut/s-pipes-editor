@@ -1,44 +1,35 @@
 package og_spipes.shacl;
 
-import cz.cvut.kbss.jopa.Persistence;
-import cz.cvut.kbss.jopa.model.EntityManager;
-import cz.cvut.kbss.jopa.model.EntityManagerFactory;
-import cz.cvut.kbss.jopa.model.JOPAPersistenceProperties;
-import cz.cvut.kbss.jopa.model.JOPAPersistenceProvider;
-import cz.cvut.kbss.ontodriver.jena.config.JenaOntoDriverProperties;
+import og_spipes.model.dto.SHACLValidationResultDTO;
 import og_spipes.service.SHACLExecutorService;
-import org.apache.jena.ontology.OntDocumentManager;
-import org.apache.jena.ontology.OntModelSpec;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.NodeIterator;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.util.FileUtils;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.topbraid.jenax.util.JenaUtil;
-import org.topbraid.shacl.util.SHACLPreferences;
-import org.topbraid.shacl.validation.SHACLException;
-import org.topbraid.shacl.validation.ValidationReport;
 import org.topbraid.shacl.vocabulary.SH;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+@SpringBootTest
 public class RulesTest {
 
     private final SHACLExecutorService executorService = new SHACLExecutorService();
+
+    @Test
+    public void testValidationError() throws IOException {
+        Set<SHACLValidationResultDTO> resultDTOS = executorService.testModel(
+                Collections.singleton(new File("src/main/resources/rules/SHACL/module-requires-rdfs_label.ttl").toURL()),
+                new File("src/test/resources/SHACL/rule-test-cases/data-without-label.ttl").getAbsolutePath()
+        );
+
+        Assertions.assertEquals(2, resultDTOS.size());
+    }
 
     @Test
     public void testAllShaclRule() throws IOException {
@@ -62,12 +53,11 @@ public class RulesTest {
     }
 
     private void testModel(Set<URL> ruleSet, String data, Outcome outcome) throws IOException {
-        try {
-            executorService.testModel(ruleSet, data);
+        Set<SHACLValidationResultDTO> resultDTOS = executorService.testModel(ruleSet, data);
+        if(resultDTOS.size() > 0){
+            Assertions.assertNotSame(outcome, Outcome.Pass);
+        }else{
             Assertions.assertEquals(outcome, Outcome.Pass);
-        } catch (SHACLException e) {
-            Assertions.assertTrue(outcome != Outcome.Pass);
-            Assertions.assertNotNull(e.getMessage());
         }
     }
 

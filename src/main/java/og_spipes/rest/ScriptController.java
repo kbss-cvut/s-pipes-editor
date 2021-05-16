@@ -2,6 +2,7 @@ package og_spipes.rest;
 
 import cz.cvut.kbss.jsonld.JsonLd;
 import og_spipes.model.dto.ModuleDTO;
+import og_spipes.model.dto.SHACLValidationResultDTO;
 import og_spipes.model.dto.ScriptDTO;
 import og_spipes.model.filetree.SubTree;
 import og_spipes.model.spipes.DependencyDTO;
@@ -22,7 +23,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -81,22 +84,21 @@ public class ScriptController {
         scriptService.deleteDependency(scriptPath, dto.getModuleUri(), dto.getTargetModuleUri());
     }
 
-
-    @PostMapping(path = "/validate")
-    public void validateScript(@RequestBody ScriptDTO dto) throws IOException {
+    @PostMapping(path = "/validate", produces = JsonLd.MEDIA_TYPE)
+    public Set<SHACLValidationResultDTO> validateScript(@RequestBody ScriptDTO dto) throws IOException {
         List<File> rules = Files.walk(new File(scriptRules).toPath())
                 .filter(Files::isRegularFile)
                 .map(Path::toFile)
                 .collect(Collectors.toList());
+        Set<SHACLValidationResultDTO> violations = new HashSet<>();
         for(File f : rules){
-            try{
-                executorService.testModel(
+            violations.addAll(
+                    executorService.testModel(
                         Collections.singleton(f.toURI().toURL()),
                         dto.getAbsolutePath()
-                );
-            }catch (SHACLException e){
-                throw new ResponseStatusException(HttpStatus.OK, e.getMessage(), e);
-            }
+                    )
+            );
         }
+        return violations;
     }
 }

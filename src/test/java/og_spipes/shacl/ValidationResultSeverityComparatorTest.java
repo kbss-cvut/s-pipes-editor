@@ -10,6 +10,7 @@ import org.topbraid.shacl.validation.ValidationResult;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest
 public class ValidationResultSeverityComparatorTest {
 
     private ValidationResult mockWithSeverity(final String severityUri) {
