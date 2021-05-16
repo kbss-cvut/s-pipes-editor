@@ -66,7 +66,7 @@ public class ScriptDAOTest {
     public void getScripts() {
         List<File> files = scriptDao.getScripts();
 
-        Assertions.assertEquals(14, files.size());
+        Assertions.assertEquals(18, files.size());
     }
 
     @Test

@@ -7,10 +7,12 @@ import cz.cvut.kbss.jopa.model.JOPAPersistenceProperties;
 import cz.cvut.kbss.jopa.model.JOPAPersistenceProvider;
 import cz.cvut.kbss.ontodriver.jena.JenaDataSource;
 import cz.cvut.kbss.ontodriver.jena.config.JenaOntoDriverProperties;
+import og_spipes.model.AbstractEntitySP;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
+import og_spipes.service.ScriptGroupsHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static og_spipes.model.Vocabulary.s_c_Modules;
 
@@ -80,7 +83,9 @@ public class ScriptDAO {
         List<Module> modules = em.createNativeQuery("select ?s where { ?s a ?type }", Module.class)
                 .setParameter("type", URI.create(s_c_Modules)).getResultList();
 
-        System.out.println("total modules count: " + modules.size());
+        ScriptGroupsHelper groupsHelper = new ScriptGroupsHelper(repositoryURL);
+        Set<URI> collect = modules.stream().map(AbstractEntitySP::getUri).collect(Collectors.toSet());
+        Map<URI, File> uriFileMap = groupsHelper.moduleFile(collect);
 
         for(Module module : modules){
             List<ModuleType> ts = em.createNativeQuery(
@@ -102,6 +107,9 @@ public class ScriptDAO {
             }else{
                 LOG.warn("NO TYPE FOUND!!!");
             }
+            File scriptFile = uriFileMap.get(module.getUri());
+            module.setScriptPath(scriptFile.getAbsolutePath());
+            module.setSource(scriptFile.getName());
         }
         em.close();
         return modules;
@@ -112,6 +120,11 @@ public class ScriptDAO {
     }
 
     public List<File> getScripts() {
+        File rootFolder = new File(repositoryURL);
+        return new ArrayList<>(FileUtils.listFiles(rootFolder, new String[]{"ttl"}, true));
+    }
+
+    public static List<File> getScripts(String repositoryURL) {
         File rootFolder = new File(repositoryURL);
         return new ArrayList<>(FileUtils.listFiles(rootFolder, new String[]{"ttl"}, true));
     }

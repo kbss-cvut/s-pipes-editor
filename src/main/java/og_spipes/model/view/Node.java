@@ -21,6 +21,8 @@ public class Node extends AbstractEntitySP {
     private Integer x;
     @OWLDataProperty(iri = s_p_has_y_coordinate)
     private Integer y;
+    @OWLDataProperty(iri = s_p_has_script_path)
+    private String scriptPath;
     @OWLDataProperty(iri = s_p_group)
     private String group;
     @OWLDataProperty(iri = s_p_has_module_type)
@@ -33,26 +35,28 @@ public class Node extends AbstractEntitySP {
     public Node() {
     }
 
-    public Node(URI uri, String id, String label, String component, String x, String y, String group, Set<String> moduleTypes, Set<String> inParameters, Set<String> outParameters) {
+    public Node(URI uri, String id, String label, String component, String x, String y, String scriptPath, String group, Set<String> moduleTypes, Set<String> inParameters, Set<String> outParameters) {
         this.uri = uri;
         this.id = id;
         this.label = label;
         this.component = component;
         this.x = x != null ? Integer.parseInt(x) : null;
         this.y = y != null ? Integer.parseInt(y) : null;
+        this.scriptPath = scriptPath;
         this.group = group;
         this.moduleTypes = moduleTypes;
         this.inParameters = inParameters;
         this.outParameters = outParameters;
     }
 
-    public Node(URI uri, String id, String label, String component, Integer x, Integer y, String group, Set<String> moduleTypes, Set<String> inParameters, Set<String> outParameters) {
+    public Node(URI uri, String id, String label, String component, Integer x, Integer y, String scriptPath, String group, Set<String> moduleTypes, Set<String> inParameters, Set<String> outParameters) {
         this.uri = uri;
         this.id = id;
         this.label = label;
         this.component = component;
         this.x = x;
         this.y = y;
+        this.scriptPath = scriptPath;
         this.group = group;
         this.moduleTypes = moduleTypes;
         this.inParameters = inParameters;
@@ -125,6 +129,14 @@ public class Node extends AbstractEntitySP {
 
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    public String getScriptPath() {
+        return scriptPath;
+    }
+
+    public void setScriptPath(String scriptPath) {
+        this.scriptPath = scriptPath;
     }
 
     @Override
