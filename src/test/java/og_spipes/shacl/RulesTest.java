@@ -30,7 +30,7 @@ public class RulesTest {
                 new File("src/test/resources/SHACL/rule-test-cases/data-without-label.ttl").getAbsolutePath()
         );
 
-        Assertions.assertEquals(2, resultDTOS.size());
+        Assertions.assertEquals(1, resultDTOS.size());
     }
 
     @Test

@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/scripts")
 public class ScriptController {
 
-    private static SHACLExecutorService executorService = new SHACLExecutorService();
+    private static final SHACLExecutorService executorService = new SHACLExecutorService();
 
     @Value("${scriptPaths}")
     private String scriptPaths;

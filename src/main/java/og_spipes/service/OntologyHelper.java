@@ -33,14 +33,14 @@ public class OntologyHelper {
         String fileUri = getOntologyUri(file);
         List<File> scripts = scriptDao.getScripts();
 
-        OntDocumentManager documentManager = OntDocumentManager.getInstance();
+        OntDocumentManager documentManager = new OntDocumentManager();
         documentManager.clearCache();
         documentManager.setReadFailureHandler((s, model, e) -> LOG.info(e.getLocalizedMessage()));
-        scripts.forEach(s -> {
+        for(File s : scripts){
             String ontologyUri = getOntologyUri(s);
             String absolutePath = s.getAbsolutePath();
             documentManager.addAltEntry(ontologyUri, absolutePath);
-        });
+        }
         OntModel model = documentManager.getOntology(fileUri, OntModelSpec.OWL_MEM);
         model.loadImports();
 

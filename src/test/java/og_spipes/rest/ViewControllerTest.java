@@ -1,13 +1,19 @@
 package og_spipes.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
+import og_spipes.model.view.View;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.*;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
@@ -28,6 +34,7 @@ public class ViewControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private final ObjectMapper mapper = new ObjectMapper();
 //    private static Repository sesameRepo;
 //
 //    @BeforeAll
@@ -47,14 +54,14 @@ public class ViewControllerTest {
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
         }
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
+        mapper.registerModule(new JsonLdModule());
     }
 
     @Test
     @DisplayName("Get graph view")
     public void testViewOfScript() throws Exception {
-        //TODO enforce some assertion
         File scriptPath = new File(scriptPaths + "/hello-world/hello-world2.sms.ttl");
-        this.mockMvc.perform(post("/views/new")
+        MvcResult mvcResult = this.mockMvc.perform(post("/views/new")
                 .content(
                         "{" +
                                 "\"@type\":\"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
@@ -64,9 +71,39 @@ public class ViewControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = mvcResult.getResponse().getContentAsString();
+
+        View view = mapper.readValue(content, View.class);
+        //TODO not working with shared test SpringBoot context
+        Assertions.assertEquals(4, view.getNodes().size());
     }
 
+//    @Test
+//    @DisplayName("Get graph view of complicated script")
+//    public void testViewOfComplicatedScript() throws Exception {
+//        //TODO enforce some assertion
+//        File scriptPath = new File(scriptPaths + "/vfn-example/vfn-form-modules.ttl");
+//        MvcResult mvcResult = this.mockMvc.perform(post("/views/new")
+//                .content(
+//                        "{" +
+//                                "\"@type\":\"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
+//                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\":\"" + scriptPath + "\"" +
+//                                "}"
+//                )
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .accept(MediaType.APPLICATION_JSON))
+//                .andDo(print())
+//                .andExpect(status().isOk())
+//                .andReturn();
+//
+//        String content = mvcResult.getResponse().getContentAsString();
+//
+//        View view = mapper.readValue(content, View.class);
+//        Assertions.assertEquals(36, view.getNodes().size());
+//    }
 
     @Test
     @DisplayName("Get graph view with execution")

@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static og_spipes.model.Vocabulary.s_c_Modules;
 
