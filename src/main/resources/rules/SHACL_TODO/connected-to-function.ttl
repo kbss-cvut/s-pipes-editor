@@ -11,7 +11,6 @@
 :connected-to-function
     a sh:NodeShape ;
         rdfs:comment "every property sm:next must ref to function"@en ;
-        rdfs:comment "kazda property sm:next musi byt napojena na funkci"@cz ;
         sh:targetClass sm:Modules ; #targetNode zkusit nebo po
         sh:property [
                         sh:path [ sh:zeroOrMorePath sm:next  ]  ;

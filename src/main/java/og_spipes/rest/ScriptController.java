@@ -20,6 +20,7 @@ import org.topbraid.shacl.validation.SHACLException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -85,7 +86,7 @@ public class ScriptController {
     }
 
     @PostMapping(path = "/validate", produces = JsonLd.MEDIA_TYPE)
-    public Set<SHACLValidationResultDTO> validateScript(@RequestBody ScriptDTO dto) throws IOException {
+    public Set<SHACLValidationResultDTO> validateScript(@RequestBody ScriptDTO dto) throws IOException, URISyntaxException {
         List<File> rules = Files.walk(new File(scriptRules).toPath())
                 .filter(Files::isRegularFile)
                 .map(Path::toFile)

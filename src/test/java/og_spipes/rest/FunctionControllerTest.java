@@ -62,9 +62,6 @@ public class FunctionControllerTest {
         }
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/hello-world"), scriptsHomeTmp);
         mapper.registerModule(new JsonLdModule());
-//
-//        MockitoAnnotations.initMocks(this);
-//        this.mockMvc = MockMvcBuilders.standaloneSetup(functionController).build();
     }
 
     @Test

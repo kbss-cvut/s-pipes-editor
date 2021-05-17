@@ -59,6 +59,7 @@ public class ScriptControllerTest {
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
         }
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/hello-world"), scriptsHomeTmp);
+        FileUtils.copyFileToDirectory(new File("src/test/resources/SHACL/rule-test-cases/data-without-label.ttl"), scriptsHomeTmp);
         mapper.registerModule(new JsonLdModule());
     }
 
@@ -68,7 +69,13 @@ public class ScriptControllerTest {
         this.mockMvc.perform(get("/scripts"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"children\":[{\"file\":\""+ scriptPaths +"/hello-world.sms.ttl\",\"name\":\"hello-world.sms.ttl\"},{\"file\":\""+ scriptPaths +"/hello-world2.sms.ttl\",\"name\":\"hello-world2.sms.ttl\"}],\"name\":\"og_spipes\"}"));
+                .andExpect(content().json(
+                        "{\"children\":[" +
+                                    "{\"file\":\""+ scriptPaths +"/hello-world.sms.ttl\",\"name\":\"hello-world.sms.ttl\"}," +
+                                    "{\"file\":\""+ scriptPaths +"/data-without-label.ttl\",\"name\":\"data-without-label.ttl\"}," +
+                                    "{\"file\":\""+ scriptPaths +"/hello-world2.sms.ttl\",\"name\":\"hello-world2.sms.ttl\"}" +
+                                "],\"name\":\"og_spipes\"}"
+                ));
     }
 
     @Test
@@ -188,7 +195,7 @@ public class ScriptControllerTest {
     @Test
     @DisplayName("Enforce script SHACL rules on valid script")
     public void restSHACLRulesForInvalidScript() throws Exception {
-        String tmpScripts = scriptPaths + "/hello-world2.sms.ttl";
+        String tmpScripts = scriptPaths + "/data-without-label.ttl";
         MvcResult mvcResult = this.mockMvc.perform(post("/scripts/validate")
                 .content(
                         "{" +
@@ -209,10 +216,11 @@ public class ScriptControllerTest {
 
         Assert.assertEquals(1, res.size());
         SHACLValidationResultDTO resultDTO = res.get(0);
-        Assertions.assertEquals("http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/bind-person-name", resultDTO.getModuleURI());
+        Assertions.assertEquals("http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.6/construct-greeding", resultDTO.getModuleURI());
         Assertions.assertEquals("Violation", resultDTO.getSeverityMessage());
         Assertions.assertEquals("Property needs to have at least 1 values, but found 0", resultDTO.getErrorMessage());
         Assertions.assertEquals("file:/home/jordan/IdeaProjects/s-pipes-newgen/src/main/resources/rules/SHACL/module-requires-rdfs_label.ttl", resultDTO.getRuleURI());
+        Assertions.assertEquals("Every modul must have rdfs:label.@en", resultDTO.getRuleComment());
     }
 
     @AfterEach

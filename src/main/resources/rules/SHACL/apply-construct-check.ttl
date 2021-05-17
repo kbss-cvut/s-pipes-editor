@@ -9,8 +9,7 @@
 
 :apply-construct-check
   a sh:NodeShape ;
-  rdfs:comment "sml:ApplyConstruct must have at least 1 sml:constructQuery with only 1 value sp:text"@cz ;
-  rdfs:comment "sml:ApplyConstruct musi mit alespon 1 sml:constructQuery s prave jednou hodnotou sp:text"@cz ;
+  rdfs:comment "sml:ApplyConstruct musi mit alespon 1 sml:constructQuery s prave jednou hodnotou sp:text"@en  ;
   sh:targetClass sml:ApplyConstruct;
   sh:property [
       sh:path sml:constructQuery ;

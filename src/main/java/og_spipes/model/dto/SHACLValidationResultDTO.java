@@ -24,14 +24,18 @@ public class SHACLValidationResultDTO extends AbstractEntitySP {
     @OWLDataProperty(iri = s_p_has_rule_uri)
     private String ruleURI;
 
+    @OWLDataProperty(iri = s_p_has_rule_comment)
+    private String ruleComment;
+
     public SHACLValidationResultDTO() {
     }
 
-    public SHACLValidationResultDTO(String moduleURI, String severityMessage, String errorMessage, String ruleURI) {
+    public SHACLValidationResultDTO(String moduleURI, String severityMessage, String errorMessage, String ruleURI, String ruleComment) {
         this.moduleURI = moduleURI;
         this.severityMessage = severityMessage;
         this.errorMessage = errorMessage;
         this.ruleURI = ruleURI;
+        this.ruleComment = ruleComment;
     }
 
     public String getModuleURI() {
@@ -66,6 +70,14 @@ public class SHACLValidationResultDTO extends AbstractEntitySP {
         this.ruleURI = ruleURI;
     }
 
+    public String getRuleComment() {
+        return ruleComment;
+    }
+
+    public void setRuleComment(String ruleComment) {
+        this.ruleComment = ruleComment;
+    }
+
     @Override
     public String toString() {
         return "SHACLValidationResultDTO{" +
@@ -73,6 +85,7 @@ public class SHACLValidationResultDTO extends AbstractEntitySP {
                 ", severityMessage='" + severityMessage + '\'' +
                 ", errorMessage='" + errorMessage + '\'' +
                 ", ruleURI='" + ruleURI + '\'' +
+                ", ruleComment='" + ruleComment + '\'' +
                 '}';
     }
 }

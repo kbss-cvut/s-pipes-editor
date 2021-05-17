@@ -1,4 +1,4 @@
-@prefix : <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/> .
+@prefix : <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.4/> .
 @prefix doc: <http://onto.fel.cvut.cz/ontologies/documentation/> .
 @prefix kbss-module: <http://onto.fel.cvut.cz/ontologies/lib/module/> .
 @prefix km-sesame: <http://onto.fel.cvut.cz/ontologies/lib/module/sesame/> .

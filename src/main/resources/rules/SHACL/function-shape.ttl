@@ -10,7 +10,6 @@
 :function-shape
   a sh:NodeShape ;
   rdfs:comment "Every function has only 1 returnModule, which is type of IRI."@en ;
-  rdfs:comment "Kazda funkce ma prave jeden returnModule, ktery je typu IRI."@cz ;
   sh:targetClass sm:Function ;
   sh:property [
       sh:path sm:returnModule ;
