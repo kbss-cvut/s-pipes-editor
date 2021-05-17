@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,12 @@ public class OntologyHelper {
             documentManager.addAltEntry(ontologyUri, absolutePath);
         }
         OntModel model = documentManager.getOntology(fileUri, OntModelSpec.OWL_MEM);
+        System.out.println("statements: " + model.listStatements().toList().size());
+        /**
+         * Problematic part if we share the test context:
+         * If we run only ViewControllerTest the "Get graph view" test has statements 4363 (System.out.println("statements: " + model.listStatements().toList().size());)
+         * If we run both ScriptControllerTest and ViewControllerTest "Get graph view" test has only statements 48 (System.out.println("statements: " + model.listStatements().toList().size());)
+         */
         model.loadImports();
 
         return model;

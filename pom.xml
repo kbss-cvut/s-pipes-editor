@@ -322,10 +322,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M5</version>
-<!--                <configuration>-->
-<!--                    <reuseForks>false</reuseForks>-->
-<!--                    <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>-->
-<!--                </configuration>-->
+                <!-- Solves the problem with getOntology but extremely slow down the test process -->
+                <configuration>
+                    <reuseForks>false</reuseForks>
+                    <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
+                </configuration>
             </plugin>
 
         </plugins>
