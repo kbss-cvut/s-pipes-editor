@@ -55,10 +55,10 @@ class ScriptGroupsHelperTest {
         );
 
         Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/bind-prefered-label-property")), Sets.newHashSet("metadata.ttl"));
-        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/construct-example-data")), Sets.newHashSet());
-        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader")), Sets.newHashSet("relations.ttl"));
-        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/skosify_Return")), Sets.newHashSet());
-        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels")), Sets.newHashSet("metadata.ttl"));
+        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/construct-example-data")), Sets.newHashSet("skosify.sms.ttl"));
+        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader")), Sets.newHashSet("skosify.sms.ttl", "relations.ttl"));
+        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/skosify_Return")), Sets.newHashSet("skosify.sms.ttl"));
+        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels")), Sets.newHashSet("skosify.sms.ttl", "metadata.ttl"));
         Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/identification/identify-concepts")), Sets.newHashSet("relations.ttl", "metadata.ttl", "identification.ttl"));
     }
 
