@@ -46,6 +46,7 @@ public class NotificationHandler extends TextWebSocketHandler implements Initial
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) {
         String fileAbsPath = textMessage.getPayload();
+        LOG.info("File added " + fileAbsPath);
         if(fileSubscribers.containsKey(fileAbsPath)){
             fileSubscribers.get(fileAbsPath).add(session);
         }else{
