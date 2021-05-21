@@ -2,8 +2,8 @@ package og_spipes.service;
 
 import com.google.common.collect.Sets;
 import og_spipes.model.dto.SHACLValidationResultDTO;
+import og_spipes.service.util.ScriptImportGroup;
 import og_spipes.shacl.Validator;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.Model;
@@ -12,12 +12,11 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.util.FileUtils;
-import org.apache.jena.vocabulary.OWL;
-import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.topbraid.jenax.util.JenaUtil;
-import org.topbraid.shacl.validation.SHACLException;
 import org.topbraid.shacl.validation.ValidationReport;
 import org.topbraid.shacl.validation.ValidationResult;
 
@@ -26,24 +25,33 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
 public class SHACLExecutorService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SHACLExecutorService.class);
 
-    public Set<SHACLValidationResultDTO> testModel(Set<URL> ruleSet, String scriptPath) throws IOException, URISyntaxException {
+    private final String scriptPaths;
+
+    public SHACLExecutorService(@Value("${scriptPaths}") String scriptPaths) {
+        this.scriptPaths = scriptPaths;
+    }
+
+    public Set<SHACLValidationResultDTO> testModel(Set<URL> ruleSet, String rootScript) throws IOException, URISyntaxException {
         final Model dataModel = JenaUtil.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF, null);
+        ScriptImportGroup importGroup = new ScriptImportGroup(scriptPaths, new File(rootScript));
 
         final Set<SHACLValidationResultDTO> res = new HashSet<>();
 
         try{
             OntDocumentManager.getInstance().setProcessImports(false);
-            dataModel.read(new FileInputStream(scriptPath), "urn:dummy", FileUtils.langTurtle);
+            for(File f : importGroup.getUsedFiles()){
+                dataModel.read(new FileInputStream(f), "urn:dummy", FileUtils.langTurtle);
+            }
 
             final Validator validator = new Validator();
             for(URL url : ruleSet){

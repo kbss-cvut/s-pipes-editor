@@ -1,13 +1,11 @@
 package og_spipes.service;
 
 import com.google.common.collect.Sets;
-import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.FileSystemUtils;
@@ -55,10 +53,10 @@ class ScriptGroupsHelperTest {
         );
 
         Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/bind-prefered-label-property")), Sets.newHashSet("metadata.ttl"));
-        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/construct-example-data")), Sets.newHashSet());
-        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader")), Sets.newHashSet("relations.ttl"));
-        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/skosify_Return")), Sets.newHashSet());
-        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels")), Sets.newHashSet("metadata.ttl"));
+        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/construct-example-data")), Sets.newHashSet("skosify.sms.ttl"));
+        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader")), Sets.newHashSet("skosify.sms.ttl", "relations.ttl"));
+        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/skosify_Return")), Sets.newHashSet("skosify.sms.ttl"));
+        Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels")), Sets.newHashSet("skosify.sms.ttl", "metadata.ttl"));
         Assertions.assertEquals(res.get(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/identification/identify-concepts")), Sets.newHashSet("relations.ttl", "metadata.ttl", "identification.ttl"));
     }
 

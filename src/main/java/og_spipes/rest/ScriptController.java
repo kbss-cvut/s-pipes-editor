@@ -33,8 +33,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/scripts")
 public class ScriptController {
 
-    private static final SHACLExecutorService executorService = new SHACLExecutorService();
-
     @Value("${scriptPaths}")
     private String scriptPaths;
 
@@ -43,11 +41,13 @@ public class ScriptController {
 
     private final FileTreeService fileTreeService;
     private final ScriptService scriptService;
+    private final SHACLExecutorService executorService;
 
     @Autowired
-    public ScriptController(FileTreeService fileTreeService, ScriptService scriptService) {
+    public ScriptController(FileTreeService fileTreeService, ScriptService scriptService, SHACLExecutorService executorService) {
         this.fileTreeService = fileTreeService;
         this.scriptService = scriptService;
+        this.executorService = executorService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
