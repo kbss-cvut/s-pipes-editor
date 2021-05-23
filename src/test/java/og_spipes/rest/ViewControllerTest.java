@@ -1,10 +1,7 @@
 package og_spipes.rest;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
-import og_spipes.model.spipes.FunctionDTO;
-import og_spipes.model.view.Node;
 import og_spipes.model.view.View;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.rdf4j.repository.Repository;
@@ -12,7 +9,6 @@ import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.sail.nativerdf.NativeStore;
-import org.junit.Assert;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,9 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -45,17 +38,18 @@ public class ViewControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static Repository sesameRepo;
-
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @BeforeAll
     public static void beforeAll() throws IOException {
-        File dataDir = new File("file:/tmp/og_spipes_sesame/repositories/s-pipes-hello-world");
-        sesameRepo = new SailRepository( new NativeStore(dataDir) );
-        sesameRepo.initialize();
+        File dataDir = new File("/tmp/og_spipes_sesame/repositories/s-pipes-hello-world");
+        Repository sesameRepo = new SailRepository(new NativeStore(dataDir));
+        sesameRepo.init();
         RepositoryConnection conn = sesameRepo.getConnection();
-        conn.add(new File("/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/rdf4j_source/repositories/rdf4j_export"), null, RDFFormat.TURTLE);
+        conn.clear();
+        conn.add(new File("src/test/resources/rdf4j_source/repositories/rdf4j_export"), null, RDFFormat.TURTLE);
+        conn.close();
+        sesameRepo.shutDown();
         mapper.registerModule(new JsonLdModule());
     }
 
@@ -87,14 +81,8 @@ public class ViewControllerTest {
                 .andExpect(status().isOk());
     }
 
-
-    /**
-     * Current problem is data from sesameRepo does not appear inside testing repository.
-     * @throws Exception
-     */
     @Test
     @DisplayName("Get graph view with execution")
-//    @Disabled //TODO ask how to add data to sesame DB
     public void testViewOfScriptWithExecution() throws Exception {
         File scriptPath = new File(scriptPaths + "/hello-world/hello-world2.sms.ttl");
         String transformationId = "http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003";
@@ -121,6 +109,11 @@ public class ViewControllerTest {
     @AfterEach
     public void after() {
         FileSystemUtils.deleteRecursively(new File(scriptPaths));
+    }
+
+    @AfterAll
+    public static void afterAll(){
+        FileSystemUtils.deleteRecursively(new File("/tmp/og_spipes_sesame/repositories/s-pipes-hello-world"));
     }
 
 }
