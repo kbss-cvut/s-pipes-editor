@@ -5,7 +5,9 @@ import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.util.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,12 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ScriptService {
@@ -82,6 +86,23 @@ public class ScriptService {
         ontModel.write(os, FileUtils.langTurtle);
 
         //TODO notification webhooks
+    }
+
+    public void moveModule(String scriptFrom, String scriptTo, String moduleURI) throws FileNotFoundException {
+        //TODO add constrains - very problematic, could cause issues!
+
+        OntModel fromModel = ontologyHelper.createOntModel(new File(scriptFrom));
+        List<Statement> statements = fromModel.listStatements(fromModel.getResource(moduleURI), null, (RDFNode) null).toList();
+        List<Statement> statements1 = fromModel.listStatements(null, null, fromModel.getResource(moduleURI)).toList();
+        List<Statement> fromStatements = Stream.concat(statements.stream(), statements1.stream())
+                .collect(Collectors.toList());
+
+        OntModel toModel = ontologyHelper.createOntModel(new File(scriptTo));
+        toModel.add(fromStatements);
+        FileOutputStream os = new FileOutputStream(scriptTo);
+        fromModel.write(os, FileUtils.langTurtle);
+
+        deleteModule(scriptFrom, moduleURI);
     }
 
 }
