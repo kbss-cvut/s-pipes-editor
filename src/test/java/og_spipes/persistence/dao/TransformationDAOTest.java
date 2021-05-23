@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "rdf4j.repositoryUrl=/tmp/og_spipes_sesame/repositories/transformation-dao/"
+})
 class TransformationDAOTest {
 
     @Autowired
@@ -28,14 +30,9 @@ class TransformationDAOTest {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    /**
-     * BeforeEach is not possible because JOPA lock the repository: SAIL is already locked. It means parametrization via
-     * Spring $Value is not possible.
-     * @throws IOException
-     */
     @BeforeAll
     public static void beforeAll() throws IOException {
-        File dataDir = new File("/tmp/og_spipes_sesame/repositories/s-pipes-hello-world");
+        File dataDir = new File("/tmp/og_spipes_sesame/repositories/transformation-dao/s-pipes-hello-world");
         Repository sesameRepo = new SailRepository(new NativeStore(dataDir));
         sesameRepo.init();
         RepositoryConnection conn = sesameRepo.getConnection();
@@ -55,7 +52,7 @@ class TransformationDAOTest {
 
     @AfterAll
     public static void afterAll(){
-        FileSystemUtils.deleteRecursively(new File("/tmp/og_spipes_sesame/repositories/s-pipes-hello-world"));
+        FileSystemUtils.deleteRecursively(new File("/tmp/og_spipes_sesame/repositories/transformation-dao/s-pipes-hello-world"));
     }
 
 }

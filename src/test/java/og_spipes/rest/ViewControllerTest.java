@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.FileSystemUtils;
@@ -28,7 +29,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+        "rdf4j.repositoryUrl=/tmp/og_spipes_sesame/repositories/view-controller/"
+})
 @AutoConfigureMockMvc
 public class ViewControllerTest {
 
@@ -42,7 +45,7 @@ public class ViewControllerTest {
 
     @BeforeAll
     public static void beforeAll() throws IOException {
-        File dataDir = new File("/tmp/og_spipes_sesame/repositories/s-pipes-hello-world");
+        File dataDir = new File("/tmp/og_spipes_sesame/repositories/view-controller/s-pipes-hello-world");
         Repository sesameRepo = new SailRepository(new NativeStore(dataDir));
         sesameRepo.init();
         RepositoryConnection conn = sesameRepo.getConnection();
@@ -66,9 +69,8 @@ public class ViewControllerTest {
     @Test
     @DisplayName("Get graph view")
     public void testViewOfScript() throws Exception {
-        //TODO enforce some assertion
         File scriptPath = new File(scriptPaths + "/hello-world/hello-world2.sms.ttl");
-        this.mockMvc.perform(post("/views/new")
+        MvcResult mvcResult = this.mockMvc.perform(post("/views/new")
                 .content(
                         "{" +
                                 "\"@type\":\"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
@@ -78,7 +80,13 @@ public class ViewControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = mvcResult.getResponse().getContentAsString();
+        View view = mapper.readValue(content, View.class);
+
+        Assertions.assertNotNull(view);
     }
 
     @Test
@@ -113,7 +121,7 @@ public class ViewControllerTest {
 
     @AfterAll
     public static void afterAll(){
-        FileSystemUtils.deleteRecursively(new File("/tmp/og_spipes_sesame/repositories/s-pipes-hello-world"));
+        FileSystemUtils.deleteRecursively(new File("/tmp/og_spipes_sesame/repositories/view-controller/"));
     }
 
 }
