@@ -4,6 +4,10 @@ import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.commons.io.FileUtils;
+import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Statement;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +37,9 @@ import static org.junit.Assert.*;
 
 @SpringBootTest
 public class ScriptServiceTest {
+
+    @Autowired
+    private OntologyHelper ontologyHelper;
 
     @Autowired
     private ScriptService scriptService;
@@ -66,17 +73,27 @@ public class ScriptServiceTest {
 
     @Test
     public void moveModule() throws FileNotFoundException {
+        String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname";
+
         scriptService.moveModule(
                 scriptPaths + "/hello-world/hello-world.sms.ttl",
                 scriptPaths + "/hello-world/hello-world2.sms.ttl",
-                "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/metadata/"
+                moduleUri
         );
 
+        OntModel fromModel = ontologyHelper.createOntModel(new File(scriptPaths + "/hello-world/hello-world.sms.ttl"));
+        OntModel toModel = ontologyHelper.createOntModel(new File(scriptPaths + "/hello-world/hello-world2.sms.ttl"));
+
+        List<Statement> fromStatements = fromModel.listStatements(fromModel.getResource(moduleUri), null, (RDFNode) null).toList();
+        List<Statement> toStatements = toModel.listStatements(toModel.getResource(moduleUri), null, (RDFNode) null).toList();
+
+        Assertions.assertEquals(fromStatements.size(), 0);
+        Assertions.assertEquals(toStatements.size(), 5);
     }
 
-//    @AfterEach
-//    public void after() {
-//        FileSystemUtils.deleteRecursively(new File(scriptPaths));
-//    }
+    @AfterEach
+    public void after() {
+        FileSystemUtils.deleteRecursively(new File(scriptPaths));
+    }
 
 }

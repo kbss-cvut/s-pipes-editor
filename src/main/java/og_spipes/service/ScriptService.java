@@ -10,6 +10,8 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.util.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,8 @@ import java.util.stream.Stream;
 
 @Service
 public class ScriptService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(OntologyHelper.class);
 
     private final ScriptDAO scriptDao;
     private final OntologyHelper ontologyHelper;
@@ -88,6 +92,15 @@ public class ScriptService {
         //TODO notification webhooks
     }
 
+    /**
+     * Basic concept is done, but constrains are necessary. Also clarify correctness of the solution.
+     * Constrains suggestions:
+     * Module is used by another script which imports the previous script
+     * Module name already exist in scriptTo file
+     * Next property is problematic - actual solution still point out on URI of the previous module. However common approach is to use imports, so it should consistent.
+     * Some others?
+     * @throws FileNotFoundException
+     */
     public void moveModule(String scriptFrom, String scriptTo, String moduleURI) throws FileNotFoundException {
         //TODO add constrains - very problematic, could cause issues!
 
@@ -97,10 +110,14 @@ public class ScriptService {
         List<Statement> fromStatements = Stream.concat(statements.stream(), statements1.stream())
                 .collect(Collectors.toList());
 
+        if(fromStatements.size() == 0){
+            LOG.error("Module not found! " + moduleURI);
+        }
+
         OntModel toModel = ontologyHelper.createOntModel(new File(scriptTo));
         toModel.add(fromStatements);
         FileOutputStream os = new FileOutputStream(scriptTo);
-        fromModel.write(os, FileUtils.langTurtle);
+        toModel.write(os, FileUtils.langTurtle);
 
         deleteModule(scriptFrom, moduleURI);
     }
