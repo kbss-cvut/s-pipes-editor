@@ -5,6 +5,7 @@ import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
@@ -40,18 +41,18 @@ public class ScriptService {
     }
 
     public List<Module> getModules(String filepath){
-        OntModel ontModel = ontologyHelper.createOntModel(new File(filepath));
+        Model ontModel = ontologyHelper.createOntModel(new File(filepath));
         return scriptDao.getModules(ontModel);
     }
 
     public List<ModuleType> getModuleTypes(String filepath){
-        OntModel ontModel = ontologyHelper.createOntModel(new File(filepath));
+        Model ontModel = ontologyHelper.createOntModel(new File(filepath));
         return scriptDao.getModuleTypes(ontModel);
     }
 
     //TODO test later - quite hard now
     public void createDependency(String scriptPath, String from, String to) throws FileNotFoundException {
-        OntModel ontModel = ontologyHelper.createOntModel(new File(scriptPath));
+        Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
         List<Resource> resources = ontModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
         Optional<Resource> moduleFrom = resources.stream().filter(x -> x.getURI().equals(from)).findAny();
         Optional<Resource> moduleTo = resources.stream().filter(x -> x.getURI().equals(to)).findAny();
@@ -69,7 +70,7 @@ public class ScriptService {
 
     //TODO test later - quite hard now
     public void deleteDependency(String scriptPath, String from, String to) throws FileNotFoundException {
-        OntModel ontModel = ontologyHelper.createOntModel(new File(scriptPath));
+        Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
         ontModel.removeAll(
                 ontModel.getResource(from),
                 new PropertyImpl(Vocabulary.s_p_next),
@@ -83,7 +84,7 @@ public class ScriptService {
 
     //TODO test later - quite hard now
     public void deleteModule(String scriptPath, String module) throws FileNotFoundException {
-        OntModel ontModel = ontologyHelper.createOntModel(new File(scriptPath));
+        Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
         ontModel.removeAll(ontModel.getResource(module), null, null);
         ontModel.removeAll(null, null, ontModel.getResource(module));
         FileOutputStream os = new FileOutputStream(scriptPath);
@@ -104,7 +105,7 @@ public class ScriptService {
     public void moveModule(String scriptFrom, String scriptTo, String moduleURI) throws FileNotFoundException {
         //TODO add constrains - very problematic, could cause issues!
 
-        OntModel fromModel = ontologyHelper.createOntModel(new File(scriptFrom));
+        Model fromModel = ontologyHelper.createOntModel(new File(scriptFrom));
         List<Statement> statements = fromModel.listStatements(fromModel.getResource(moduleURI), null, (RDFNode) null).toList();
         List<Statement> statements1 = fromModel.listStatements(null, null, fromModel.getResource(moduleURI)).toList();
         List<Statement> fromStatements = Stream.concat(statements.stream(), statements1.stream())
@@ -114,7 +115,7 @@ public class ScriptService {
             LOG.error("Module not found! " + moduleURI);
         }
 
-        OntModel toModel = ontologyHelper.createOntModel(new File(scriptTo));
+        Model toModel = ontologyHelper.createOntModel(new File(scriptTo));
         toModel.add(fromStatements);
         FileOutputStream os = new FileOutputStream(scriptTo);
         toModel.write(os, FileUtils.langTurtle);

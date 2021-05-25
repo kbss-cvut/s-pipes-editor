@@ -6,6 +6,7 @@ import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
 import org.junit.jupiter.api.AfterEach;
@@ -81,8 +82,8 @@ public class ScriptServiceTest {
                 moduleUri
         );
 
-        OntModel fromModel = ontologyHelper.createOntModel(new File(scriptPaths + "/hello-world/hello-world.sms.ttl"));
-        OntModel toModel = ontologyHelper.createOntModel(new File(scriptPaths + "/hello-world/hello-world2.sms.ttl"));
+        Model fromModel = ontologyHelper.createOntModel(new File(scriptPaths + "/hello-world/hello-world.sms.ttl"));
+        Model toModel = ontologyHelper.createOntModel(new File(scriptPaths + "/hello-world/hello-world2.sms.ttl"));
 
         List<Statement> fromStatements = fromModel.listStatements(fromModel.getResource(moduleUri), null, (RDFNode) null).toList();
         List<Statement> toStatements = toModel.listStatements(toModel.getResource(moduleUri), null, (RDFNode) null).toList();
