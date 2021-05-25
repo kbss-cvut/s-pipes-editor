@@ -48,7 +48,7 @@ public class OntologyHelper {
      * the method does not use OntDocumentManager.getInstance(), which has to clear data
      * or take care of the synchronization. Another problematic part is to avoid usage of the
      * OntModelSpec such as OWL_MEM, which do not work properly with the imported files.
-     * The OntModelSpec caches imported ontology and it impossible to purge them.
+     * The OntModelSpec caches imported ontologies and it impossible to purge them.
      * @param file - file with OWL.Ontology
      * @return - Ontology with all of the loaded imports
      */
