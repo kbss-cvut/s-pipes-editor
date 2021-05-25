@@ -46,7 +46,7 @@ public class OntologyHelper {
      * Create new instance of OntManager, instead of using the shared one. Load all
      * of the scripts and get ontology based on file @param. It is important to mention
      * the method does not use OntDocumentManager.getInstance(), which has to clear data
-     * or care of the synchronization. Another problematic part is to avoid usage of the
+     * or take care of the synchronization. Another problematic part is to avoid usage of the
      * OntModelSpec such as OWL_MEM, which do not work properly with the imported files.
      * The OntModelSpec caches imported ontology and it impossible to purge them.
      * @param file - file with OWL.Ontology
