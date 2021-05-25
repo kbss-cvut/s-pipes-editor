@@ -2,6 +2,7 @@ package og_spipes.service;
 
 import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.rdf.model.Model;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +43,7 @@ public class OntologyHelperTest {
         mockScripts.add(script);
         when(scriptDao.getScripts()).thenReturn(mockScripts);
 
-        OntModel ontModel = ontologyHelper.createOntModel(script);
+        Model ontModel = ontologyHelper.createOntModel(script);
 
         Assertions.assertEquals(8, ontModel.size());
     }
