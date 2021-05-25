@@ -48,6 +48,24 @@ public class ScriptDAOTest {
                 "configuration should be as expected");
     }
 
+    /**
+     * The vfn-form-modules.ttl can be loaded as part of script.ttl, however it can be loaded alone. The problematic part is
+     * JOPA query in getModules() method. The model statements are loded however
+     * em.createNativeQuery("select ?s where { ?s a ?type }", Module.class)... do not match any result.
+     *
+     * I guess the reason for it is missing s-pipes ontology. As you can see http://topbraid.org/sparqlmotion#Modules
+     * are not part of the statements.
+     */
+    @Test
+    public void getModulesTypesVfn(){
+        Model vfnModel = ModelFactory.createDefaultModel().read(
+                new File("src/test/resources/scripts_test/sample/vfn-example/vfn-form-modules.ttl").getAbsolutePath()
+        );
+        List<Module> modules = scriptDao.getModules(vfnModel);
+
+        Assertions.assertTrue(modules.size() > 0);
+    }
+
     @Test
     public void getModulesTypes(){
         List<ModuleType> moduleTypes = scriptDao.getModuleTypes(defaultModel);
