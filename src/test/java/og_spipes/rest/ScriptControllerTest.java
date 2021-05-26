@@ -69,11 +69,28 @@ public class ScriptControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(
-                        "{\"children\":[" +
-                                    "{\"file\":\""+ scriptPaths +"/hello-world.sms.ttl\",\"name\":\"hello-world.sms.ttl\"}," +
-                                    "{\"file\":\""+ scriptPaths +"/data-without-label.ttl\",\"name\":\"data-without-label.ttl\"}," +
-                                    "{\"file\":\""+ scriptPaths +"/hello-world2.sms.ttl\",\"name\":\"hello-world2.sms.ttl\"}" +
-                                "],\"name\":\"og_spipes\"}"
+                        "{" +
+                                "  \"children\": [" +
+                                "    {\n" +
+                                "      \"children\": [\n" +
+                                "        {\n" +
+                                "          \"file\": \"/tmp/og_spipes/hello-world.sms.ttl\",\n" +
+                                "          \"name\": \"hello-world.sms.ttl\"\n" +
+                                "        },\n" +
+                                "        {\n" +
+                                "          \"file\": \"/tmp/og_spipes/hello-world2.sms.ttl\",\n" +
+                                "          \"name\": \"hello-world2.sms.ttl\"\n" +
+                                "        },\n" +
+                                "        {\n" +
+                                "          \"file\": \"/tmp/og_spipes/data-without-label.ttl\",\n" +
+                                "          \"name\": \"data-without-label.ttl\"\n" +
+                                "        }\n" +
+                                "      ],\n" +
+                                "      \"name\": \"og_spipes\"\n" +
+                                "    }\n" +
+                                "  ],\n" +
+                                "  \"name\": \"spipes_modules\"\n" +
+                                "}"
                 ));
     }
 

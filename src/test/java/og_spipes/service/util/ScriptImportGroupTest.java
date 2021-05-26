@@ -16,7 +16,7 @@ class ScriptImportGroupTest {
     @Test
     public void findFilesTest() {
         File testScript = new File("src/test/resources/scripts_test/sample/skosify/skosify.sms.ttl");
-        ScriptImportGroup importGroup = new ScriptImportGroup("src/test/resources/scripts_test/sample", testScript);
+        ScriptImportGroup importGroup = new ScriptImportGroup("src/test/resources/scripts_test/sample".split(","), testScript);
 
         Set<String> res = importGroup.getUsedFiles().stream().map(File::getName).collect(Collectors.toSet());
 

@@ -23,10 +23,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,7 +31,7 @@ import java.util.stream.Collectors;
 public class ScriptController {
 
     @Value("${scriptPaths}")
-    private String scriptPaths;
+    private String[] scriptPaths;
 
     @Value("${scriptRules}")
     private String scriptRules;
@@ -53,7 +50,8 @@ public class ScriptController {
     @RequestMapping(method = RequestMethod.GET)
     public SubTree getScripts() {
         //TODO get direct root
-        return fileTreeService.getTtlFileTree(new File(scriptPaths));
+        File[] scripts = Arrays.stream(scriptPaths).map(File::new).toArray(File[]::new);
+        return fileTreeService.getTtlFileTree(scripts);
     }
 
     @PostMapping(path = "/moduleTypes", produces = JsonLd.MEDIA_TYPE)

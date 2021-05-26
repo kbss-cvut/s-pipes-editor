@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest
 public class ScriptDAOTest {
 
-    private final ScriptDAO scriptDao = new ScriptDAO(new File("src/test/resources/scripts_test/sample/").getAbsolutePath());
+    private final ScriptDAO scriptDao = new ScriptDAO(new File("src/test/resources/scripts_test/sample/").getAbsolutePath().split(","));
     Model defaultModel = ModelFactory.createDefaultModel().read(
             new File("src/test/resources/scripts_test/sample/simple-import/script.ttl").getAbsolutePath()
     );
