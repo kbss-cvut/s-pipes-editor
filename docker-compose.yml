@@ -17,8 +17,8 @@ services:
       - rdf4j
     environment:
       - SCRIPTPATHS=/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/scripts_test/sample
-      - SCRIPTPATHS=/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/scripts_test/sample
       - ENGINEURL=http://s-pipes-engine:8080/s_pipes_web_war/
+      - SCRIPTRULES=/home/jordan/IdeaProjects/s-pipes-newgen/src/main/resources/rules
       - RDF4J_REPOSITORYURL=http://rdf4j:8080/rdf4j-server/repositories
       - RDF4J_REPOSITORYNAME=s-pipes-hello-world
       - RDF4J_PCONFIGURL=/home/jordan/IdeaProjects/s-pipes/doc/examples/hello-world/config.ttl
