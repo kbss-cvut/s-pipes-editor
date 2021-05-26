@@ -21,16 +21,29 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class FileTreeService {
 
-//    @Transactional - [QUESTION] why is not working?
-    public SubTree getTtlFileTree(File file) {
+    public SubTree getTtlFileTree(File... files) {
         List<FileTree> fileTrees = new ArrayList<>();
 
-        for(File f : file.listFiles()){
+        for(File f : files){
+            SubTree ttlFileTree = this.getTtlFileTree(f);
+            fileTrees.add(ttlFileTree);
+        }
+
+        return new SubTree(fileTrees, "spipes_modules");
+    }
+
+    private SubTree getTtlFileTree(File file) {
+        List<FileTree> fileTrees = new ArrayList<>();
+
+        for(File f : Objects.requireNonNull(file.listFiles())){
             if (f.isFile() && f.getName().endsWith(".ttl")) {
                 fileTrees.add(new Leaf(f.getAbsolutePath(), f.getName()));
             } else if (f.isDirectory()) {

@@ -36,13 +36,13 @@ public class ScriptDAO {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScriptDAO.class);
 
-    private final String repositoryURL;
+    private final String[] scriptPaths;
 
     //TODO consider if always create a new EM!
     final EntityManagerFactory emf;
 
     //TODO try to use created EM - check if working while editing
-    public ScriptDAO(@Value("${scriptPaths}") String scriptPaths) {
+    public ScriptDAO(@Value("${scriptPaths}") String[] scriptPaths) {
         final Map<String, String> props = new HashMap<>();
         // Here we set up basic storage access properties - driver class, physical location of the storage
         props.put(JOPAPersistenceProperties.ONTOLOGY_PHYSICAL_URI_KEY, "local://temporary"); // jopa uses the URI scheme to choose between local and remote repo, file and (http, https and ftp)resp.
@@ -57,7 +57,7 @@ public class ScriptDAO {
         props.put(JenaOntoDriverProperties.IN_MEMORY, "true");
 
         this.emf = Persistence.createEntityManagerFactory("og_spipesPU", props);
-        this.repositoryURL = scriptPaths;
+        this.scriptPaths = scriptPaths;
     }
 
     public List<ModuleType> getModuleTypes(Model m) {
@@ -82,7 +82,7 @@ public class ScriptDAO {
         List<Module> modules = em.createNativeQuery("select ?s where { ?s a ?type }", Module.class)
                 .setParameter("type", URI.create(s_c_Modules)).getResultList();
 
-        ScriptGroupsHelper groupsHelper = new ScriptGroupsHelper(repositoryURL);
+        ScriptGroupsHelper groupsHelper = new ScriptGroupsHelper(scriptPaths);
         Set<URI> collect = modules.stream().map(AbstractEntitySP::getUri).collect(Collectors.toSet());
         Map<URI, File> uriFileMap = groupsHelper.moduleFile(collect);
 
@@ -124,13 +124,17 @@ public class ScriptDAO {
     }
 
     public List<File> getScripts() {
-        File rootFolder = new File(repositoryURL);
-        return new ArrayList<>(FileUtils.listFiles(rootFolder, new String[]{"ttl"}, true));
+        return ScriptDAO.getScripts(scriptPaths);
     }
 
-    public static List<File> getScripts(String repositoryURL) {
-        File rootFolder = new File(repositoryURL);
-        return new ArrayList<>(FileUtils.listFiles(rootFolder, new String[]{"ttl"}, true));
+    public static List<File> getScripts(String... scriptPaths) {
+        List<File> files = new ArrayList<>();
+        for(String r : scriptPaths){
+            File rootFolder = new File(r);
+            ArrayList<File> f = new ArrayList<>(FileUtils.listFiles(rootFolder, new String[]{"ttl"}, true));
+            files.addAll(f);
+        }
+        return files;
     }
 
     public File findScriptByOntologyName(String ontologyName) throws IOException {

@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 public class ScriptGroupsHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScriptGroupsHelper.class);
-    private final String scriptPath;
+    private final String[] scriptPath;
 
-    public ScriptGroupsHelper(String scriptPath) {
+    public ScriptGroupsHelper(String[] scriptPath) {
         this.scriptPath = scriptPath;
     }
 

@@ -25,7 +25,7 @@ public class FileTreeServiceTest {
 
         long foldersFilesCount = Arrays.stream(json.split("\"name\"")).count();
         long foldersCount = Arrays.stream(json.split("\"children\"")).count();
-        assertEquals(4, foldersCount);
-        assertEquals(9, foldersFilesCount);
+        assertEquals(5, foldersCount);
+        assertEquals(10, foldersFilesCount);
     }
 }

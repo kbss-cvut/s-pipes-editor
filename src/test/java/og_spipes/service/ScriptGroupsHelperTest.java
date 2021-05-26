@@ -23,16 +23,18 @@ import java.util.Set;
 class ScriptGroupsHelperTest {
 
     @Value("${scriptPaths}")
-    private String scriptPaths;
+    private String[] scriptPaths;
 
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(scriptPaths);
-        if(scriptsHomeTmp.exists()){
-            FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
+        for(String scriptPath : scriptPaths){
+            File scriptsHomeTmp = new File(scriptPath);
+            if(scriptsHomeTmp.exists()){
+                FileSystemUtils.deleteRecursively(scriptsHomeTmp);
+                Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
+            }
+            FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
         }
-        FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
     }
 
     @Test
@@ -48,7 +50,7 @@ class ScriptGroupsHelperTest {
         );
 
         Map<URI, Set<String>> res = scriptGroupsHelper.resolveFileGroups(
-                new File(scriptPaths + "/skosify/skosify.sms.ttl"),
+                new File("/tmp/og_spipes/skosify/skosify.sms.ttl"),
                 uris
         );
 
@@ -75,19 +77,21 @@ class ScriptGroupsHelperTest {
         Map<URI, File> res = scriptGroupsHelper.moduleFile(uris);
 
         Map<URI, File> expectedRes = new HashMap<>();
-        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"), new File(scriptPaths + "/skosify/metadata.ttl"));
-        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/construct-example-data"), new File(scriptPaths + "/skosify/skosify.sms.ttl"));
-        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/skosify_Return"), new File(scriptPaths + "/skosify/skosify.sms.ttl"));
-        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"), new File(scriptPaths + "/skosify/relations.ttl"));
-        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels"), new File(scriptPaths + "/skosify/metadata.ttl"));
-        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/identification/identify-concepts"), new File(scriptPaths + "/skosify/identification.ttl"));
+        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"), new File("/tmp/og_spipes/skosify/metadata.ttl"));
+        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/construct-example-data"), new File("/tmp/og_spipes/skosify/skosify.sms.ttl"));
+        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/skosify_Return"), new File("/tmp/og_spipes/skosify/skosify.sms.ttl"));
+        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"), new File("/tmp/og_spipes/skosify/relations.ttl"));
+        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels"), new File("/tmp/og_spipes/skosify/metadata.ttl"));
+        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/identification/identify-concepts"), new File("/tmp/og_spipes/skosify/identification.ttl"));
 
         expectedRes.keySet().forEach(uri -> Assertions.assertEquals(expectedRes.get(uri), res.get(uri)));
     }
 
     @AfterEach
     public void after() {
-        FileSystemUtils.deleteRecursively(new File(scriptPaths));
+        for(String scriptPath : scriptPaths){
+            FileSystemUtils.deleteRecursively(new File(scriptPath));
+        }
     }
 
 }

@@ -35,9 +35,9 @@ public class SHACLExecutorService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SHACLExecutorService.class);
 
-    private final String scriptPaths;
+    private final String[] scriptPaths;
 
-    public SHACLExecutorService(@Value("${scriptPaths}") String scriptPaths) {
+    public SHACLExecutorService(@Value("${scriptPaths}") String[] scriptPaths) {
         this.scriptPaths = scriptPaths;
     }
 

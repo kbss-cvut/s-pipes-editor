@@ -23,9 +23,9 @@ public class ScriptImportGroup {
     private final Map<String, File> scriptImportNameFile;
     private final Set<File> usedFiles;
 
-    private final String scriptPath;
+    private final String[] scriptPath;
 
-    public ScriptImportGroup(String scriptPath, File script) {
+    public ScriptImportGroup(String[] scriptPath, File script) {
         this.scriptImportNameFile = new HashMap<>();
         this.usedFiles = new HashSet<>();
         this.scriptPath = scriptPath;

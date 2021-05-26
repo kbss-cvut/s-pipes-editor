@@ -27,15 +27,17 @@ import java.util.stream.Collectors;
 public class RulesTest {
 
     @Value("${scriptPaths}")
-    private String scriptPaths;
+    private String[] scriptPaths;
 
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(scriptPaths);
-        if(scriptsHomeTmp.exists()){
-            FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-        }else{
-            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
+        for(String scriptPath : scriptPaths){
+            File scriptsHomeTmp = new File(scriptPath);
+            if(scriptsHomeTmp.exists()){
+                FileSystemUtils.deleteRecursively(scriptsHomeTmp);
+            }else{
+                Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
+            }
         }
     }
 
@@ -92,7 +94,9 @@ public class RulesTest {
 
     @AfterEach
     public void after() {
-        FileSystemUtils.deleteRecursively(new File(scriptPaths));
+        for(String scriptPath : scriptPaths){
+            FileSystemUtils.deleteRecursively(new File(scriptPath));
+        }
     }
 
 }
