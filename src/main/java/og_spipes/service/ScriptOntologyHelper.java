@@ -14,12 +14,12 @@ import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ScriptGroupsHelper {
+public class ScriptOntologyHelper {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ScriptGroupsHelper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScriptOntologyHelper.class);
     private final String[] scriptPath;
 
-    public ScriptGroupsHelper(String[] scriptPath) {
+    public ScriptOntologyHelper(String[] scriptPath) {
         this.scriptPath = scriptPath;
     }
 

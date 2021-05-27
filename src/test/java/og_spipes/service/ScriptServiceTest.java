@@ -3,6 +3,8 @@ package og_spipes.service;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.persistence.dao.ScriptDAO;
+import og_spipes.service.exception.FileExistsException;
+import og_spipes.service.exception.OntologyDuplicationException;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.ontology.OntModel;
@@ -28,6 +30,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -92,6 +96,18 @@ public class ScriptServiceTest {
 
         Assertions.assertEquals(fromStatements.size(), 0);
         Assertions.assertEquals(toStatements.size(), 5);
+    }
+
+    @Test
+    public void createScript() throws OntologyDuplicationException, IOException, FileExistsException {
+        scriptService.createScript(
+                "/tmp/og_spipes/hello-world",
+                "karel.ttl",
+                URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/karel")
+        );
+
+        File file = new File("/tmp/og_spipes/hello-world/karel.ttl");
+        Assertions.assertTrue(file.exists());
     }
 
     @AfterEach

@@ -3,6 +3,7 @@ package og_spipes.rest;
 import cz.cvut.kbss.jsonld.JsonLd;
 import og_spipes.model.dto.ModuleDTO;
 import og_spipes.model.dto.SHACLValidationResultDTO;
+import og_spipes.model.dto.ScriptCreateDTO;
 import og_spipes.model.dto.ScriptDTO;
 import og_spipes.model.filetree.SubTree;
 import og_spipes.model.spipes.DependencyDTO;
@@ -12,15 +13,20 @@ import og_spipes.service.FileTreeService;
 import og_spipes.service.OntologyHelper;
 import og_spipes.service.SHACLExecutorService;
 import og_spipes.service.ScriptService;
+import og_spipes.service.exception.FileExistsException;
+import og_spipes.service.exception.OntologyDuplicationException;
 import og_spipes.service.util.ScriptImportGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,11 +54,37 @@ public class ScriptController {
         this.executorService = executorService;
     }
 
+    /**
+     * Basic error handling
+     * @param exception - Covered exceptions
+     * @return - Error message
+     */
+    @ExceptionHandler({ OntologyDuplicationException.class, URISyntaxException.class, FileExistsException.class })
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleException(Exception exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(exception.getMessage());
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public SubTree getScripts() {
-        //TODO get direct root
         File[] scripts = Arrays.stream(scriptPaths).map(File::new).toArray(File[]::new);
         return fileTreeService.getTtlFileTree(scripts);
+    }
+
+    @PostMapping(path = "/create", produces = JsonLd.MEDIA_TYPE)
+    public void createScript(@RequestBody ScriptCreateDTO dto) throws IOException, OntologyDuplicationException, URISyntaxException, FileExistsException {
+        System.out.println(dto);
+        URI ontologyURI = new URI(dto.getOntologyUri());
+        scriptService.createScript(dto.getDirectoryPath(), dto.getName(), ontologyURI);
+    }
+
+    @PostMapping(path = "/delete", produces = JsonLd.MEDIA_TYPE)
+    public void deleteScript(@RequestBody ScriptDTO dto) {
+        String script = dto.getAbsolutePath();
+        File file = new File(script);
+        FileSystemUtils.deleteRecursively(file);
     }
 
     @PostMapping(path = "/ontologies", produces = JsonLd.MEDIA_TYPE)

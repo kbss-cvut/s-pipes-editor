@@ -1,9 +1,14 @@
 package og_spipes.service;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.CharSink;
+import com.google.common.io.Files;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.persistence.dao.ScriptDAO;
+import og_spipes.service.exception.FileExistsException;
+import og_spipes.service.exception.OntologyDuplicationException;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
@@ -19,6 +24,8 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -121,6 +128,28 @@ public class ScriptService {
         toModel.write(os, FileUtils.langTurtle);
 
         deleteModule(scriptFrom, moduleURI);
+    }
+
+    public void createScript(String directory, String filename, URI ontologyURI) throws IOException, OntologyDuplicationException, FileExistsException {
+        File template = new File("src/main/resources/template/hello-world3.sms.ttl");
+
+        List<String> ontologyNames = scriptDao.getScripts().stream()
+                .map(OntologyHelper::getOntologyUri)
+                .collect(Collectors.toList());
+
+        if(ontologyNames.contains(ontologyURI)){
+            throw new OntologyDuplicationException(ontologyURI + " ontology already exists");
+        }
+
+        List<String> directoryFiles = ScriptDAO.getScripts(directory).stream().map(File::getName).collect(Collectors.toList());
+        if(directoryFiles.contains(filename)){
+            throw new FileExistsException(filename + " already exists");
+        }
+
+        String lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_NAME", ontologyURI.toString());
+        File file = new File(directory + "/" + filename);
+        CharSink sink = Files.asCharSink(file, Charsets.UTF_8);
+        sink.write(lines);
     }
 
 }

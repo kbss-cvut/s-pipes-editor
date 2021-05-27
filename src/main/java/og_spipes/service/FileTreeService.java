@@ -37,7 +37,7 @@ public class FileTreeService {
             fileTrees.add(ttlFileTree);
         }
 
-        return new SubTree(fileTrees, "spipes_modules");
+        return new SubTree(fileTrees, "spipes_modules", "");
     }
 
     private SubTree getTtlFileTree(File file) {
@@ -51,7 +51,7 @@ public class FileTreeService {
             }
         }
 
-        return new SubTree(fileTrees, file.getName());
+        return new SubTree(fileTrees, file.getName(), file.getAbsolutePath());
     }
 
 }
