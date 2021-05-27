@@ -70,7 +70,7 @@ public class ViewService {
     }
 
     //TODO refactor later
-    public  Map<URI, NodeExecutionInfo> resolveInOutParams(String  transformationId){
+    public Map<URI, NodeExecutionInfo> resolveInOutParams(String  transformationId){
         TransformationDTO transformation;
         try {
             transformation = transformationDAO.find(new URI(transformationId));
@@ -90,14 +90,10 @@ public class ViewService {
             URI moduleId = URI.create(t.getProperties().get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-id").stream().findFirst().orElse("").toString());
             NodeExecutionInfo executionInfo = new NodeExecutionInfo();
             File file = new File(t.getHas_input().getId().replace("file:", ""));
-            if (file.length() > 0){
-                executionInfo.getInput().add(file.getAbsolutePath());
-            }
+            executionInfo.getInput().add(file.getAbsolutePath());
             List<File> outputs = t.getHas_output().stream().map(x -> new File(x.getId().replace("file:", ""))).collect(Collectors.toList());
             for (File f : outputs){
-                if(f.length() > 0){
-                    executionInfo.getOutput().add(f.getAbsolutePath());
-                }
+                executionInfo.getOutput().add(f.getAbsolutePath());
             }
 
             if(nodesExecution.containsKey(moduleId)){
