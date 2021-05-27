@@ -7,9 +7,12 @@ import og_spipes.model.dto.ScriptDTO;
 import og_spipes.model.filetree.SubTree;
 import og_spipes.model.spipes.DependencyDTO;
 import og_spipes.model.spipes.ModuleType;
+import og_spipes.model.spipes.ScriptOntologyDTO;
 import og_spipes.service.FileTreeService;
+import og_spipes.service.OntologyHelper;
 import og_spipes.service.SHACLExecutorService;
 import og_spipes.service.ScriptService;
+import og_spipes.service.util.ScriptImportGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -52,6 +55,17 @@ public class ScriptController {
         //TODO get direct root
         File[] scripts = Arrays.stream(scriptPaths).map(File::new).toArray(File[]::new);
         return fileTreeService.getTtlFileTree(scripts);
+    }
+
+    @PostMapping(path = "/ontologies", produces = JsonLd.MEDIA_TYPE)
+    public List<ScriptOntologyDTO> getOntologies(@RequestBody ScriptDTO dto) {
+        String script = dto.getAbsolutePath();
+        ScriptImportGroup importGroup = new ScriptImportGroup(scriptPaths, new File(script));
+
+        return importGroup.getUsedFiles().stream().map(f ->{
+            String ontologyUri = OntologyHelper.getOntologyUri(f);
+            return new ScriptOntologyDTO(f.getAbsolutePath(), ontologyUri);
+        }).collect(Collectors.toList());
     }
 
     @PostMapping(path = "/moduleTypes", produces = JsonLd.MEDIA_TYPE)

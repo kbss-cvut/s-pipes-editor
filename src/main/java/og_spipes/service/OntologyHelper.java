@@ -70,7 +70,7 @@ public class OntologyHelper {
         return model;
     }
 
-    public String getOntologyUri(File f) {
+    public static String getOntologyUri(File f) {
         LOG.debug("Looking for an ontology in file " + f.getName());
         Model defaultModel = ModelFactory.createDefaultModel();
         List<Statement> statements = defaultModel

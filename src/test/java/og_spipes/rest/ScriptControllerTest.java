@@ -8,7 +8,9 @@ import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.dto.SHACLValidationResultDTO;
+import og_spipes.model.dto.ScriptDTO;
 import og_spipes.model.spipes.FunctionDTO;
+import og_spipes.model.spipes.ScriptOntologyDTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -60,6 +62,33 @@ public class ScriptControllerTest {
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/hello-world"), scriptsHomeTmp);
         FileUtils.copyFileToDirectory(new File("src/test/resources/SHACL/rule-test-cases/data-without-label.ttl"), scriptsHomeTmp);
         mapper.registerModule(new JsonLdModule());
+    }
+
+    @Test
+    @DisplayName("Get script ontologies")
+    public void testScriptOntologies() throws Exception {
+        File scriptsHomeTmp = new File(scriptPaths);
+        FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/skosify"), scriptsHomeTmp);
+
+        String tmpScripts = scriptPaths + "/skosify.sms.ttl";
+        MvcResult mvcResult = this.mockMvc.perform(post("/scripts/ontologies")
+                .content(
+                        "{" +
+                                "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \"" + tmpScripts + "\"" +
+                                "}"
+                )
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk()).andReturn();
+
+        String content = mvcResult.getResponse().getContentAsString();
+
+        List<ScriptOntologyDTO> res = new ArrayList<>(
+                mapper.readValue(content, new TypeReference<Set<ScriptOntologyDTO>>(){})
+        );
+
+        Assertions.assertEquals(4, res.size());
     }
 
     @Test

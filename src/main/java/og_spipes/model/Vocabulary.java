@@ -29,6 +29,7 @@ public class Vocabulary {
     public final static String s_c_execution_event_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/execution-event-dto";
     public final static String s_c_execution_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/execution-dto";
     public final static String s_c_function_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/function-dto";
+    public final static String s_c_script_ontology_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-ontology-dto";
     public final static String s_c_functions_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/functions-dto";
     public final static String s_c_module_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/module-dto";
     public final static String s_c_question_A = "http://onto.fel.cvut.cz/ontologies/s-pipes/question";
@@ -85,6 +86,7 @@ public class Vocabulary {
     public final static String s_p_has_module_type_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type-uri";
     public final static String s_p_has_module_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri";
     public final static String s_p_has_script_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path";
+    public final static String s_p_has_ontology_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-ontology-uri";
     public final static String s_p_has_target_module_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-target-module-uri";
     public final static String s_p_identifier = "http://purl.org/dc/terms/identifier";
     public final static String s_p_icon = "http://topbraid.org/sparqlmotion#icon";
