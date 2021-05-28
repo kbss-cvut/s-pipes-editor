@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.dto.SHACLValidationResultDTO;
+import og_spipes.model.dto.ScriptCreateDTO;
 import og_spipes.model.dto.ScriptDTO;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.ScriptOntologyDTO;
@@ -68,15 +69,15 @@ public class ScriptControllerTest {
     @Test
     @DisplayName("Create script")
     public void testCreateFile() throws Exception {
+        ScriptCreateDTO scriptCreateDTO = new ScriptCreateDTO(
+                scriptPaths,
+                "new-ontology.ttl",
+                "http://onto.fel.cvut.cz/ontologies/s-pipes/new-ontology"
+        );
+        String json = mapper.writeValueAsString(scriptCreateDTO);
+
         this.mockMvc.perform(post("/scripts/create")
-                .content(
-                        "{" +
-                                "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-create-dto\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\": \"" + scriptPaths +"\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-name\": \"" + "/new-ontology.ttl\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-ontology-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/new-ontology\"" +
-                                "}"
-                )
+                .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());

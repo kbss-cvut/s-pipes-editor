@@ -1,6 +1,7 @@
 package og_spipes.rest;
 
 import cz.cvut.kbss.jsonld.JsonLd;
+import cz.cvut.kbss.jsonld.exception.TargetTypeException;
 import og_spipes.model.dto.ModuleDTO;
 import og_spipes.model.dto.SHACLValidationResultDTO;
 import og_spipes.model.dto.ScriptCreateDTO;
@@ -16,6 +17,8 @@ import og_spipes.service.ScriptService;
 import og_spipes.service.exception.FileExistsException;
 import og_spipes.service.exception.OntologyDuplicationException;
 import og_spipes.service.util.ScriptImportGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -36,6 +39,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/scripts")
 public class ScriptController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ScriptController.class);
 
     @Value("${scriptPaths}")
     private String[] scriptPaths;
@@ -59,7 +64,7 @@ public class ScriptController {
      * @param exception - Covered exceptions
      * @return - Error message
      */
-    @ExceptionHandler({ OntologyDuplicationException.class, URISyntaxException.class, FileExistsException.class })
+    @ExceptionHandler({ OntologyDuplicationException.class, URISyntaxException.class, FileExistsException.class, TargetTypeException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleException(Exception exception) {
         return ResponseEntity
@@ -75,7 +80,7 @@ public class ScriptController {
 
     @PostMapping(path = "/create", produces = JsonLd.MEDIA_TYPE)
     public void createScript(@RequestBody ScriptCreateDTO dto) throws IOException, OntologyDuplicationException, URISyntaxException, FileExistsException {
-        System.out.println(dto);
+        LOG.info("Create script: " + dto);
         URI ontologyURI = new URI(dto.getOntologyUri());
         scriptService.createScript(dto.getDirectoryPath(), dto.getName(), ontologyURI);
     }
@@ -83,6 +88,7 @@ public class ScriptController {
     @PostMapping(path = "/delete", produces = JsonLd.MEDIA_TYPE)
     public void deleteScript(@RequestBody ScriptDTO dto) {
         String script = dto.getAbsolutePath();
+        LOG.info("Delete script: " + script);
         File file = new File(script);
         FileSystemUtils.deleteRecursively(file);
     }
