@@ -1,21 +1,21 @@
 package og_spipes.model.filetree;
 
 public class Leaf implements FileTree {
-    //TODO later on rename to fileAbsolutePath
-    private String file;
+    private String id;
     private String name;
 
-    public Leaf(String file, String name) {
-        this.file = file;
+    public Leaf(String id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public String getFile() {
-        return file;
+    @Override
+    public String getId() {
+        return id;
     }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

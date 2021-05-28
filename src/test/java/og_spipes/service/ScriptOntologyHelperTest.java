@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 @SpringBootTest
-class ScriptGroupsHelperTest {
+class ScriptOntologyHelperTest {
 
     @Value("${scriptPaths}")
     private String[] scriptPaths;
@@ -39,7 +39,7 @@ class ScriptGroupsHelperTest {
 
     @Test
     public void testModulesFileAssignment() {
-        ScriptGroupsHelper scriptGroupsHelper = new ScriptGroupsHelper(scriptPaths);
+        ScriptOntologyHelper scriptOntologyHelper = new ScriptOntologyHelper(scriptPaths);
         HashSet<URI> uris = Sets.newHashSet(
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"),
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels"),
@@ -49,7 +49,7 @@ class ScriptGroupsHelperTest {
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/bind-prefered-label-property")
         );
 
-        Map<URI, Set<String>> res = scriptGroupsHelper.resolveFileGroups(
+        Map<URI, Set<String>> res = scriptOntologyHelper.resolveFileGroups(
                 new File("/tmp/og_spipes/skosify/skosify.sms.ttl"),
                 uris
         );
@@ -64,7 +64,7 @@ class ScriptGroupsHelperTest {
 
     @Test
     public void testModuleFile() {
-        ScriptGroupsHelper scriptGroupsHelper = new ScriptGroupsHelper(scriptPaths);
+        ScriptOntologyHelper scriptOntologyHelper = new ScriptOntologyHelper(scriptPaths);
         HashSet<URI> uris = Sets.newHashSet(
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"),
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels"),
@@ -74,7 +74,7 @@ class ScriptGroupsHelperTest {
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/bind-prefered-label-property")
         );
 
-        Map<URI, File> res = scriptGroupsHelper.moduleFile(uris);
+        Map<URI, File> res = scriptOntologyHelper.moduleFile(uris);
 
         Map<URI, File> expectedRes = new HashMap<>();
         expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"), new File("/tmp/og_spipes/skosify/metadata.ttl"));

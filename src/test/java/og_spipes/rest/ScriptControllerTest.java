@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.dto.SHACLValidationResultDTO;
+import og_spipes.model.dto.ScriptCreateDTO;
 import og_spipes.model.dto.ScriptDTO;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.ScriptOntologyDTO;
@@ -32,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -62,6 +64,65 @@ public class ScriptControllerTest {
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/hello-world"), scriptsHomeTmp);
         FileUtils.copyFileToDirectory(new File("src/test/resources/SHACL/rule-test-cases/data-without-label.ttl"), scriptsHomeTmp);
         mapper.registerModule(new JsonLdModule());
+    }
+
+    @Test
+    @DisplayName("Create script")
+    public void testCreateFile() throws Exception {
+        ScriptCreateDTO scriptCreateDTO = new ScriptCreateDTO(
+                scriptPaths,
+                "new-ontology.ttl",
+                "http://onto.fel.cvut.cz/ontologies/s-pipes/new-ontology"
+        );
+        String json = mapper.writeValueAsString(scriptCreateDTO);
+
+        this.mockMvc.perform(post("/scripts/create")
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        File file = new File(scriptPaths + "/new-ontology.ttl");
+        Assertions.assertTrue(file.exists());
+    }
+
+    @Test
+    @DisplayName("Create script exception")
+    public void testCreateFileDuplicateOntologyException() throws Exception {
+        this.mockMvc.perform(post("/scripts/create")
+                .content(
+                        "{" +
+                                "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-create-dto\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\": \"" + scriptPaths +"\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-name\": \"" + "hello-world.sms.ttl\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-ontology-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/new-ontology\"" +
+                                "}"
+                )
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("hello-world.sms.ttl already exists"));
+    }
+
+    @Test
+    @DisplayName("Delete script or script's directory")
+    public void testDeleteScript() throws Exception {
+        File file = new File(scriptPaths);
+        int initLength = (Objects.requireNonNull(file.list())).length;
+
+        this.mockMvc.perform(post("/scripts/delete")
+                .content(
+                        "{" +
+                                "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \""+ scriptPaths +"/hello-world.sms.ttl\"" +
+                                "}"
+                )
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk()).andReturn();
+
+        int resLength = (Objects.requireNonNull(file.list())).length;
+        Assertions.assertEquals(initLength-1, resLength);
     }
 
     @Test
@@ -98,27 +159,29 @@ public class ScriptControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(
-                        "{" +
-                                "  \"children\": [" +
+                        "{\n" +
+                                "  \"children\": [\n" +
                                 "    {\n" +
                                 "      \"children\": [\n" +
                                 "        {\n" +
-                                "          \"file\": \"/tmp/og_spipes/hello-world.sms.ttl\",\n" +
+                                "          \"id\": \"/tmp/og_spipes/hello-world.sms.ttl\",\n" +
                                 "          \"name\": \"hello-world.sms.ttl\"\n" +
                                 "        },\n" +
                                 "        {\n" +
-                                "          \"file\": \"/tmp/og_spipes/hello-world2.sms.ttl\",\n" +
+                                "          \"id\": \"/tmp/og_spipes/hello-world2.sms.ttl\",\n" +
                                 "          \"name\": \"hello-world2.sms.ttl\"\n" +
                                 "        },\n" +
                                 "        {\n" +
-                                "          \"file\": \"/tmp/og_spipes/data-without-label.ttl\",\n" +
+                                "          \"id\": \"/tmp/og_spipes/data-without-label.ttl\",\n" +
                                 "          \"name\": \"data-without-label.ttl\"\n" +
                                 "        }\n" +
                                 "      ],\n" +
-                                "      \"name\": \"og_spipes\"\n" +
+                                "      \"name\": \"og_spipes\",\n" +
+                                "      \"id\": \"/tmp/og_spipes\"\n" +
                                 "    }\n" +
                                 "  ],\n" +
-                                "  \"name\": \"spipes_modules\"\n" +
+                                "  \"name\": \"spipes_modules\",\n" +
+                                "  \"id\": \"\"\n" +
                                 "}"
                 ));
     }

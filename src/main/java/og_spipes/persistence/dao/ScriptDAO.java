@@ -12,7 +12,7 @@ import og_spipes.model.Vocabulary;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
-import og_spipes.service.ScriptGroupsHelper;
+import og_spipes.service.ScriptOntologyHelper;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
@@ -82,7 +82,7 @@ public class ScriptDAO {
         List<Module> modules = em.createNativeQuery("select ?s where { ?s a ?type }", Module.class)
                 .setParameter("type", URI.create(s_c_Modules)).getResultList();
 
-        ScriptGroupsHelper groupsHelper = new ScriptGroupsHelper(scriptPaths);
+        ScriptOntologyHelper groupsHelper = new ScriptOntologyHelper(scriptPaths);
         Set<URI> collect = modules.stream().map(AbstractEntitySP::getUri).collect(Collectors.toSet());
         Map<URI, File> uriFileMap = groupsHelper.moduleFile(collect);
 
