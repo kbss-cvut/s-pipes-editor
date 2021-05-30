@@ -10,6 +10,7 @@ import og_spipes.model.Vocabulary;
 import og_spipes.model.dto.SHACLValidationResultDTO;
 import og_spipes.model.dto.ScriptCreateDTO;
 import og_spipes.model.dto.ScriptDTO;
+import og_spipes.model.dto.ScriptOntologyCreateDTO;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.ScriptOntologyDTO;
 import org.apache.commons.io.FileUtils;
@@ -330,6 +331,25 @@ public class ScriptControllerTest {
         Assertions.assertEquals("file:/home/jordan/IdeaProjects/s-pipes-newgen/src/main/resources/rules/SHACL/module-requires-rdfs_label.ttl", resultDTO.getRuleURI());
         Assertions.assertEquals("Every modul must have rdfs:label.@en", resultDTO.getRuleComment());
     }
+
+    //TODO test create, remove list ontologies
+
+//    @Test
+//    @DisplayName("Remove ontology from script")
+//    public void testOntologyRemove() throws Exception {
+//        File f = new File("/tmp/og_spipes/hello-world.sms.ttl");
+//        ScriptOntologyCreateDTO scriptCreateDTO = new ScriptOntologyCreateDTO(
+//                f.getAbsolutePath(),
+//                "http://onto.fel.cvut.cz/ontologies/s-pipes-lib"
+//        );
+//        String json = mapper.writeValueAsString(scriptCreateDTO);
+//
+//        this.mockMvc.perform(post("/ontology/remove")
+//                .content(json)
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
 
     @AfterEach
     public void after() {

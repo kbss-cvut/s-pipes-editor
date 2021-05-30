@@ -2,10 +2,7 @@ package og_spipes.rest;
 
 import cz.cvut.kbss.jsonld.JsonLd;
 import cz.cvut.kbss.jsonld.exception.TargetTypeException;
-import og_spipes.model.dto.ModuleDTO;
-import og_spipes.model.dto.SHACLValidationResultDTO;
-import og_spipes.model.dto.ScriptCreateDTO;
-import og_spipes.model.dto.ScriptDTO;
+import og_spipes.model.dto.*;
 import og_spipes.model.filetree.SubTree;
 import og_spipes.model.spipes.DependencyDTO;
 import og_spipes.model.spipes.ModuleType;
@@ -15,6 +12,7 @@ import og_spipes.service.OntologyHelper;
 import og_spipes.service.SHACLExecutorService;
 import og_spipes.service.ScriptService;
 import og_spipes.service.exception.FileExistsException;
+import og_spipes.service.exception.MissingOntologyException;
 import og_spipes.service.exception.OntologyDuplicationException;
 import og_spipes.service.util.ScriptImportGroup;
 import org.slf4j.Logger;
@@ -104,6 +102,7 @@ public class ScriptController {
         }).collect(Collectors.toList());
     }
 
+    //rename to all-ontolgoies
     @PostMapping(path = "/moduleTypes", produces = JsonLd.MEDIA_TYPE)
     public List<ModuleType> getModuleTypes(@RequestBody ScriptDTO dto) {
         String script = dto.getAbsolutePath();
@@ -150,4 +149,29 @@ public class ScriptController {
         }
         return violations;
     }
+
+    @PostMapping(path = "/ontology/remove", produces = JsonLd.MEDIA_TYPE)
+    public void removeScriptOntology(@RequestBody ScriptOntologyCreateDTO dto) throws FileNotFoundException {
+        System.out.println(dto);
+        scriptService.removeScriptOntology(
+                dto.getScriptPath(),
+                dto.getOntologyUri()
+        );
+    }
+
+    @PostMapping(path = "/ontology/add", produces = JsonLd.MEDIA_TYPE)
+    public void addModuleOntology(@RequestBody ScriptOntologyCreateDTO dto) throws FileNotFoundException, MissingOntologyException {
+        scriptService.addScriptOntology(
+                dto.getScriptPath(),
+                dto.getOntologyUri()
+        );
+    }
+
+    @PostMapping(path = "/own-ontology", produces = JsonLd.MEDIA_TYPE)
+    public List<String> listScriptOntology(@RequestBody ScriptDTO dto) {
+        return scriptService.getScriptImportedOntologies(
+                dto.getAbsolutePath()
+        );
+    }
+
 }

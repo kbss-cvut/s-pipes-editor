@@ -36,6 +36,7 @@ public class Vocabulary {
     public final static String s_c_question_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/question-dto";
     public final static String s_c_script_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto";
     public final static String s_c_script_create_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-create-dto";
+    public final static String s_c_script_ontology_create_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-ontology-create-dto";
     public final static String s_p_has_severity_message = "http://onto.fel.cvut.cz/ontologies/s-pipes/severity-message";
     public final static String s_p_has_error_message = "http://onto.fel.cvut.cz/ontologies/s-pipes/error-message";
     public final static String s_p_has_rule_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/rule-uri";

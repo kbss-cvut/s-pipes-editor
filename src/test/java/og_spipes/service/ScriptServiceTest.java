@@ -4,6 +4,7 @@ import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.persistence.dao.ScriptDAO;
 import og_spipes.service.exception.FileExistsException;
+import og_spipes.service.exception.MissingOntologyException;
 import og_spipes.service.exception.OntologyDuplicationException;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.ontology.OntDocumentManager;
@@ -11,6 +12,8 @@ import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.impl.ResourceImpl;
+import org.apache.jena.vocabulary.OWL;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.FileSystemUtils;
 
+import static org.apache.jena.util.FileUtils.langTurtle;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +39,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -108,6 +113,54 @@ public class ScriptServiceTest {
 
         File file = new File("/tmp/og_spipes/hello-world/karel.ttl");
         Assertions.assertTrue(file.exists());
+    }
+
+    @Test
+    public void getScriptOntologies() {
+        List<String> scriptImportedOntologies = scriptService
+                .getScriptImportedOntologies("/tmp/og_spipes/skosify/skosify.sms.ttl");
+
+        List<String> expectedRes = Arrays.asList(
+                "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations",
+                "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata",
+                "http://onto.fel.cvut.cz/ontologies/s-pipes-lib"
+        );
+
+        Assertions.assertEquals(expectedRes, scriptImportedOntologies);
+    }
+
+    @Test
+    public void addScriptOntology() throws FileNotFoundException, MissingOntologyException {
+        File f = new File("/tmp/og_spipes/skosify/skosify.sms.ttl");
+        scriptService.addScriptOntology(
+                f.getAbsolutePath(),
+                "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/new-ontology"
+        );
+
+        Model defaultModel = ontologyHelper.createOntModel(f);
+        List<Statement> statements = defaultModel
+                .read(f.getAbsolutePath(), langTurtle)
+                .listStatements(null, null, new ResourceImpl("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/new-ontology"))
+                .toList();
+
+        Assertions.assertEquals(1, statements.size());
+    }
+
+    @Test
+    public void removeScriptOntology() throws FileNotFoundException {
+        File f = new File("/tmp/og_spipes/skosify/skosify.sms.ttl");
+        scriptService.removeScriptOntology(
+                f.getAbsolutePath(),
+                "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata"
+        );
+
+        Model defaultModel = ontologyHelper.createOntModel(f);
+        List<Statement> statements = defaultModel
+                .read(f.getAbsolutePath(), langTurtle)
+                .listStatements(null, null, new ResourceImpl("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata"))
+                .toList();
+
+        Assertions.assertEquals(0, statements.size());
     }
 
     @AfterEach

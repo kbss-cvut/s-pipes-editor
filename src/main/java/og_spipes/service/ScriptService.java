@@ -8,14 +8,15 @@ import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.persistence.dao.ScriptDAO;
 import og_spipes.service.exception.FileExistsException;
+import og_spipes.service.exception.MissingOntologyException;
 import og_spipes.service.exception.OntologyDuplicationException;
 import org.apache.jena.ontology.OntModel;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
+import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.util.FileUtils;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,5 +152,41 @@ public class ScriptService {
         CharSink sink = Files.asCharSink(file, Charsets.UTF_8);
         sink.write(lines);
     }
+
+    public void removeScriptOntology(String scriptPath, String ontology) throws FileNotFoundException {
+        Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
+        ontModel.removeAll(ontModel.getResource(ontology), OWL.imports, null);
+        ontModel.removeAll(null, OWL.imports, ontModel.getResource(ontology));
+        FileOutputStream os = new FileOutputStream(scriptPath);
+        ontModel.write(os, FileUtils.langTurtle);
+    }
+
+    public void addScriptOntology(String scriptPath, String ontologyName) throws MissingOntologyException, FileNotFoundException {
+        File f = new File(scriptPath);
+        Model defaultModel = ontologyHelper.createOntModel(f);
+        List<Statement> statements = defaultModel
+                .read(f.getAbsolutePath(), org.apache.jena.util.FileUtils.langTurtle)
+                .listStatements(null, OWL.imports, (RDFNode) null).toList();
+
+        if(statements.size() == 0){
+            throw new MissingOntologyException("Script does not contain ontology.");
+        }
+
+        Model resModel = ontologyHelper.createOntModel(f);
+        Statement ontology = statements.get(0);
+        resModel.add(ontology.getSubject(), OWL.imports, new ResourceImpl(ontologyName));
+        FileOutputStream os = new FileOutputStream(scriptPath);
+        resModel.write(os, FileUtils.langTurtle);
+    }
+
+    public List<String> getScriptImportedOntologies(String scriptPath) {
+        File f = new File(scriptPath);
+        Model defaultModel = ModelFactory.createDefaultModel();
+        List<Statement> statements = defaultModel
+                .read(f.getAbsolutePath(), org.apache.jena.util.FileUtils.langTurtle)
+                .listStatements(null, OWL.imports, (RDFNode) null).toList();
+
+        return statements.stream().map(x -> x.getObject().toString()).collect(Collectors.toList());
+     }
 
 }
