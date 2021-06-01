@@ -9,10 +9,7 @@ import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.ontology.ProfileRegistry;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.ModelMaker;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.ModelMakerImpl;
 import org.apache.jena.sys.JenaSystem;
 import org.apache.jena.util.FileManager;
@@ -26,10 +23,10 @@ import org.springframework.stereotype.Service;
 import org.topbraid.jenax.util.JenaUtil;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.apache.jena.util.FileUtils.langTurtle;
 
 @Service
 public class OntologyHelper {
@@ -82,6 +79,44 @@ public class OntologyHelper {
         //TODO handle errors later - such as HttpException etc...
 
         return listURI.get(0);
+    }
+
+    public static List<Statement> getAllStatementsRecursively(Model fromModel, String moduleURI) {
+        Queue<RDFNode> queueA = new LinkedList<>();
+        Set<String> traversedNodes = new HashSet<>();
+
+        List<Statement> moduleStatements = fromModel
+                .listStatements(fromModel.getResource(moduleURI), null, (RDFNode) null).toList();
+
+        for(Statement st : moduleStatements){
+            RDFNode object = st.getObject();
+            if(object.isAnon()){
+                if(!traversedNodes.contains(object.toString())){
+                    traversedNodes.add(object.toString());
+                    queueA.add(object);
+                }
+            }
+        }
+
+        while (!queueA.isEmpty()){
+            RDFNode anonymousNode = queueA.poll();
+            List<Statement> ms = fromModel
+                    .listStatements(anonymousNode.asResource(), null, (RDFNode) null).toList();
+
+            for(Statement st : ms){
+                RDFNode object = st.getObject();
+                if(object.isAnon()){
+                    if(!traversedNodes.contains(object.toString())){
+                        traversedNodes.add(object.toString());
+                        queueA.add(object);
+                    }
+                }
+            }
+
+            moduleStatements.addAll(ms);
+        }
+
+        return moduleStatements;
     }
 
 }

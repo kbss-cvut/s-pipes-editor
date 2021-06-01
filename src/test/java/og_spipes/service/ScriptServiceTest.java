@@ -10,9 +10,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
+import org.apache.jena.util.ResourceUtils;
 import org.apache.jena.vocabulary.OWL;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -34,6 +36,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -84,23 +87,80 @@ public class ScriptServiceTest {
     }
 
     @Test
-    public void moveModule() throws FileNotFoundException {
+    public void moveModuleBasic() throws FileNotFoundException {
         String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname";
 
         scriptService.moveModule(
                 "/tmp/og_spipes/hello-world/hello-world.sms.ttl",
                 "/tmp/og_spipes/hello-world/hello-world2.sms.ttl",
-                moduleUri
+                moduleUri,
+                false
         );
 
         Model fromModel = ontologyHelper.createOntModel(new File("/tmp/og_spipes/hello-world/hello-world.sms.ttl"));
         Model toModel = ontologyHelper.createOntModel(new File("/tmp/og_spipes/hello-world/hello-world2.sms.ttl"));
 
+        String resUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname";
         List<Statement> fromStatements = fromModel.listStatements(fromModel.getResource(moduleUri), null, (RDFNode) null).toList();
-        List<Statement> toStatements = toModel.listStatements(toModel.getResource(moduleUri), null, (RDFNode) null).toList();
+        List<Statement> toStatements = toModel.listStatements(toModel.getResource(resUri), null, (RDFNode) null).toList();
 
         Assertions.assertEquals(fromStatements.size(), 0);
         Assertions.assertEquals(toStatements.size(), 5);
+    }
+
+    @Test
+    public void moveModuleBasicWithRename() throws FileNotFoundException {
+        String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname";
+
+        scriptService.moveModule(
+                "/tmp/og_spipes/hello-world/hello-world.sms.ttl",
+                "/tmp/og_spipes/hello-world/hello-world2.sms.ttl",
+                moduleUri,
+                true
+        );
+
+        Model fromModel = ontologyHelper.createOntModel(new File("/tmp/og_spipes/hello-world/hello-world.sms.ttl"));
+        Model toModel = ontologyHelper.createOntModel(new File("/tmp/og_spipes/hello-world/hello-world2.sms.ttl"));
+
+        String resUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/bind-firstname";
+        List<Statement> fromStatements = fromModel.listStatements(fromModel.getResource(moduleUri), null, (RDFNode) null).toList();
+        List<Statement> toStatements = toModel.listStatements(toModel.getResource(resUri), null, (RDFNode) null).toList();
+
+        Assertions.assertEquals(fromStatements.size(), 0);
+        Assertions.assertEquals(toStatements.size(), 5);
+    }
+
+    @Test
+    public void moveModuleAffectMoreFiles() throws FileNotFoundException {
+        String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels";
+
+        scriptService.moveModule(
+                "/tmp/og_spipes/skosify/metadata.ttl",
+                "/tmp/og_spipes/skosify/identification.ttl",
+                moduleUri,
+                true
+        );
+
+        Model resModule = ModelFactory.createDefaultModel().read("/tmp/og_spipes/skosify/skosify.sms.ttl", langTurtle);
+        String resModuleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/identification/construct-labels";
+        List<Statement> toStatements = resModule.listStatements(resModule.getResource(resModuleUri), null, (RDFNode) null).toList();
+
+        Assertions.assertEquals(1, toStatements.size());
+    }
+
+    @Test
+    public void deleteModuleOnly() throws FileNotFoundException {
+        String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels";
+
+        scriptService.deleteModuleOnly(
+                "/tmp/og_spipes/skosify/metadata.ttl",
+                moduleUri
+        );
+
+        Model resModule = ModelFactory.createDefaultModel().read("/tmp/og_spipes/skosify/metadata.ttl", langTurtle);
+        List<Statement> toStatements = resModule.listStatements(resModule.getResource(moduleUri), null, (RDFNode) null).toList();
+
+        Assertions.assertEquals(0, toStatements.size());
     }
 
     @Test
@@ -121,9 +181,9 @@ public class ScriptServiceTest {
                 .getScriptImportedOntologies("/tmp/og_spipes/skosify/skosify.sms.ttl");
 
         List<String> expectedRes = Arrays.asList(
-                "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations",
+                "http://onto.fel.cvut.cz/ontologies/s-pipes-lib",
                 "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata",
-                "http://onto.fel.cvut.cz/ontologies/s-pipes-lib"
+                "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations"
         );
 
         Assertions.assertEquals(expectedRes, scriptImportedOntologies);
@@ -163,11 +223,12 @@ public class ScriptServiceTest {
         Assertions.assertEquals(0, statements.size());
     }
 
-    @AfterEach
-    public void after() {
-        for(String scriptPath : scriptPaths){
-            FileSystemUtils.deleteRecursively(new File(scriptPath));
-        }
-    }
+//    @AfterEach
+//    public void after() {
+//        for(String scriptPath : scriptPaths){
+//            FileSystemUtils.
+//            Recursively(new File(scriptPath));
+//        }
+//    }
 
 }
