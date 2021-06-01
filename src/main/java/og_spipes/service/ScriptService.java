@@ -10,13 +10,11 @@ import og_spipes.persistence.dao.ScriptDAO;
 import og_spipes.service.exception.FileExistsException;
 import og_spipes.service.exception.MissingOntologyException;
 import og_spipes.service.exception.OntologyDuplicationException;
-import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
-import org.apache.jena.util.FileUtils;
+import org.apache.jena.util.ResourceUtils;
 import org.apache.jena.vocabulary.OWL;
-import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +25,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static org.apache.jena.util.FileUtils.langTurtle;
 
 @Service
 public class ScriptService {
@@ -58,7 +57,6 @@ public class ScriptService {
         return scriptDao.getModuleTypes(ontModel);
     }
 
-    //TODO test later - quite hard now
     public void createDependency(String scriptPath, String from, String to) throws FileNotFoundException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
         List<Resource> resources = ontModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
@@ -71,12 +69,9 @@ public class ScriptService {
 
         ontModel.add(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
         FileOutputStream os = new FileOutputStream(scriptPath);
-        ontModel.write(os, FileUtils.langTurtle);
-
-        //TODO notification webhooks
+        ontModel.write(os, langTurtle);
     }
 
-    //TODO test later - quite hard now
     public void deleteDependency(String scriptPath, String from, String to) throws FileNotFoundException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
         ontModel.removeAll(
@@ -85,50 +80,83 @@ public class ScriptService {
                 ontModel.getResource(to)
         );
         FileOutputStream os = new FileOutputStream(scriptPath);
-        ontModel.write(os, FileUtils.langTurtle);
-
-        //TODO notification webhooks
+        ontModel.write(os, langTurtle);
     }
 
-    //TODO test later - quite hard now
     public void deleteModule(String scriptPath, String module) throws FileNotFoundException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
-        ontModel.removeAll(ontModel.getResource(module), null, null);
+        List<Statement> fromStatements = OntologyHelper.getAllStatementsRecursively(ontModel, module);
+        ontModel.remove(fromStatements);
         ontModel.removeAll(null, null, ontModel.getResource(module));
         FileOutputStream os = new FileOutputStream(scriptPath);
-        ontModel.write(os, FileUtils.langTurtle);
-
-        //TODO notification webhooks
+        ontModel.write(os, langTurtle);
     }
 
-    /**
-     * Basic concept is done, but constrains are necessary. Also clarify correctness of the solution.
-     * Constrains suggestions:
-     * Module is used by another script which imports the previous script
-     * Module name already exist in scriptTo file
-     * Next property is problematic - actual solution still point out on URI of the previous module. However common approach is to use imports, so it should consistent.
-     * Some others?
-     * @throws FileNotFoundException
-     */
-    public void moveModule(String scriptFrom, String scriptTo, String moduleURI) throws FileNotFoundException {
-        //TODO add constrains - very problematic, could cause issues!
+    public void deleteModuleOnly(String scriptPath, String module) throws FileNotFoundException {
+        Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
+        List<Statement> fromStatements = OntologyHelper.getAllStatementsRecursively(ontModel, module);
+        ontModel.remove(fromStatements);
+        FileOutputStream os = new FileOutputStream(scriptPath);
+        ontModel.write(os, langTurtle);
+    }
 
-        Model fromModel = ontologyHelper.createOntModel(new File(scriptFrom));
-        List<Statement> statements = fromModel.listStatements(fromModel.getResource(moduleURI), null, (RDFNode) null).toList();
-        List<Statement> statements1 = fromModel.listStatements(null, null, fromModel.getResource(moduleURI)).toList();
-        List<Statement> fromStatements = Stream.concat(statements.stream(), statements1.stream())
-                .collect(Collectors.toList());
+    public void moveModule(String scriptFrom, String scriptTo, String moduleURI, boolean renameBaseOntology) throws FileNotFoundException {
+        String fromOntology = OntologyHelper.getOntologyUri(new File(scriptFrom));
+        String toOntology = OntologyHelper.getOntologyUri(new File(scriptTo));
+
+        File fromFile = new File(scriptFrom);
+        Model fromModel = ModelFactory.createDefaultModel().read(fromFile.getAbsolutePath(), langTurtle);
+        List<Statement> fromStatements = OntologyHelper.getAllStatementsRecursively(fromModel, moduleURI);
 
         if(fromStatements.size() == 0){
             LOG.error("Module not found! " + moduleURI);
         }
 
-        Model toModel = ontologyHelper.createOntModel(new File(scriptTo));
+        //should be transactional
+        File toFile = new File(scriptTo);
+        Model toModel = ModelFactory.createDefaultModel().read(toFile.getAbsolutePath(), langTurtle);
         toModel.add(fromStatements);
-        FileOutputStream os = new FileOutputStream(scriptTo);
-        toModel.write(os, FileUtils.langTurtle);
+        if(renameBaseOntology){
+            toModel.listSubjects().forEachRemaining(s -> {
+                String replaced = s.toString().replace(fromOntology, toOntology);
+                ResourceUtils.renameResource(s, replaced);
+            });
+        }
+        toModel.write(new FileOutputStream(toFile), langTurtle);
+        toModel.close();
 
-        deleteModule(scriptFrom, moduleURI);
+        deleteModuleOnly(scriptFrom, moduleURI);
+
+        //rename old prefix to new one in all files
+        if(renameBaseOntology){
+            String renamedModuleUri = moduleURI.replace(fromOntology, toOntology);
+            for(File file : scriptDao.getScripts()){
+                Model resModel = ModelFactory.createDefaultModel().read(file.getAbsolutePath(), langTurtle);
+                AtomicBoolean changed = new AtomicBoolean(false);
+                resModel.listSubjects().toList().forEach(s -> {
+                    if(!s.isAnon()){
+                        String replaced = s.toString().replace(moduleURI, renamedModuleUri);
+                        if(!replaced.equals(s.toString())){
+                            changed.set(true);
+                        }
+                        ResourceUtils.renameResource(s, replaced);
+                    }
+                });
+                resModel.listStatements().toList().forEach(s -> {
+                    RDFNode rdfNode = s.getObject();
+                    if(!rdfNode.isAnon() && rdfNode.toString().equals(moduleURI)){
+                        changed.set(true);
+                        String replaced = rdfNode.toString().replace(moduleURI, renamedModuleUri);
+                        ResourceUtils.renameResource(rdfNode.asResource(), replaced);
+                    }
+                });
+                if(changed.get()){
+                    resModel.write(new FileOutputStream(file), langTurtle);
+                    resModel.close();
+                }
+            }
+        }
+        //TODO resolve imports
     }
 
     public void createScript(String directory, String filename, URI ontologyURI) throws IOException, OntologyDuplicationException, FileExistsException {
@@ -158,14 +186,14 @@ public class ScriptService {
         ontModel.removeAll(ontModel.getResource(ontology), OWL.imports, null);
         ontModel.removeAll(null, OWL.imports, ontModel.getResource(ontology));
         FileOutputStream os = new FileOutputStream(scriptPath);
-        ontModel.write(os, FileUtils.langTurtle);
+        ontModel.write(os, langTurtle);
     }
 
     public void addScriptOntology(String scriptPath, String ontologyName) throws MissingOntologyException, FileNotFoundException {
         File f = new File(scriptPath);
         Model defaultModel = ontologyHelper.createOntModel(f);
         List<Statement> statements = defaultModel
-                .read(f.getAbsolutePath(), org.apache.jena.util.FileUtils.langTurtle)
+                .read(f.getAbsolutePath(), langTurtle)
                 .listStatements(null, OWL.imports, (RDFNode) null).toList();
 
         if(statements.size() == 0){
@@ -176,14 +204,14 @@ public class ScriptService {
         Statement ontology = statements.get(0);
         resModel.add(ontology.getSubject(), OWL.imports, new ResourceImpl(ontologyName));
         FileOutputStream os = new FileOutputStream(scriptPath);
-        resModel.write(os, FileUtils.langTurtle);
+        resModel.write(os, langTurtle);
     }
 
     public List<String> getScriptImportedOntologies(String scriptPath) {
         File f = new File(scriptPath);
         Model defaultModel = ModelFactory.createDefaultModel();
         List<Statement> statements = defaultModel
-                .read(f.getAbsolutePath(), org.apache.jena.util.FileUtils.langTurtle)
+                .read(f.getAbsolutePath(), langTurtle)
                 .listStatements(null, OWL.imports, (RDFNode) null).toList();
 
         return statements.stream().map(x -> x.getObject().toString()).collect(Collectors.toList());

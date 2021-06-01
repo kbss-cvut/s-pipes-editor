@@ -110,6 +110,19 @@ public class ScriptController {
         return scriptService.getModuleTypes(script);
     }
 
+    @PostMapping(path = "/modules/move")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void moveModule(@RequestBody MoveModuleDTO dto) throws FileNotFoundException {
+        System.out.println(dto);
+        boolean rename = Boolean.parseBoolean(dto.getRenameModule());
+        scriptService.moveModule(
+                dto.getModuleFromPath(),
+                dto.getModuleToPath(),
+                dto.getModuleUri(),
+                rename
+        );
+    }
+
     @PostMapping(path = "/modules/dependency")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void createDependency(@RequestBody DependencyDTO dto) throws FileNotFoundException {

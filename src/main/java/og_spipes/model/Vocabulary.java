@@ -35,6 +35,7 @@ public class Vocabulary {
     public final static String s_c_question_A = "http://onto.fel.cvut.cz/ontologies/s-pipes/question";
     public final static String s_c_question_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/question-dto";
     public final static String s_c_script_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto";
+    public final static String s_c_move_module_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/move-module-dto";
     public final static String s_c_script_create_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-create-dto";
     public final static String s_c_script_ontology_create_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-ontology-create-dto";
     public final static String s_p_has_severity_message = "http://onto.fel.cvut.cz/ontologies/s-pipes/severity-message";
@@ -88,6 +89,9 @@ public class Vocabulary {
     public final static String s_p_has_module_type_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type-uri";
     public final static String s_p_has_module_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri";
     public final static String s_p_has_script_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path";
+    public final static String s_p_has_module_from_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-from-path";
+    public final static String s_p_has_module_to_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-to-path";
+    public final static String s_p_rename_module = "http://onto.fel.cvut.cz/ontologies/s-pipes/rename-module";
     public final static String s_p_has_ontology_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-ontology-uri";
     public final static String s_p_has_target_module_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-target-module-uri";
     public final static String s_p_identifier = "http://purl.org/dc/terms/identifier";
