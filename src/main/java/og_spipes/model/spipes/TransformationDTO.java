@@ -67,4 +67,8 @@ public class TransformationDTO extends Transformation {
 //        this.executionFinishDate = executionFinishDate;
 //    }
 
+    public String getProperty(String property){
+        return properties.get(property).stream().findFirst().orElse("").toString();
+    }
+
 }

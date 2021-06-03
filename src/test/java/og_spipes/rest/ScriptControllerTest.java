@@ -173,6 +173,10 @@ public class ScriptControllerTest {
                                 "          \"name\": \"hello-world2.sms.ttl\"\n" +
                                 "        },\n" +
                                 "        {\n" +
+                                "          \"id\": \"/tmp/og_spipes/hello-world3.sms.ttl\",\n" +
+                                "          \"name\": \"hello-world3.sms.ttl\"\n" +
+                                "        },\n" +
+                                "        {\n" +
                                 "          \"id\": \"/tmp/og_spipes/data-without-label.ttl\",\n" +
                                 "          \"name\": \"data-without-label.ttl\"\n" +
                                 "        }\n" +

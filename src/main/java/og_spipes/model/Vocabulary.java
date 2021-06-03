@@ -37,6 +37,8 @@ public class Vocabulary {
     public final static String s_c_script_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto";
     public final static String s_c_move_module_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/move-module-dto";
     public final static String s_c_script_create_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-create-dto";
+    public final static String s_c_module_execution_info = "http://onto.fel.cvut.cz/ontologies/s-pipes/module-execution-info";
+    public final static String s_c_execution_variable_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/execution-variable-dto";
     public final static String s_c_script_ontology_create_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-ontology-create-dto";
     public final static String s_p_has_severity_message = "http://onto.fel.cvut.cz/ontologies/s-pipes/severity-message";
     public final static String s_p_has_error_message = "http://onto.fel.cvut.cz/ontologies/s-pipes/error-message";
@@ -77,6 +79,8 @@ public class Vocabulary {
     public final static String s_p_has_module_type = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-module-type";
     public final static String s_p_has_output_parameter = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-output-parameter";
     public final static String s_p_has_parameter = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-parameter";
+    public final static String s_p_has_variable_name = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-variable-name";
+    public final static String s_p_has_variable_value = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-variable-value";
     public final static String s_p_has_x_coordinate = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-x-coordinate";
     public final static String s_p_has_y_coordinate = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-y-coordinate";
     public final static String s_p_has_absolute_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path";
@@ -88,6 +92,7 @@ public class Vocabulary {
     public final static String s_p_has_function_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-uri";
     public final static String s_p_has_module_type_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type-uri";
     public final static String s_p_has_module_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri";
+    public final static String s_p_has_module_variable = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-variables";
     public final static String s_p_has_script_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path";
     public final static String s_p_has_module_from_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-from-path";
     public final static String s_p_has_module_to_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-to-path";
@@ -98,4 +103,9 @@ public class Vocabulary {
     public final static String s_p_icon = "http://topbraid.org/sparqlmotion#icon";
     public final static String s_p_comment = "http://www.w3.org/2000/01/rdf-schema#comment";
     public final static String s_p_label = "http://www.w3.org/2000/01/rdf-schema#label";
+    public final static String s_p_module_execution_duration = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-duration";
+    public final static String s_p_module_execution_start_date_unix = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-start-date-unix";
+    public final static String s_p_module_execution_finish_date_unix = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date-unix";
+    public final static String s_pipes_module_has_input_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-input-path";
+    public final static String s_pipes_module_has_output_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-output-path";
 }
