@@ -44,6 +44,7 @@ public class ViewService {
             URI mUri = m.getUri();
             Set<String> in = modulesExecutioInfo.containsKey(mUri) ? modulesExecutioInfo.get(mUri).getInput() : new HashSet<>();
             Set<String> out = modulesExecutioInfo.containsKey(mUri) ? modulesExecutioInfo.get(mUri).getOutput() : new HashSet<>();
+            Set<ExecutionVariableDTO> moduleVariables = modulesExecutioInfo.containsKey(mUri) ? modulesExecutioInfo.get(mUri).getModuleVariables() : new HashSet<>();
             return new Node(
                             m.getUri(),
                             m.getId(),
@@ -55,7 +56,8 @@ public class ViewService {
                             m.getSource(),
                             m.getTypes(),
                             in,
-                            out
+                            out,
+                            moduleVariables
                     );
         }).collect(Collectors.toList());
         List<Edge> edges = new ArrayList<>();

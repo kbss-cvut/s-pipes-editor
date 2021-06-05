@@ -1,10 +1,14 @@
 package og_spipes.model.view;
 
+import cz.cvut.kbss.jopa.model.annotations.FetchType;
 import cz.cvut.kbss.jopa.model.annotations.OWLClass;
 import cz.cvut.kbss.jopa.model.annotations.OWLDataProperty;
+import cz.cvut.kbss.jopa.model.annotations.OWLObjectProperty;
 import og_spipes.model.AbstractEntitySP;
+import og_spipes.model.dto.ExecutionVariableDTO;
 
 import java.net.URI;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -31,11 +35,13 @@ public class Node extends AbstractEntitySP {
     private Set<String> inParameters;
     @OWLDataProperty(iri = s_p_has_output_parameter)
     private Set<String> outParameters;
+    @OWLObjectProperty(iri = s_p_has_module_variable,  fetch = FetchType.EAGER)
+    private Set<ExecutionVariableDTO> moduleVariables = new HashSet<>();
 
     public Node() {
     }
 
-    public Node(URI uri, String id, String label, String component, String x, String y, String scriptPath, String group, Set<String> moduleTypes, Set<String> inParameters, Set<String> outParameters) {
+    public Node(URI uri, String id, String label, String component, String x, String y, String scriptPath, String group, Set<String> moduleTypes, Set<String> inParameters, Set<String> outParameters, Set<ExecutionVariableDTO> moduleVariables) {
         this.uri = uri;
         this.id = id;
         this.label = label;
@@ -47,9 +53,10 @@ public class Node extends AbstractEntitySP {
         this.moduleTypes = moduleTypes;
         this.inParameters = inParameters;
         this.outParameters = outParameters;
+        this.moduleVariables = moduleVariables;
     }
 
-    public Node(URI uri, String id, String label, String component, Integer x, Integer y, String scriptPath, String group, Set<String> moduleTypes, Set<String> inParameters, Set<String> outParameters) {
+    public Node(URI uri, String id, String label, String component, Integer x, Integer y, String scriptPath, String group, Set<String> moduleTypes, Set<String> inParameters, Set<String> outParameters, Set<ExecutionVariableDTO> moduleVariables) {
         this.uri = uri;
         this.id = id;
         this.label = label;
@@ -61,6 +68,7 @@ public class Node extends AbstractEntitySP {
         this.moduleTypes = moduleTypes;
         this.inParameters = inParameters;
         this.outParameters = outParameters;
+        this.moduleVariables = moduleVariables;
     }
 
     public String getLabel() {
@@ -139,16 +147,24 @@ public class Node extends AbstractEntitySP {
         this.scriptPath = scriptPath;
     }
 
+    public Set<ExecutionVariableDTO> getModuleVariables() {
+        return moduleVariables;
+    }
+
+    public void setModuleVariables(Set<ExecutionVariableDTO> moduleVariables) {
+        this.moduleVariables = moduleVariables;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Node)) return false;
         Node node = (Node) o;
-        return Objects.equals(getLabel(), node.getLabel()) && Objects.equals(getComponent(), node.getComponent()) && Objects.equals(getX(), node.getX()) && Objects.equals(getY(), node.getY()) && Objects.equals(group, node.group) && Objects.equals(getModuleTypes(), node.getModuleTypes()) && Objects.equals(getInParameters(), node.getInParameters()) && Objects.equals(getOutParameters(), node.getOutParameters());
+        return Objects.equals(getLabel(), node.getLabel()) && Objects.equals(getComponent(), node.getComponent()) && Objects.equals(getX(), node.getX()) && Objects.equals(getY(), node.getY()) && Objects.equals(getScriptPath(), node.getScriptPath()) && Objects.equals(getGroup(), node.getGroup()) && Objects.equals(getModuleTypes(), node.getModuleTypes()) && Objects.equals(getInParameters(), node.getInParameters()) && Objects.equals(getOutParameters(), node.getOutParameters()) && Objects.equals(moduleVariables, node.moduleVariables);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLabel(), getComponent(), getX(), getY(), group, getModuleTypes(), getInParameters(), getOutParameters());
+        return Objects.hash(getLabel(), getComponent(), getX(), getY(), getScriptPath(), getGroup(), getModuleTypes(), getInParameters(), getOutParameters(), moduleVariables);
     }
 }

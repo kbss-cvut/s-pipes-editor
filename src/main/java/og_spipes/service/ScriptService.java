@@ -106,20 +106,20 @@ public class ScriptService {
 
         File fromFile = new File(scriptFrom);
         Model fromModel = ModelFactory.createDefaultModel().read(fromFile.getAbsolutePath(), langTurtle);
-        List<Statement> fromStatements = OntologyHelper.getAllStatementsRecursively(fromModel, moduleURI);
 
-        if(fromStatements.size() == 0){
-            LOG.error("Module not found! " + moduleURI);
-        }
+        Resource resource = fromModel.getResource(moduleURI);
+        Model model = ResourceUtils.reachableClosure(resource);
 
         //should be transactional
         File toFile = new File(scriptTo);
         Model toModel = ModelFactory.createDefaultModel().read(toFile.getAbsolutePath(), langTurtle);
-        toModel.add(fromStatements);
+        toModel.add(model);
         if(renameBaseOntology){
             toModel.listSubjects().forEachRemaining(s -> {
-                String replaced = s.toString().replace(fromOntology, toOntology);
-                ResourceUtils.renameResource(s, replaced);
+                if(s.toString().contains(fromOntology)){
+                    String replaced = s.toString().replace(fromOntology, toOntology);
+                    ResourceUtils.renameResource(s, replaced);
+                }
             });
         }
         toModel.write(new FileOutputStream(toFile), langTurtle);
