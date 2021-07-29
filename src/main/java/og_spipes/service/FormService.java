@@ -184,8 +184,24 @@ public class FormService {
                                 }
                             }
                         }
+                    }else{
+                        //duplicated code for testing purpose
+                        Model m = inputScript;
+                        RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
+                        if (answerNode != null) {
+                            LOG.info("answerNode: " + answerNode.toString());
+                            if(q.getLabel().equals("http://topbraid.org/sparqlmotionlib#value")){
+                                Resource subject = m.createResource(newUri.toString());
+                                Property predicate = m.createProperty("http://topbraid.org/sparqlmotionlib#value");
+                                Resource object = m.createResource();
+                                m.add(subject, predicate, object);
+                                m.add(object, new PropertyImpl("http://spinrdf.org/sp#varName"), answerNode);
+                            }else {
+                                m.add(m.getResource(newUri.toString()), new PropertyImpl(q.getOrigin().toString()), answerNode);
+                            }
                         }
-//                    }
+                        changed.put(((OntModel) inputScript).getBaseModel().listStatements(null, RDF.type, OWL.Ontology).next().getSubject().getURI(), m);
+                    }
                 });
             } else {
                 Model m = inputScript;

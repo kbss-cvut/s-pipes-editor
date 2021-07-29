@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -64,10 +65,12 @@ public class FunctionController {
         String function = dto.getFunction();
         String[] split = dto.getParams().split("&");
 
-        //TODO invalid params check
-        Map<String, String> params = Arrays.stream(split)
-                        .map(elem -> elem.split("="))
-                        .collect(Collectors.toMap(e -> e[0], e -> e[1]));
+        Map<String, String> params = new HashMap<>();
+        if(!dto.getParams().equals("")){
+            params = Arrays.stream(split)
+                    .map(elem -> elem.split("="))
+                    .collect(Collectors.toMap(e -> e[0], e -> e[1]));
+        }
 
         return executorService.serviceExecution(function, params);
     }

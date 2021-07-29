@@ -1,71 +1,37 @@
 @prefix :      <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/> .
-@prefix owl:   <http://www.w3.org/2002/07/owl#> .
-@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix spl:   <http://spinrdf.org/spl#> .
-@prefix spif:  <http://spinrdf.org/spif#> .
 @prefix sml:   <http://topbraid.org/sparqlmotionlib#> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix km-sesame: <http://onto.fel.cvut.cz/ontologies/lib/module/sesame/> .
-@prefix spin:  <http://spinrdf.org/spin#> .
-@prefix doc:   <http://onto.fel.cvut.cz/ontologies/documentation/> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix sm:    <http://topbraid.org/sparqlmotion#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sp:    <http://spinrdf.org/sp#> .
-@prefix kbss-module: <http://onto.fel.cvut.cz/ontologies/lib/module/> .
-
-[ a        sp:replace ;
-  sp:arg1  [ a        sp:lcase ;
-             sp:arg1  [ sp:varName  "personName" ]
-           ] ;
-  sp:arg2  " " ;
-  sp:arg3  "-"
-] .
-
-:execute-greeding  a     sm:Function ;
-        rdfs:subClassOf  sm:Functions ;
-        sm:returnModule  :express-greeding_Return .
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2>
-        a            owl:Ontology ;
-        owl:imports  <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> .
+    a            owl:Ontology ;
+    owl:imports  <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> .
 
-:bind-person-name  a       sml:BindWithConstant ;
-        rdfs:label         "Bind person name" ;
-        sm:next            :bind-person-id ;
-        sm:nodeX           "0" ;
-        sm:nodeY           "0" ;
-        sm:outputVariable  "personName" ;
-        sm:source          "group1" ;
-        sml:value          "CONCAT(?firstName, \" \", ?lastName)" .
+:dummy  a        sml:BindWithConstant ;
+                 rdfs:label         "Dummy" .
 
-:bind-person-id  a         sml:BindWithConstant ;
-        rdfs:label         "Bind person id" ;
-        sm:next            :construct-greeding ;
-        sm:nodeX           "200" ;
-        sm:nodeY           "0" ;
-        sm:outputVariable  "personId" ;
-        sm:source          "group1" ;
-        sml:value          "REPLACE(LCASE(?personName), \" \", \"-\")" .
-
-:construct-greeding  a      sml:ApplyConstruct ;
-        rdfs:label          "Construct greeting" ;
-        sm:next             :express-greeding_Return ;
-        sm:nodeX            "0" ;
-        sm:nodeY            "200" ;
-        sml:constructQuery  [ a        sp:Construct ;
-                              sp:text  "\nPREFIX : <http://vfn.cz/ontologies/s-pipes/hello-world-example-0.2/>\nCONSTRUCT {\n    ?person :is-greeted-by-message ?greetingMessage .\n} WHERE {\n    BIND(iri(concat(str(:), ?personId)) as ?person)\n    BIND(concat(\"Hello \", ?personName, \".\") as ?greetingMessage)\n}\n"
-                            ] ;
-        sml:replace         true .
+:bind-firstname  a         sml:BindWithConstant ;
+                 rdfs:label         "Bind person name" ;
+                 sm:next            :construct-greeding ;
+                 sm:outputVariable  "personName" ;
+                 sml:value          [ sp:varName  "?firstName" ] .
 
 :express-greeding_Return
-        a                  sml:ReturnRDF ;
-        rdfs:label         "Return greeding statement" ;
-        sm:nodeX           "200" ;
-        sm:nodeY           "200" ;
-        sml:serialization  sml:JSONLD .
+    a                  sml:ReturnRDF ;
+    sml:serialization  sml:JSONLD .
 
-[ a        sp:concat ;
-  sp:arg1  [ sp:varName  "firstName" ] ;
-  sp:arg2  " " ;
-  sp:arg3  [ sp:varName  "lastName" ]
-] .
+:construct-greeding  a      sml:ApplyConstruct ;
+                     rdfs:label          "Construct greeting" ;
+                     sm:next             :express-greeding_Return ;
+                     sml:constructQuery  [ a        sp:Construct ;
+                                           sp:text  "PREFIX : <http://vfn.cz/ontologies/s-pipes/hello-world-example-0.2/> \nCONSTRUCT {\n    ?person :is-greeted-by-message ?greetingMessage . \n}\nWHERE {\n    BIND(iri(concat(str(:), ?personName)) as ?person)\n    BIND(concat(\"Hello \", ?personName, \".\") as ?greetingMessage)\n}"
+                            ] ;
+                     sml:replace         true .
+
+:execute-greeding  a     sm:Function ;
+                   rdfs:subClassOf  sm:Functions ;
+                   sm:returnModule  :express-greeding_Return .
