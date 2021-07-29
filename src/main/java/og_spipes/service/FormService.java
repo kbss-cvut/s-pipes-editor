@@ -13,6 +13,7 @@ import og_spipes.model.Vocabulary;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.query.Query;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.util.FileUtils;
@@ -65,9 +66,13 @@ public class FormService {
         ).filterDrop(
                 x -> x.getObject().asResource().getURI().equals(Vocabulary.s_c_Modules)
         ).nextOptional();
+
+        Resource mType = moduleType.map(x -> x.getObject().asResource()).orElse(ontModel.getResource(moduleTypeUri));
+        mType.listProperties().forEachRemaining(x -> System.out.println(x));
+
         return transformer.script2Form(
                 resolveURI(ontModel, moduleUri),
-                moduleType.map(x -> x.getObject().asResource()).orElse(ontModel.getResource(moduleTypeUri))
+                mType
         );
     }
 
@@ -85,7 +90,7 @@ public class FormService {
         });
     }
 
-    private Resource resolveURI(Model model, String moduleUri){
+    public Resource resolveURI(Model model, String moduleUri){
         Resource origin = model.getResource(moduleUri);
         System.out.println("origin: " + origin.getURI());
         Random rand = new Random();
@@ -96,6 +101,18 @@ public class FormService {
             return defaultModel.createResource(dummyURI.toString());
         }
         return origin;
+    }
+
+    public Question generateFunctionForm(String scriptPath, String functionUri){
+        LOG.info("Generating form for script " + scriptPath + ", functionUri " + functionUri);
+        //TODO imports
+        Model defaultModel = ModelFactory.createDefaultModel();
+        Model ontModel = defaultModel
+                .read(scriptPath, org.apache.jena.util.FileUtils.langTurtle);
+        return ownTransformer.functionToForm(
+                ontModel,
+                ontModel.getResource(functionUri)
+        );
     }
 
     class OwnTransformer implements Transformer {
@@ -131,15 +148,13 @@ public class FormService {
                     .map(q -> q.getAnswers().stream().anyMatch(a -> !DigestUtils.sha1Hex(a.getTextValue()).equals(a.getHash())))
                     .orElse(false);
 
-            System.out.println("changed: " + ttlChanged);
-
             if (module.listProperties().hasNext()) {
-                System.out.println("JSEM TU");
                 Map<OriginPair<URI, URI>, Statement> questionStatements = getOrigin2StatementMap(module); // Created answer origin is different from the actual one
                 findRegularQ(form).forEach((q) -> {
-                    System.out.println("QUESTION: " + q.toString());
+                    LOG.info("QUESTION: " + q.toString());
                     OriginPair<URI, URI> originPair = new OriginPair<>(q.getOrigin(), getAnswer(q).map(Answer::getOrigin).orElse(null));
                     Statement s = questionStatements.get(originPair);
+
                     if (s != null) {
                         final Model m = extractModel(s);
                         final String uri = ((OntModel) inputScript).getBaseModel().listStatements(null, RDF.type, OWL.Ontology).next().getSubject().getURI();
@@ -148,46 +163,48 @@ public class FormService {
                         }
                         final Model changingModel = changed.get(uri);
 
-                        System.out.println("STATEMENT: " + s);
-                        changingModel.remove(s);
-                        if (isSupportedAnon(q)) {
-                            if (q.getAnswers().stream()
-                                    .anyMatch(a -> !DigestUtils.sha1Hex(a.getTextValue()).equals(a.getHash()) && !DigestUtils.sha1Hex(a.getCodeValue().toString()).equals(a.getHash()))) {
-                                throw new ConcurrentModificationException("TTL and form can not be edited at the same time");
-                            }
-                            Query query = AnonNodeTransformer.parse(q, inputScript);
-                            org.topbraid.spin.model.Query spinQuery = ARQ2SPIN.parseQuery(query.serialize(), inputScript);
-                            changingModel.add(spinQuery.getModel());
-                            changingModel.add(
-                                    ResourceFactory.createResource(uri),
-                                    ResourceFactory.createProperty(cz.cvut.sforms.Vocabulary.s_p_text),
-                                    ResourceFactory.createStringLiteral(q.getAnswers().iterator().next().getTextValue().replaceAll("\\n", "\n"))
-                            );
-                        } else {
-                            //todo check not working - null pointer on
-//                            if (q.getAnswers().stream()
-//                                    .anyMatch(a -> a != null && !DigestUtils.sha1Hex(a.getTextValue()).equals(a.getHash()) && (a.getCodeValue() == null || !DigestUtils.sha1Hex(a.getCodeValue().toString()).equals(a.getHash()))) &&
-//                                    ttlChanged) {
-//                                throw new ConcurrentModificationException("TTL and form can not be edited at the same time");
-//                            }
-                            RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
-                            if (answerNode != null) {
-                                changingModel.add(s.getSubject(), s.getPredicate(), answerNode);
+                        LOG.info("STATEMENT: " + s);
+                        RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
+                        if (answerNode != null) {
+                            if(s.getObject().isAnon()){
+                                Statement an = s.getObject().asResource().listProperties().next();
+                                LOG.info("ANON STATEMENT: " + an);
+                                changingModel.remove(an);
+                                changingModel.add(an.getSubject(), an.getPredicate(), answerNode);
+                            }else{
+                                changingModel.remove(s);
+                                if(q.getLabel().equals("http://topbraid.org/sparqlmotionlib#value")){
+                                    Resource subject = m.createResource(newUri.toString());
+                                    Property predicate = m.createProperty("http://topbraid.org/sparqlmotionlib#value");
+                                    Resource object = m.createResource();
+                                    m.add(subject, predicate, object);
+                                    m.add(object, new PropertyImpl("http://spinrdf.org/sp#varName"), answerNode);
+                                }else {
+                                    changingModel.add(s.getSubject(), s.getPredicate(), answerNode);
+                                }
                             }
                         }
-                    }
+                        }
+//                    }
                 });
             } else {
-                System.out.println("JSEM TU2");
-//                Model m = ModelFactory.createDefaultModel().add(inputScript);//unwrap script - not working
                 Model m = inputScript;
                 m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(moduleType));
                 m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(cz.cvut.sforms.Vocabulary.s_c_Modules_A));
                 findRegularQ(form).forEach((q) -> {
-                    System.out.println("QUESTION: " + q.toString());
+                    LOG.info("QUESTION: " + q.toString());
                     RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
                     if (answerNode != null) {
-                        m.add(m.getResource(newUri.toString()), new PropertyImpl(q.getOrigin().toString()), answerNode);
+                        LOG.info("answerNode: " + answerNode.toString());
+                        if(q.getLabel().equals("http://topbraid.org/sparqlmotionlib#value")){
+                            Resource subject = m.createResource(newUri.toString());
+                            Property predicate = m.createProperty("http://topbraid.org/sparqlmotionlib#value");
+                            Resource object = m.createResource();
+                            m.add(subject, predicate, object);
+                            m.add(object, new PropertyImpl("http://spinrdf.org/sp#varName"), answerNode);
+                        }else {
+                            m.add(m.getResource(newUri.toString()), new PropertyImpl(q.getOrigin().toString()), answerNode);
+                        }
                     }
                 });
                 changed.put(((OntModel) inputScript).getBaseModel().listStatements(null, RDF.type, OWL.Ontology).next().getSubject().getURI(), m);
@@ -204,19 +221,60 @@ public class FormService {
 
             ResourceUtils.renameResource(module, newUri.toString());
 
-            changed.keySet().forEach(x -> {
-                System.out.println("key: " + x);
-                changed.get(x).listStatements().forEachRemaining(s -> {
-                    System.out.println(s);
-                });
-            });
-
             return changed;
         }
 
         @Override
         public Question functionToForm(Model script, Resource function) {
-            return null;
+            if (!URI.create(function.getURI()).isAbsolute()) {
+                throw new IllegalArgumentException("Function uri '" + function.getURI() + "' is not absolute.");
+            }
+
+            Question formRootQ = new Question();
+            initializeQuestionUri(formRootQ);
+            formRootQ.setLabel("");
+            formRootQ.setLayoutClass(Collections.singleton("form"));
+
+            Answer executionId = new Answer();
+            executionId.setTextValue(UUID.randomUUID().toString());
+            formRootQ.setAnswers(Collections.singleton(executionId));
+
+            Question wizardStepQ = new Question();
+            initializeQuestionUri(wizardStepQ);
+            wizardStepQ.setLabel("Function call");
+            Set<String> wizardStepLayoutClass = new HashSet<>();
+            wizardStepLayoutClass.add("wizard-step");
+            wizardStepLayoutClass.add("section");
+            wizardStepQ.setLayoutClass(wizardStepLayoutClass);
+
+            List<Question> subQuestions = new LinkedList<>();
+
+            Question functionQ = new Question();
+            initializeQuestionUri(functionQ);
+            functionQ.setLabel("URI");
+            functionQ.setDescription("URI of the function that will be called");
+            functionQ.setOrigin(URI.create(RDF.uri));
+            Answer functionAnswer = new Answer();
+            functionAnswer.setTextValue(function.getURI());
+            functionQ.setAnswers(Collections.singleton(functionAnswer));
+
+            subQuestions.add(functionQ);
+
+            for(Statement st : script.listStatements(null, new PropertyImpl("http://spinrdf.org/sp#varName"), (String) null).toList()){
+                Question q = new Question();
+                initializeQuestionUri(q);
+                q.setLabel(st.getObject().toString());
+                q.setProperties(extractQuestionMetadata(st));
+                q.setPrecedingQuestions(Collections.singleton(functionQ));
+                subQuestions.add(q);
+            }
+
+            wizardStepQ.setSubQuestions(new HashSet<>(subQuestions));
+            formRootQ.setSubQuestions(Collections.singleton(wizardStepQ));
+
+            System.out.println(formRootQ.toString());
+
+            return formRootQ;
         }
 
         private Question findUriQ(Question root) {

@@ -60,7 +60,7 @@ public class FileController {
 
         return ResponseEntity.ok()
                 .headers(header)
-                .contentLength(file.length())
+//                .contentLength(file.length())
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(resource);
     }

@@ -1,17 +1,18 @@
 package og_spipes.rest;
 
 import cz.cvut.kbss.jsonld.JsonLd;
+import cz.cvut.sforms.model.Question;
 import og_spipes.model.dto.ExecuteFunctionDTO;
 import og_spipes.model.dto.ModuleDTO;
+import og_spipes.model.dto.QuestionDTO;
 import og_spipes.model.dto.ScriptDTO;
 import og_spipes.model.filetree.SubTree;
 import og_spipes.model.spipes.DependencyDTO;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.ModuleType;
-import og_spipes.service.FileTreeService;
-import og_spipes.service.FunctionService;
-import og_spipes.service.SPipesExecutionService;
-import og_spipes.service.ScriptService;
+import og_spipes.service.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -29,14 +30,19 @@ import java.util.stream.Collectors;
 @RequestMapping("/function")
 public class FunctionController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FunctionController.class);
+
     private final FunctionService functionService;
 
     private final SPipesExecutionService executorService;
 
+    private final FormService formService;
+
     @Autowired
-    public FunctionController(FunctionService functionService, SPipesExecutionService executorService) {
+    public FunctionController(FunctionService functionService, SPipesExecutionService executorService, FormService formService) {
         this.functionService = functionService;
         this.executorService = executorService;
+        this.formService = formService;
     }
 
     @PostMapping(path = "/script", produces = JsonLd.MEDIA_TYPE)
@@ -44,10 +50,15 @@ public class FunctionController {
         return functionService.moduleFunctions(dto.getAbsolutePath());
     }
 
+    @PostMapping(path = "/form")
+    public Question generateModuleForm(@RequestBody ExecuteFunctionDTO dto) {
+        LOG.info("Generating form for function " + dto.getScriptPath() + ", function " + dto.getFunction());
+        return formService.generateFunctionForm(dto.getScriptPath(), dto.getFunction());
+    }
+
     @PostMapping(path = "/execute", produces = JsonLd.MEDIA_TYPE)
     public String executeFunction(@RequestBody ExecuteFunctionDTO dto) {
         //TODO only BindWithConstant are input params? - how to pass them?
-        //TODO should I use S-Forms?
         System.out.println(dto);
 
         String function = dto.getFunction();

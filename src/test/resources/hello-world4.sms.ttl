@@ -1,0 +1,51 @@
+# baseURI: http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.4
+# imports: http://onto.fel.cvut.cz/ontologies/s-pipes-lib
+
+@prefix : <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.4/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sm: <http://topbraid.org/sparqlmotion#> .
+@prefix sml: <http://topbraid.org/sparqlmotionlib#> .
+@prefix sp: <http://spinrdf.org/sp#> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.4>
+    a owl:Ontology ;
+    owl:imports <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> ;
+.
+:bind-person-name
+    a sml:BindWithConstant ;
+    sm:next :construct-welcome ;
+    sm:outputVariable "personName" ;
+    sml:value [
+          sp:varName "myName" ;
+      ] ;
+    rdfs:label "Bind person name" ;
+.
+:construct-welcome
+    a sml:ApplyConstruct ;
+    sm:next :welcome_Return ;
+    sml:constructQuery [
+          a sp:Construct ;
+          sp:text """
+PREFIX : <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.4/>
+CONSTRUCT {
+    ?person :is-welcome-by-message ?welcomeMessage .
+} WHERE {
+    BIND(iri(concat(str(:), ?personName)) as ?person)
+    BIND(concat("Hello ", ?personName, "!") as ?welcomeMessage)
+}
+""" ;
+      ] ;
+    sml:replace true ;
+    rdfs:label "Construct welcome message" ;
+.
+:execute-welcome
+    a sm:Function ;
+    sm:returnModule :welcome_Return ;
+    rdfs:subClassOf sm:Functions ;
+.
+:welcome_Return
+    a sml:ReturnRDF ;
+    sml:serialization sml:JSONLD ;
+    rdfs:label "Return welcome message" ;
+.

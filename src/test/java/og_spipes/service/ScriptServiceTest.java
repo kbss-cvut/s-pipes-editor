@@ -76,7 +76,7 @@ public class ScriptServiceTest {
     public void getModuleTypes() {
         List<ModuleType> moduleTypes = scriptService.getModuleTypes("/tmp/og_spipes/hello-world/hello-world.sms.ttl");
 
-        Assertions.assertEquals(25, moduleTypes.size());
+        Assertions.assertEquals(85, moduleTypes.size());
     }
 
     @Test

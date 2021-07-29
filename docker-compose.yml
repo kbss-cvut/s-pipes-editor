@@ -1,11 +1,20 @@
 version: '3.7'
 
-#docker-compose up --build
-
 services:
+  s-pipes-editor-ui:
+    image: s-pipes-editor-ui:latest
+    ports:
+      - '3000:80'
+    networks:
+      - overlay
+    depends_on:
+      - s-pipes-editor-rest
+    environment:
+      SERVICE_URL: "s-pipes-editor-rest:18115"
+
   s-pipes-editor-rest:
     image: 's-pipes-editor-rest:latest'
-    container_name: spipes-editor-rest
+    container_name: s-pipes-editor-rest
     ports:
       - '18115:18115'
     expose:
@@ -18,7 +27,6 @@ services:
     environment:
       - SCRIPTPATHS=/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/scripts_test/sample
       - ENGINEURL=http://s-pipes-engine:8080/s_pipes_web_war/
-      - SCRIPTRULES=/home/jordan/IdeaProjects/s-pipes-newgen/src/main/resources/rules
       - RDF4J_REPOSITORYURL=http://rdf4j:8080/rdf4j-server/repositories
       - RDF4J_REPOSITORYNAME=s-pipes-hello-world
       - RDF4J_PCONFIGURL=/home/jordan/IdeaProjects/s-pipes/doc/examples/hello-world/config.ttl
@@ -63,3 +71,4 @@ volumes:
 
 networks:
   overlay:
+

@@ -10,7 +10,7 @@
 :ends-function
   a sh:NodeShape ;
   rdfs:comment "every property sm:next must be terminated by function"@en ;
-  sh:targetClass sm:Modules ;
+  sh:targetClass sm:Module ;
   sh:property [
       sh:path [ sh:zeroOrMorePath sm:next  ]  ;
       sh:minCount 1 ;

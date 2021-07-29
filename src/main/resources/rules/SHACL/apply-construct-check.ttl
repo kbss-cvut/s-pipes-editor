@@ -3,13 +3,10 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix sml: <http://topbraid.org/sparqlmotionlib#> .
 @prefix sp: <http://spinrdf.org/sp#> .
-@prefix spif: <http://spinrdf.org/spif#> .
-@prefix spin: <http://spinrdf.org/spin#> .
-
 
 :apply-construct-check
   a sh:NodeShape ;
-  rdfs:comment "sml:ApplyConstruct musi mit alespon 1 sml:constructQuery s prave jednou hodnotou sp:text"@en  ;
+  rdfs:comment "sml:ApplyConstruct must have at least 1 sml:constructQuery with exactly one sp:text value"@en  ;
   sh:targetClass sml:ApplyConstruct;
   sh:property [
       sh:path sml:constructQuery ;

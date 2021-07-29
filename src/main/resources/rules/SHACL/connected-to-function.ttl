@@ -10,8 +10,8 @@
 
 :connected-to-function
     a sh:NodeShape ;
-        rdfs:comment "every property sm:next must ref to function"@en ;
-        sh:targetClass sm:Modules ; #targetNode zkusit nebo po
+        rdfs:comment "Every property sm:next must reference to sm:Modules"@en ;
+        sh:targetClass sm:Module ; #targetNode zkusit nebo po
         sh:property [
                         sh:path [ sh:zeroOrMorePath sm:next  ]  ;
                             sh:minCount 1 ;
