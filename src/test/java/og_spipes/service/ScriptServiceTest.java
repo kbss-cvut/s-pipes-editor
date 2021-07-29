@@ -126,8 +126,8 @@ public class ScriptServiceTest {
         List<Statement> fromStatements = fromModel.listStatements(fromModel.getResource(moduleUri), null, (RDFNode) null).toList();
         List<Statement> toStatements = toModel.listStatements(toModel.getResource(resUri), null, (RDFNode) null).toList();
 
-        Assertions.assertEquals(fromStatements.size(), 0);
-        Assertions.assertEquals(toStatements.size(), 5);
+        Assertions.assertEquals(0, fromStatements.size());
+        Assertions.assertEquals(7, toStatements.size());
     }
 
     @Test
