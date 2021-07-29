@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
 import og_spipes.model.spipes.FunctionDTO;
+import og_spipes.service.FormService;
 import og_spipes.service.FunctionService;
 import og_spipes.service.SPipesExecutionService;
 import org.apache.commons.io.FileUtils;
@@ -47,6 +48,9 @@ public class FunctionControllerTest {
 
     @MockBean
     private SPipesExecutionService executionService;
+
+    @MockBean
+    private FormService formService;
 
     @Autowired
     private MockMvc mockMvc;

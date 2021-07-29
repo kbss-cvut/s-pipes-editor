@@ -54,7 +54,7 @@ public class OntologyHelper {
         List<File> scripts = scriptDao.getScripts();
 
         OntDocumentManager documentManager = new OntDocumentManager();
-        documentManager.setReadFailureHandler((s, model, e) -> LOG.info(e.getLocalizedMessage()));
+        documentManager.setReadFailureHandler((s, model, e) -> LOG.debug(s + "; " +e.getLocalizedMessage()));
         for(File s : scripts){
             String ontologyUri = getOntologyUri(s);
             String absolutePath = s.getAbsolutePath();

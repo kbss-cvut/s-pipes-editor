@@ -13,6 +13,9 @@ import static og_spipes.model.Vocabulary.*;
 @OWLClass(iri = Vocabulary.s_c_execution_function_dto)
 public class ExecuteFunctionDTO extends AbstractEntity {
 
+    @OWLDataProperty(iri = s_p_has_script_path)
+    private String scriptPath;
+
     @OWLDataProperty(iri = s_p_has_function_uri)
     private String function;
 
@@ -23,9 +26,18 @@ public class ExecuteFunctionDTO extends AbstractEntity {
     public ExecuteFunctionDTO() {
     }
 
-    public ExecuteFunctionDTO(String function, String params) {
+    public ExecuteFunctionDTO(String scriptPath, String function, String params) {
+        this.scriptPath = scriptPath;
         this.function = function;
         this.params = params;
+    }
+
+    public String getScriptPath() {
+        return scriptPath;
+    }
+
+    public void setScriptPath(String scriptPath) {
+        this.scriptPath = scriptPath;
     }
 
     public String getFunction() {
@@ -47,7 +59,8 @@ public class ExecuteFunctionDTO extends AbstractEntity {
     @Override
     public String toString() {
         return "ExecuteFunctionDTO{" +
-                "function='" + function + '\'' +
+                "scriptPath='" + scriptPath + '\'' +
+                ", function='" + function + '\'' +
                 ", params='" + params + '\'' +
                 '}';
     }
