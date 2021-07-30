@@ -48,7 +48,6 @@ services:
       - rdf4j
     environment:
       - CONTEXTS_SCRIPTPATHS=/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/scripts_test/sample
-      - EXECUTION_TEMPDIRECTORYPATH=/tmp/spipes-log/
     volumes:
       - /home:/home
       - /usr/local/tomcat/temp/:/usr/local/tomcat/temp/

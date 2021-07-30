@@ -13,11 +13,13 @@ The docker image of SPipes Editor Backend can be built by `docker build -t s-pip
 Then, SPipes Editor Backend can be run as `docker run -p 18115:18115 s-pipes-editor-rest`   
 
 The list of all configurable parameters which could be override by enviroment `-e` variables could be found in `application.properties`. Most important ones are:
-* SCRIPTPATHS - The location of the SPipes scripts 
+* SCRIPTPATHS - The location of the SPipes scripts
+* SCRIPTRULES - SHACL rules.   
 * ENGINEURL - SPipes engine URL
 * RDF4J_REPOSITORYURL - RDF4j repository URL 
 * RDF4J_REPOSITORYNAME - RDF4j repository name
 * RDF4J_PCONFIGURL - Override spies-engine logging configuration 
+* CONTEXTS_SCRIPTPATHS - Script location for SPipes engine, must be same as **SCRIPTPATHS**
 
 
 ### Docker-compose
