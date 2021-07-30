@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   s-pipes-editor-ui:
-    image: chlupnoha/s-pipes-editor-ui:latest
+    image: 'chlupnoha/s-pipes-editor-ui:latest'
     ports:
       - '3000:80'
     networks:
@@ -13,8 +13,8 @@ services:
       SERVICE_URL: "s-pipes-editor-rest:18115"
 
   s-pipes-editor-rest:
-    image: 's-pipes-editor-rest:latest'
-    container_name: chlupnoha/s-pipes-editor-rest
+    image: 'chlupnoha/s-pipes-editor-rest:latest'
+    container_name: s-pipes-editor-rest
     ports:
       - '18115:18115'
     expose:
@@ -25,16 +25,17 @@ services:
       - s-pipes-engine
       - rdf4j
     environment:
-      - SCRIPTPATHS=/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/scripts_test/sample
+      - SCRIPTPATHS=/home/chlupnoha/IdeaProjects/og-spipes/src/test/resources/scripts_test/sample
       - ENGINEURL=http://s-pipes-engine:8080/s_pipes_web_war/
+      - SCRIPTRULES=/home/chlupnoha/IdeaProjects/og-spipes/src/main/resources/rules
       - RDF4J_REPOSITORYURL=http://rdf4j:8080/rdf4j-server/repositories
       - RDF4J_REPOSITORYNAME=s-pipes-hello-world
     volumes:
       - /home:/home
 
   s-pipes-engine:
-    image: 's-pipes-engine:latest'
-    container_name: chlupnoha/s-pipes-engine
+    image: 'chlupnoha/spipes-engine:latest'
+    container_name: s-pipes-engine
     ports:
       - "8081:8080"
     expose:
@@ -44,7 +45,7 @@ services:
     depends_on:
       - rdf4j
     environment:
-      - CONTEXTS_SCRIPTPATHS=/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/scripts_test/sample
+      - CONTEXTS_SCRIPTPATHS=/home/chlupnoha/IdeaProjects/og-spipes/src/test/resources/scripts_test/sample
     volumes:
       - /home:/home
 
