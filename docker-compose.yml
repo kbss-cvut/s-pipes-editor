@@ -30,6 +30,7 @@ services:
       - SCRIPTRULES=/home/jordan/IdeaProjects/s-pipes-newgen/src/main/resources/rules
       - RDF4J_REPOSITORYURL=http://rdf4j:8080/rdf4j-server/repositories
       - RDF4J_REPOSITORYNAME=s-pipes-hello-world
+      - RDF4J_PCONFIGURL=/home/jordan/IdeaProjects/s-pipes-newgen/src/main/resources/config.ttl
     volumes:
       - /home:/home
 
