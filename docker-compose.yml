@@ -25,9 +25,9 @@ services:
       - s-pipes-engine
       - rdf4j
     environment:
-      - SCRIPTPATHS=/home/chlupnoha/IdeaProjects/og-spipes/src/test/resources/scripts_test/sample
+      - SCRIPTPATHS=/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/scripts_test/sample
       - ENGINEURL=http://s-pipes-engine:8080/s_pipes_web_war/
-      - SCRIPTRULES=/home/chlupnoha/IdeaProjects/og-spipes/src/main/resources/rules
+      - SCRIPTRULES=/home/jordan/IdeaProjects/s-pipes-newgen/src/main/resources/rules
       - RDF4J_REPOSITORYURL=http://rdf4j:8080/rdf4j-server/repositories
       - RDF4J_REPOSITORYNAME=s-pipes-hello-world
     volumes:
@@ -45,7 +45,7 @@ services:
     depends_on:
       - rdf4j
     environment:
-      - CONTEXTS_SCRIPTPATHS=/home/chlupnoha/IdeaProjects/og-spipes/src/test/resources/scripts_test/sample
+      - CONTEXTS_SCRIPTPATHS=/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/scripts_test/sample
     volumes:
       - /home:/home
 

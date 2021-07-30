@@ -7,13 +7,13 @@
 @prefix spif: <http://spinrdf.org/spif#> .
 @prefix spin: <http://spinrdf.org/spin#> .
 
-:ends-function
+:function-shape
   a sh:NodeShape ;
-  rdfs:comment "every property sm:next must be terminated by function"@en ;
-  sh:targetClass sm:Module ;
+  rdfs:comment " Every sml:ReturnRDF must have 1 sml:serialization."@en ;
+  sh:targetClass sml:ReturnRDF ;
   sh:property [
-      sh:path [ sh:zeroOrMorePath sm:next  ]  ;
+      sh:path sml:serialization ;
       sh:minCount 1 ;
-      sh:class sml:ReturnRDF ;
+      sh:maxCount 1 ;
     ] ;
 .
