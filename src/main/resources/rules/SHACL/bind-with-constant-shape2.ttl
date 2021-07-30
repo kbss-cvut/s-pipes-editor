@@ -9,10 +9,10 @@
 
 :function-shape
   a sh:NodeShape ;
-  rdfs:comment " Every sml:BindWithConstant must have 1 sml:value ."@en ;
+  rdfs:comment " Every sml:BindWithConstant must have 1 sml:outputVariable ."@en ;
   sh:targetClass sml:BindWithConstant ;
   sh:property [
-      sh:path sml:value ;
+      sh:path sm:outputVariable ;
       sh:minCount 1 ;
       sh:maxCount 1 ;
   ] ;

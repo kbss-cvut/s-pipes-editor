@@ -62,6 +62,7 @@ public class SPipesExecutionService {
             builder.queryParam(pair.getKey(), pair.getValue());
         }
 
+        LOG.info("SPipes engine query: " + builder.build().toString());
         String response = restTemplate.getForEntity(builder.build().toString(), String.class).getBody();
         LOG.info(response);
         return response;

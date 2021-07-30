@@ -59,8 +59,7 @@ public class FunctionController {
 
     @PostMapping(path = "/execute", produces = JsonLd.MEDIA_TYPE)
     public String executeFunction(@RequestBody ExecuteFunctionDTO dto) {
-        //TODO only BindWithConstant are input params? - how to pass them?
-        System.out.println(dto);
+        LOG.info(dto.toString());
 
         String function = dto.getFunction();
         String[] split = dto.getParams().split("&");
