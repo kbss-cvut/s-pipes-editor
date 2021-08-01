@@ -30,6 +30,8 @@ public class SPipesExecutionService {
 
     private final String pConfigURL;
 
+    private final String workbenchRepo;
+
     private final RestTemplate restTemplate;
 
     private final TransformationDAO transformationDAO;
@@ -40,12 +42,14 @@ public class SPipesExecutionService {
     public SPipesExecutionService(
             @Value("${engineurl}") String engineUrl,
             @Value("${rdf4j.pConfigURL}") String pConfigURL,
+            @Value("${rdf4j.workbenchUrlRepository}") String workbenchRepo,
             RestTemplate restTemplate,
             TransformationDAO transformationDAO,
             ScriptDAO scriptDAO
     ) {
         this.engineUrl = engineUrl;
         this.pConfigURL = pConfigURL;
+        this.workbenchRepo = workbenchRepo;
         this.restTemplate = restTemplate;
         this.transformationDAO = transformationDAO;
         this.scriptDAO = scriptDAO;
@@ -99,7 +103,8 @@ public class SPipesExecutionService {
                                 Long.parseLong(duration),
                                 startDate,
                                 finishDate,
-                                x.getId()
+                                x.getId(),
+                                workbenchRepo + "/explore?resource=<" + x.getId() + ">"
                         );
                     } catch (IOException e) {
                         LOG.warn(e.getMessage());

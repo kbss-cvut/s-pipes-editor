@@ -36,6 +36,7 @@ public class SPipesExecutionServiceTest {
     private final SPipesExecutionService service = new SPipesExecutionService(
             "http://localhost:1111",
             "pConfigURL",
+            "http://localhost:1111/rdf4j-workbench",
             restTemplate,
             transformationDAO,
             scriptDAO

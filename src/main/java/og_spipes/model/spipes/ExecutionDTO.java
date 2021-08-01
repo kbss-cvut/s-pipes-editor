@@ -35,9 +35,12 @@ public class ExecutionDTO extends AbstractEntitySP {
     @OWLDataProperty(iri = "http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation")
     private String transformationId;
 
+    @OWLDataProperty(iri = "http://onto.fel.cvut.cz/ontologies/s-pipes/rdf4j-transformation-id")
+    private String rdf4jTransformationId;
+
     public ExecutionDTO(){}
 
-    public ExecutionDTO(String name, String displayName, String absolutePath, Long duration, Date startDate, Date finishDate, String transformation) {
+    public ExecutionDTO(String name, String displayName, String absolutePath, Long duration, Date startDate, Date finishDate, String transformation, String rdf4jTransformationId) {
         this.name = name;
         this.displayName = displayName;
         this.absolutePath = absolutePath;
@@ -45,6 +48,7 @@ public class ExecutionDTO extends AbstractEntitySP {
         this.startDate = startDate;
         this.finishDate = finishDate;
         this.transformationId = transformation;
+        this.rdf4jTransformationId = rdf4jTransformationId;
     }
 
     public String getName() {
@@ -103,6 +107,14 @@ public class ExecutionDTO extends AbstractEntitySP {
         this.transformationId = transformation;
     }
 
+    public String getRdf4jTransformationId() {
+        return rdf4jTransformationId;
+    }
+
+    public void setRdf4jTransformationId(String rdf4jTransformationId) {
+        this.rdf4jTransformationId = rdf4jTransformationId;
+    }
+
     @Override
     public String toString() {
         return "ExecutionDTO{" +
@@ -113,6 +125,7 @@ public class ExecutionDTO extends AbstractEntitySP {
                 ", startDate=" + startDate +
                 ", finishDate=" + finishDate +
                 ", transformation=" + transformationId +
+                ", rdf4jTransformationId=" + rdf4jTransformationId +
                 '}';
     }
 }
