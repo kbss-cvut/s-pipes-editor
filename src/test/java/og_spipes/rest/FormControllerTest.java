@@ -29,8 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations="classpath:application.properties")
 public class FormControllerTest {
 
-    //TODO resolver blicking test - standalone working
-
     @Value("${scriptPaths}")
     private String scriptPaths;
 
@@ -48,7 +46,6 @@ public class FormControllerTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("Get parsed s-form")
     public void testGetScriptModuleTypes() throws Exception {
         String tmpScripts = scriptPaths + "/hello-world/hello-world.sms.ttl";
@@ -72,7 +69,6 @@ public class FormControllerTest {
     }
 
     @Test
-    @Disabled
     @DisplayName("Update hello-world.sms.ttl :bind-firstname label to 'Bind person name karel'.")
     public void testEditForm() throws Exception {
         String tmpScripts = scriptPaths + "/hello-world/hello-world.sms.ttl";
@@ -87,9 +83,8 @@ public class FormControllerTest {
 
         Model expectedModel = ModelFactory.createDefaultModel().read("src/test/resources/sforms/hello-world.sms.ttl");
         Model resModel = ModelFactory.createDefaultModel().read(tmpScripts);
+        System.out.println("scriptPath: " + tmpScripts);
 
-        //form2Script delete imports
-        //viz. https://email.seznam.cz/?hp#search/blasko%20prefix%3Aform/89014 - konversation
         Assertions.assertTrue(expectedModel.isIsomorphicWith(resModel));
     }
 

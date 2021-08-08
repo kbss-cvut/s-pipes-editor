@@ -2,10 +2,7 @@ package og_spipes.rest;
 
 import cz.cvut.kbss.jsonld.JsonLd;
 import cz.cvut.sforms.model.Question;
-import og_spipes.model.dto.ExecuteFunctionDTO;
-import og_spipes.model.dto.ModuleDTO;
-import og_spipes.model.dto.QuestionDTO;
-import og_spipes.model.dto.ScriptDTO;
+import og_spipes.model.dto.*;
 import og_spipes.model.filetree.SubTree;
 import og_spipes.model.spipes.DependencyDTO;
 import og_spipes.model.spipes.FunctionDTO;
@@ -72,6 +69,18 @@ public class FunctionController {
         }
 
         return executorService.serviceExecution(function, params);
+    }
+
+    @PostMapping(path = "/module/execute")
+    public String executeModule(@RequestBody ExecuteModuleDTO dto){
+        LOG.info("Module execution DTO: " + dto.toString());
+        String execution = executorService.moduleExecution(
+                dto.getModuleInput(),
+                dto.getModuleURI(),
+                new HashMap<>()
+        );
+        LOG.info("Module execution message: " + execution);
+        return execution;
     }
 
 }

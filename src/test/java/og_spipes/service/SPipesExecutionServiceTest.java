@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -57,6 +58,24 @@ public class SPipesExecutionServiceTest {
         );
 
         Assertions.assertEquals("body", entity);
+    }
+
+    @Test
+    public void moduleExecution(){
+        when(restTemplate.postForEntity(
+                eq("http://localhost:1111/module?_pConfigURL=pConfigURL&id=moduleId"),
+                any(HttpEntity.class),
+                anyObject()
+        )).thenReturn(new ResponseEntity<>("module executed", HttpStatus.ACCEPTED));
+
+        String entity = service.moduleExecution(
+                "moduleInput",
+                "moduleId",
+                new HashMap<>()
+        );
+
+        Assertions.assertEquals("module executed", entity);
+
     }
 
 

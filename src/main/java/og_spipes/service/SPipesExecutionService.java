@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,10 +18,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,6 +78,35 @@ public class SPipesExecutionService {
         }
         return response;
     }
+
+    public String moduleExecution(String moduleInput, String moduleId, Map<String, String> params){
+        String serviceUrl = engineUrl + "/module";
+        params.put("id", moduleId);
+        params.put("_pConfigURL", pConfigURL);
+
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUrl);
+        for (Map.Entry<String, String> pair : params.entrySet()) {
+            builder.queryParam(pair.getKey(), pair.getValue());
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("content-type", "application/ld+json;charset=utf-8");
+        Map<String, Object> map = new HashMap<>();
+        map.put("body", moduleInput);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
+
+        LOG.info("SPipes engine query: " + builder.build().toString());
+        String response = "";
+        try{
+            response = restTemplate.postForEntity(builder.build().toString(), entity, String.class).getBody();
+            LOG.info(response);
+        }catch (Exception e){
+            LOG.warn("SPipes response exception: " + e.getMessage());
+            response = e.getMessage();
+        }
+        return response;
+    }
+
 
     /**
      * Mapping is not working correctly so the complicated mapping has to be done

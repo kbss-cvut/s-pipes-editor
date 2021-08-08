@@ -90,9 +90,4 @@ public class ScriptDAOTest {
         Assertions.assertEquals("hello-world2.sms.ttl", scriptByOntologyName.getName());
     }
 
-//    @Test(expected = IOException.class)
-//    public void findScriptByOntologyNameNotFound() throws IOException {
-//        scriptDao.findScriptByOntologyName("http://onto.fel.cvut.cz/ontologies/s-pipes/karel");
-//    }
-
 }

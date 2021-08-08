@@ -2,7 +2,7 @@
   "@type": "http://onto.fel.cvut.cz/ontologies/s-pipes/question-dto",
   "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type-uri": "http://topbraid.org/sparqlmotionlib#BindWithConstant",
   "http://onto.fel.cvut.cz/ontologies/s-pipes/has-root-question": {
-    "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-4d5030ee-5ddb-475d-ad37-b74f7a964ff9",
+    "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-b06d0e62-781e-47b0-9201-b958ec346c34",
     "@type": [
       "http://onto.fel.cvut.cz/ontologies/documentation/question"
     ],
@@ -15,12 +15,12 @@
     ],
     "http://onto.fel.cvut.cz/ontologies/documentation/has_related_question": [
       {
-        "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-0ce8fd14-36a4-4c06-990c-99b5a5cfd297",
+        "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-1ddf6cb1-19ee-4400-b22e-9dfb5446d377",
         "@type": "http://onto.fel.cvut.cz/ontologies/documentation/question",
         "http://onto.fel.cvut.cz/ontologies/documentation/has_answer": [],
         "http://onto.fel.cvut.cz/ontologies/documentation/has_related_question": [
           {
-            "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-df708433-e992-475c-a3c4-24ba4bf6c98d",
+            "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-e776af1b-b323-423f-838d-6b87dba09a99",
             "@type": "http://onto.fel.cvut.cz/ontologies/documentation/question",
             "http://onto.fel.cvut.cz/ontologies/documentation/has_answer": [
               {
@@ -42,11 +42,11 @@
             "http://www.w3.org/2000/01/rdf-schema#label": "URI"
           },
           {
-            "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-4aa1771d-a4b3-46f5-9472-c2b89aca1c91",
+            "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-bd053ef9-0198-4746-a9de-73bd7a91adee",
             "@type": "http://onto.fel.cvut.cz/ontologies/documentation/question",
             "http://onto.fel.cvut.cz/ontologies/documentation/has_answer": [
               {
-                "@id": "_:b0",
+                "@id": "_:b2",
                 "@type": "http://onto.fel.cvut.cz/ontologies/documentation/answer",
                 "http://onto.fel.cvut.cz/ontologies/documentation/has_data_value": {
                   "@value": "Bind person name karel"
@@ -62,7 +62,7 @@
             "http://onto.fel.cvut.cz/ontologies/form-spin/has-declared-prefix": [],
             "http://onto.fel.cvut.cz/ontologies/form-spin/has-origin-context": "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1",
             "http://onto.fel.cvut.cz/ontologies/form/has-preceding-question": {
-              "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-df708433-e992-475c-a3c4-24ba4bf6c98d"
+              "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-e776af1b-b323-423f-838d-6b87dba09a99"
             },
             "http://onto.fel.cvut.cz/ontologies/form/has-question-origin": {
               "@id": "http://www.w3.org/2000/01/rdf-schema#label"
@@ -72,38 +72,39 @@
             "http://onto.fel.cvut.cz/ontologies/form/has-valid-answer": true
           },
           {
-            "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-8c14d10d-87d2-4f5f-b0c1-f34de5c2e49e",
+            "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-8eee4325-1e23-4ccf-b89d-baeb69c02792",
             "@type": "http://onto.fel.cvut.cz/ontologies/documentation/question",
             "http://onto.fel.cvut.cz/ontologies/documentation/has_answer": [
               {
                 "@id": "_:b3",
                 "@type": "http://onto.fel.cvut.cz/ontologies/documentation/answer",
-                "http://onto.fel.cvut.cz/ontologies/documentation/has_data_value": "personName",
-                "http://onto.fel.cvut.cz/ontologies/form/has-answer-hash": "51b6f908659426124325c6e0e1b5298187c220f4",
+                "http://onto.fel.cvut.cz/ontologies/documentation/has_data_value": "personNamee",
+                "http://onto.fel.cvut.cz/ontologies/form/has-answer-hash": "3d0fea82c2a15de82f0c689a313122b09ed7063a",
                 "http://onto.fel.cvut.cz/ontologies/form/has-answer-origin": {
-                  "@id": "http://onto.fel.cvut.cz/ontologies/form/answer-origin/8fb7398c6187ac69b1093e87596edf4c"
+                  "@id": "http://onto.fel.cvut.cz/ontologies/form/answer-origin/257c981b94f68565302844f54d95e014"
                 }
               }
             ],
             "http://onto.fel.cvut.cz/ontologies/documentation/has_related_question": [],
             "http://onto.fel.cvut.cz/ontologies/form-layout/has-layout-class": [],
+            "http://onto.fel.cvut.cz/ontologies/form-spin/has-answer-value-type": "http://www.w3.org/2001/XMLSchema#string",
             "http://onto.fel.cvut.cz/ontologies/form-spin/has-declared-prefix": [],
             "http://onto.fel.cvut.cz/ontologies/form-spin/has-origin-context": "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1",
             "http://onto.fel.cvut.cz/ontologies/form/has-preceding-question": {
-              "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-4aa1771d-a4b3-46f5-9472-c2b89aca1c91"
+              "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-bd053ef9-0198-4746-a9de-73bd7a91adee"
             },
             "http://onto.fel.cvut.cz/ontologies/form/has-question-origin": {
               "@id": "http://topbraid.org/sparqlmotion#outputVariable"
             },
-            "http://purl.org/dc/elements/1.1/description": "",
+            "http://purl.org/dc/elements/1.1/description": "outputVariable\n\nThe name of the declared output variable of a module. This is typically used by modules to enable script users to bind the output of a module with matching variables in the target module.",
             "http://www.w3.org/2000/01/rdf-schema#label": "http://topbraid.org/sparqlmotion#outputVariable"
           },
           {
-            "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-6f2ce70d-1ff9-4576-833e-91d4d6fb662d",
+            "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-a3af9dac-836f-4526-81ef-d32486f91652",
             "@type": "http://onto.fel.cvut.cz/ontologies/documentation/question",
             "http://onto.fel.cvut.cz/ontologies/documentation/has_answer": [
               {
-                "@id": "_:b2",
+                "@id": "_:b4",
                 "@type": "http://onto.fel.cvut.cz/ontologies/documentation/answer",
                 "http://onto.fel.cvut.cz/ontologies/documentation/has_data_value": "?firstName",
                 "http://onto.fel.cvut.cz/ontologies/form/has-answer-hash": "ea42ba95ca805d099bbf478c24401329d2e5fc7a",
@@ -117,12 +118,12 @@
             "http://onto.fel.cvut.cz/ontologies/form-spin/has-declared-prefix": [],
             "http://onto.fel.cvut.cz/ontologies/form-spin/has-origin-context": "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1",
             "http://onto.fel.cvut.cz/ontologies/form/has-preceding-question": {
-              "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-4aa1771d-a4b3-46f5-9472-c2b89aca1c91"
+              "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-bd053ef9-0198-4746-a9de-73bd7a91adee"
             },
             "http://onto.fel.cvut.cz/ontologies/form/has-question-origin": {
               "@id": "http://topbraid.org/sparqlmotionlib#value"
             },
-            "http://purl.org/dc/elements/1.1/description": "",
+            "http://purl.org/dc/elements/1.1/description": "value\n\n",
             "http://www.w3.org/2000/01/rdf-schema#label": "http://topbraid.org/sparqlmotionlib#value"
           }
         ],
@@ -139,19 +140,19 @@
         "visited": true
       },
       {
-        "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-17aa5e06-6919-43f2-870c-4f705e3ec017",
+        "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-d0a7d8ff-3c5d-4df1-ad1b-9c26b5276752",
         "@type": "http://onto.fel.cvut.cz/ontologies/documentation/question",
         "http://onto.fel.cvut.cz/ontologies/documentation/has_answer": [],
         "http://onto.fel.cvut.cz/ontologies/documentation/has_related_question": [
           {
-            "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-d988df1e-5842-4697-b291-254c286dbbdb",
+            "@id": "http://onto.fel.cvut.cz/ontologies/documentation/question-5a935a29-98ee-4530-9bfd-83b7c80f7ebc",
             "@type": "http://onto.fel.cvut.cz/ontologies/documentation/question",
             "http://onto.fel.cvut.cz/ontologies/documentation/has_answer": [
               {
-                "@id": "_:b4",
+                "@id": "_:b0",
                 "@type": "http://onto.fel.cvut.cz/ontologies/documentation/answer",
-                "http://onto.fel.cvut.cz/ontologies/documentation/has_data_value": "<http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname>\n        a       <http://topbraid.org/sparqlmotionlib#BindWithConstant> ;\n        <http://www.w3.org/2000/01/rdf-schema#label>\n                \"Bind person name\" ;\n        <http://topbraid.org/sparqlmotion#next>\n                <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/construct-greeding> ;\n        <http://topbraid.org/sparqlmotion#outputVariable>\n                \"personName\" ;\n        <http://topbraid.org/sparqlmotionlib#value>\n                []  .\n",
-                "http://onto.fel.cvut.cz/ontologies/form/has-answer-hash": "2b1f29680197c8cc782ece6186cbfa22780b3277"
+                "http://onto.fel.cvut.cz/ontologies/documentation/has_data_value": "<http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname>\n        a       <http://topbraid.org/sparqlmotionlib#BindWithConstant> ;\n        <http://www.w3.org/2000/01/rdf-schema#label>\n                \"Bind person name\" ;\n        <http://topbraid.org/sparqlmotion#next>\n                <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/construct-greeding> ;\n        <http://topbraid.org/sparqlmotion#outputVariable>\n                \"personNamee\" ;\n        <http://topbraid.org/sparqlmotionlib#value>\n                []  .\n",
+                "http://onto.fel.cvut.cz/ontologies/form/has-answer-hash": "f56bad1ee973cf7768770d75d91bce728ebc5b5d"
               }
             ],
             "http://onto.fel.cvut.cz/ontologies/documentation/has_related_question": [],

@@ -45,6 +45,7 @@ public class Vocabulary {
     public final static String s_p_has_rule_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/rule-uri";
     public final static String s_p_has_rule_comment = "http://onto.fel.cvut.cz/ontologies/s-pipes/rule-comment";
     public final static String s_c_shacl_validation_result_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes-view/shacl-validation-result";
+    public final static String s_c_execution_module_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/execution-module-dto";
     public final static String s_c_execution_function_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/execution-function-dto";
     public final static String s_c_module_log_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/module-log-dto";
     public final static String s_c_Module = "http://topbraid.org/sparqlmotion#Module";

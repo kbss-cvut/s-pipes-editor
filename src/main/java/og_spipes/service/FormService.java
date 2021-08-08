@@ -68,10 +68,10 @@ public class FormService {
         ).nextOptional();
 
         Resource mType = moduleType.map(x -> x.getObject().asResource()).orElse(ontModel.getResource(moduleTypeUri));
-        mType.listProperties().forEachRemaining(x -> System.out.println(x));
+        mType.listProperties().forEachRemaining(x -> LOG.info(x.toString()));
 
         return transformer.script2Form(
-                resolveURI(ontModel, moduleUri),
+                resolveURI(ontModel, moduleUri, scriptPath),
                 mType
         );
     }
@@ -90,13 +90,12 @@ public class FormService {
         });
     }
 
-    public Resource resolveURI(Model model, String moduleUri){
+    private Resource resolveURI(Model model, String moduleUri, String scriptPath){
         Resource origin = model.getResource(moduleUri);
-        System.out.println("origin: " + origin.getURI());
         Random rand = new Random();
         if(origin.getURI() == null){
-            URI dummyURI = URI.create("http://example.com/change_" + rand.nextInt(Integer.MAX_VALUE));
-            LOG.info("Passing dummy URI to script2Form: " + dummyURI.toString());
+            String baseURI = OntologyHelper.getOntologyUri(new File(scriptPath));
+            URI dummyURI = URI.create(baseURI + "/change_" + rand.nextInt(Integer.MAX_VALUE));
             Model defaultModel = ModelFactory.createDefaultModel();
             return defaultModel.createResource(dummyURI.toString());
         }
