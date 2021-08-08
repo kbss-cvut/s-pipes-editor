@@ -61,7 +61,7 @@ public class SHACLExecutorService {
                     res.add(new SHACLValidationResultDTO(
                             result.getFocusNode().toString(),
                             result.getSeverity().getLocalName(),
-                            result.getMessage(),
+                            result.getMessage().replace("@en", ""),
                             url.toString(),
                             ruleComment
                     ));
