@@ -38,6 +38,13 @@ public class FileControllerTest {
         Assertions.assertEquals(res, content);
     }
 
+    @Test
+    public void testException() throws Exception {
+        this.mockMvc.perform(get("/file/download")
+                .param("file", "notExistFile"))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+    }
 
 }
 

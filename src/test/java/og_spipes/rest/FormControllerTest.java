@@ -64,8 +64,6 @@ public class FormControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"));
-
-        //TODO better comparsion
     }
 
     @Test
@@ -83,9 +81,28 @@ public class FormControllerTest {
 
         Model expectedModel = ModelFactory.createDefaultModel().read("src/test/resources/sforms/hello-world.sms.ttl");
         Model resModel = ModelFactory.createDefaultModel().read(tmpScripts);
-        System.out.println("scriptPath: " + tmpScripts);
 
         Assertions.assertTrue(expectedModel.isIsomorphicWith(resModel));
+    }
+
+    @Test
+    @DisplayName("Log path with with dummy content.")
+    public void testLogPath() throws Exception {
+        String tmpScripts = scriptPaths + "/hello-world/hello-world.sms.ttl";
+
+        this.mockMvc.perform(post("/scripts/load-log")
+                .content(
+                        "{" +
+                                "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/module-log-dto\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \""+tmpScripts+"\"" +
+                                "}"
+                )
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"));
+
     }
 
     @AfterEach

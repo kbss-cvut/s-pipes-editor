@@ -132,7 +132,7 @@ public class FormService {
 
             Map<String, Model> changed = new HashMap<>();
 
-            System.out.println("origin: " + form.getOrigin().toString());
+            LOG.info("origin: " + form.getOrigin().toString());
             Resource module = inputScript.getResource(form.getOrigin().toString());
 
             Question uriQ = findUriQ(form);
@@ -286,8 +286,6 @@ public class FormService {
 
             wizardStepQ.setSubQuestions(new HashSet<>(subQuestions));
             formRootQ.setSubQuestions(Collections.singleton(wizardStepQ));
-
-            System.out.println(formRootQ.toString());
 
             return formRootQ;
         }

@@ -12,6 +12,9 @@ import static og_spipes.model.Vocabulary.*;
 @OWLClass(iri = Vocabulary.s_c_execution_module_dto)
 public class ExecuteModuleDTO extends AbstractEntity {
 
+    @OWLDataProperty(iri = s_p_has_script_path)
+    private String scriptPath;
+
     @OWLDataProperty(iri = s_p_has_module_uri)
     private String moduleURI;
 
@@ -25,10 +28,19 @@ public class ExecuteModuleDTO extends AbstractEntity {
     public ExecuteModuleDTO() {
     }
 
-    public ExecuteModuleDTO(String moduleURI, String moduleInput, String params) {
+    public ExecuteModuleDTO(String scriptPath, String moduleURI, String moduleInput, String params) {
+        this.scriptPath = scriptPath;
         this.moduleURI = moduleURI;
         this.moduleInput = moduleInput;
         this.params = params;
+    }
+
+    public String getScriptPath() {
+        return scriptPath;
+    }
+
+    public void setScriptPath(String scriptPath) {
+        this.scriptPath = scriptPath;
     }
 
     public String getModuleURI() {
@@ -58,7 +70,8 @@ public class ExecuteModuleDTO extends AbstractEntity {
     @Override
     public String toString() {
         return "ExecuteModuleDTO{" +
-                "moduleURI='" + moduleURI + '\'' +
+                "scriptPath='" + scriptPath + '\'' +
+                ", moduleURI='" + moduleURI + '\'' +
                 ", moduleInput='" + moduleInput + '\'' +
                 ", params='" + params + '\'' +
                 '}';

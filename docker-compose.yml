@@ -32,6 +32,7 @@ services:
       - RDF4J_REPOSITORYNAME=s-pipes-hello-world
       - RDF4J_PCONFIGURL=/home/jordan/IdeaProjects/s-pipes-newgen/src/main/resources/config.ttl
     volumes:
+      - /tmp:/tmp
       - /home:/home
       - /usr/local/tomcat/temp/:/usr/local/tomcat/temp/
 
@@ -49,6 +50,7 @@ services:
     environment:
       - CONTEXTS_SCRIPTPATHS=/home/jordan/IdeaProjects/s-pipes-newgen/src/test/resources/scripts_test/sample
     volumes:
+      - /tmp:/tmp
       - /home:/home
       - /usr/local/tomcat/temp/:/usr/local/tomcat/temp/
 

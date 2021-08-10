@@ -1,9 +1,13 @@
 package og_spipes.service;
 
+import kong.unirest.Unirest;
 import og_spipes.model.spipes.ExecutionDTO;
 import og_spipes.model.spipes.TransformationDTO;
 import og_spipes.persistence.dao.ScriptDAO;
 import og_spipes.persistence.dao.TransformationDAO;
+import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.util.*;
@@ -32,8 +38,6 @@ public class SPipesExecutionService {
 
     private final String workbenchRepo;
 
-    private final RestTemplate restTemplate;
-
     private final TransformationDAO transformationDAO;
 
     private final ScriptDAO scriptDAO;
@@ -43,14 +47,12 @@ public class SPipesExecutionService {
             @Value("${engineurl}") String engineUrl,
             @Value("${rdf4j.pConfigURL}") String pConfigURL,
             @Value("${rdf4j.workbenchUrlRepository}") String workbenchRepo,
-            RestTemplate restTemplate,
             TransformationDAO transformationDAO,
             ScriptDAO scriptDAO
     ) {
         this.engineUrl = engineUrl;
         this.pConfigURL = pConfigURL;
         this.workbenchRepo = workbenchRepo;
-        this.restTemplate = restTemplate;
         this.transformationDAO = transformationDAO;
         this.scriptDAO = scriptDAO;
     }
@@ -71,7 +73,7 @@ public class SPipesExecutionService {
         LOG.info("SPipes engine query: " + builder.build().toString());
         String response = "";
         try{
-            response = restTemplate.getForEntity(builder.build().toString(), String.class).getBody();
+            response = Unirest.get(builder.build().toString()).asString().getBody();
             LOG.info(response);
         }catch (Exception e){
             LOG.warn("SPipes response exception: " + e.getMessage());
@@ -79,26 +81,46 @@ public class SPipesExecutionService {
         return response;
     }
 
-    public String moduleExecution(String moduleInput, String moduleId, Map<String, String> params){
+    private void createDebugConfig(String configLocation, String moduleScript){
+        OntDocumentManager documentManager = OntDocumentManager.getInstance();
+        documentManager.setReadFailureHandler((s, model, e) -> LOG.debug(s + "; " +e.getLocalizedMessage()));
+        OntModel model = documentManager.getOntology(pConfigURL, OntModelSpec.OWL_MEM);
+        OntModel model2 = documentManager.getOntology(moduleScript, OntModelSpec.OWL_MEM);
+        model.add(model2);
+
+        File file = new File(configLocation);
+        try {
+            FileWriter writer = new FileWriter(file);
+            model.write(writer, "TTL");
+            LOG.info("Debug config created");
+        } catch (IOException e) {
+            LOG.warn(e.getMessage());
+        }
+
+    }
+
+    public String moduleExecution(String moduleScript, String moduleInput, String moduleId, Map<String, String> params) throws IOException {
+        String configLocation = File.createTempFile("config", ".ttl").getAbsolutePath();
+        LOG.info("ConfigLocation: " + configLocation);
         String serviceUrl = engineUrl + "/module";
         params.put("id", moduleId);
-        params.put("_pConfigURL", pConfigURL);
+        createDebugConfig(configLocation, moduleScript);
+        params.put("_pConfigURL", configLocation);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUrl);
         for (Map.Entry<String, String> pair : params.entrySet()) {
             builder.queryParam(pair.getKey(), pair.getValue());
         }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("content-type", "application/ld+json;charset=utf-8");
-        Map<String, Object> map = new HashMap<>();
-        map.put("body", moduleInput);
-        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
-
         LOG.info("SPipes engine query: " + builder.build().toString());
-        String response = "";
+        String response;
         try{
-            response = restTemplate.postForEntity(builder.build().toString(), entity, String.class).getBody();
+            String nonEmptyInput = moduleInput.equals("") ? "\n" : moduleInput;
+            response = Unirest.post(builder.build().toString())
+                    .header("content-type", "text/turtle")
+                    .body(nonEmptyInput)
+                    .asString()
+                    .getBody();
             LOG.info(response);
         }catch (Exception e){
             LOG.warn("SPipes response exception: " + e.getMessage());

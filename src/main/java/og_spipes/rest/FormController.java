@@ -64,9 +64,9 @@ public class FormController {
     public ModuleLogDTO loadLog(@RequestBody ModuleLogDTO logPath) throws IOException {
         //TODO refactor security issue; Also only one input for simplification UI side
         Set<String> res = new HashSet<>();
-        System.out.println("logPath: " + logPath);
+        LOG.info("logPath: " + logPath);
         for(String s : logPath.getLogPath()){
-            System.out.println("path: " + s);
+            LOG.info("path: " + s);
             res.add(Files.toString(new File(s), Charsets.UTF_8));
         }
 

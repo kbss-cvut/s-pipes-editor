@@ -79,8 +79,6 @@ public abstract class BaseDAO<T> {
     }
 
     public List<T> findAll() {
-        System.out.println(typeUri);
-        System.out.println(em);
         return em.createNativeQuery("SELECT ?x WHERE { ?x a ?type . }", type).setParameter("type", typeUri)
                  .getResultList();
     }

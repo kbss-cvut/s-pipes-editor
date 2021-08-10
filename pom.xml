@@ -226,11 +226,26 @@
             <artifactId>rdf4j-rio-rdfjson</artifactId>
             <version>3.7.0</version>
         </dependency>
+
         <dependency>
             <groupId>com.vaadin.external.google</groupId>
             <artifactId>android-json</artifactId>
             <version>0.0.20131108.vaadin1</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>3.11.09</version>
+            <classifier>standalone</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-mocks</artifactId>
+            <version>3.11.09</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

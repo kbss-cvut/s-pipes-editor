@@ -113,7 +113,7 @@ public class ScriptController {
     @PostMapping(path = "/modules/move")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void moveModule(@RequestBody MoveModuleDTO dto) throws FileNotFoundException {
-        System.out.println(dto);
+        LOG.info(dto.toString());
         boolean rename = Boolean.parseBoolean(dto.getRenameModule());
         scriptService.moveModule(
                 dto.getModuleFromPath(),
@@ -165,7 +165,7 @@ public class ScriptController {
 
     @PostMapping(path = "/ontology/remove", produces = JsonLd.MEDIA_TYPE)
     public void removeScriptOntology(@RequestBody ScriptOntologyCreateDTO dto) throws FileNotFoundException {
-        System.out.println(dto);
+        LOG.info(dto.toString());
         scriptService.removeScriptOntology(
                 dto.getScriptPath(),
                 dto.getOntologyUri()

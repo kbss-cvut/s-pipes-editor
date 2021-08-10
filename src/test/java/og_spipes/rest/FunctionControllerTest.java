@@ -3,6 +3,7 @@ package og_spipes.rest;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
+import cz.cvut.sforms.model.Question;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.service.FormService;
 import og_spipes.service.FunctionService;
@@ -31,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -73,8 +75,7 @@ public class FunctionControllerTest {
     public void testGetScriptModuleTypes() throws Exception {
         List<FunctionDTO> functionDTOS = new ArrayList<>();
         functionDTOS.add(new FunctionDTO("functionUri", "execute-greeding", new HashSet<>()));
-        org.mockito.Mockito.when(functionService.moduleFunctions(any())).thenReturn(functionDTOS);
-        System.out.println(functionService.hashCode());
+        when(functionService.moduleFunctions(any())).thenReturn(functionDTOS);
 
         MvcResult mvcResult = this.mockMvc.perform(post("/function/script")
                 .content(
@@ -97,15 +98,52 @@ public class FunctionControllerTest {
     }
 
     @Test
-    @DisplayName("SPipes execution test")
+    public void testGenerateFunctionForm() throws Exception {
+        when(formService.generateFunctionForm(
+                scriptPaths + "/hello-world.sms.ttl",
+                "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeding_Return")
+        ).thenReturn(new Question());
+        this.mockMvc.perform(post("/function/form")
+                .content(
+                        "{" +
+                                "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/execution-function-dto\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\": \"" + scriptPaths + "/hello-world.sms.ttl\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeding_Return\"" +
+                        "}"
+                )
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("SPipes execution function")
     public void testExecutionService() throws Exception {
-        org.mockito.Mockito.when(executionService.serviceExecution(any(), any())).thenReturn("execution started");
         this.mockMvc.perform(post("/function/execute")
                 .content(
                         "{" +
                                 "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/execution-function-dto\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/execution-function-dto\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-parameter\": \"param=p\"" +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/execute-greeding\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-parameter\": \"param=p1\"" +
+                        "}"
+                )
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("SPipes module execution test")
+    public void testExecutionModule() throws Exception {
+        String script = scriptPaths + "/hello-world.sms.ttl";
+        this.mockMvc.perform(post("/function/module/execute")
+                .content(
+                        "{" +
+                                "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/execution-module-dto\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\": \""+script+"\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeding_Return\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-input-parameter\": \"\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-parameter\": \"\"" +
                         "}"
                 )
                 .contentType(MediaType.APPLICATION_JSON))

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -72,12 +73,22 @@ public class FunctionController {
     }
 
     @PostMapping(path = "/module/execute")
-    public String executeModule(@RequestBody ExecuteModuleDTO dto){
+    public String executeModule(@RequestBody ExecuteModuleDTO dto) throws IOException {
         LOG.info("Module execution DTO: " + dto.toString());
+
+        Map<String, String> params = new HashMap<>();
+        if(dto.getParams() != null && !dto.getParams().equals("")){
+            String[] split = dto.getParams().split("&");
+            params = Arrays.stream(split)
+                    .map(elem -> elem.split("="))
+                    .collect(Collectors.toMap(e -> e[0], e -> e[1]));
+        }
+
         String execution = executorService.moduleExecution(
+                dto.getScriptPath(),
                 dto.getModuleInput(),
                 dto.getModuleURI(),
-                new HashMap<>()
+                params
         );
         LOG.info("Module execution message: " + execution);
         return execution;

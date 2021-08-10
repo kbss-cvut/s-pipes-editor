@@ -1,5 +1,7 @@
 package og_spipes.service;
 
+import kong.unirest.MockClient;
+import kong.unirest.*;
 import og_spipes.model.spipes.ExecutionDTO;
 import og_spipes.model.spipes.TransformationDTO;
 import og_spipes.persistence.dao.ScriptDAO;
@@ -8,27 +10,19 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class SPipesExecutionServiceTest {
-
-    private final RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 
     private final ScriptDAO scriptDAO = Mockito.mock(ScriptDAO.class);
 
@@ -38,17 +32,16 @@ public class SPipesExecutionServiceTest {
             "http://localhost:1111",
             "pConfigURL",
             "http://localhost:1111/rdf4j-workbench",
-            restTemplate,
             transformationDAO,
             scriptDAO
     );
 
     @Test
     public void serviceExecution(){
-        when(restTemplate.getForEntity(
-                "http://localhost:1111/service?firstName=karel&_pConfigURL=pConfigURL&id=execute-greeding",
-                String.class
-        )).thenReturn(new ResponseEntity<>("body", HttpStatus.ACCEPTED));
+        MockClient mock = MockClient.register();
+
+        mock.expect(HttpMethod.GET, "http://localhost:1111/service?firstName=karel&_pConfigURL=pConfigURL&id=execute-greeding")
+                .thenReturn("body");
 
         String entity = service.serviceExecution(
                 "execute-greeding",
@@ -61,21 +54,20 @@ public class SPipesExecutionServiceTest {
     }
 
     @Test
-    public void moduleExecution(){
-        when(restTemplate.postForEntity(
-                eq("http://localhost:1111/module?_pConfigURL=pConfigURL&id=moduleId"),
-                any(HttpEntity.class),
-                anyObject()
-        )).thenReturn(new ResponseEntity<>("module executed", HttpStatus.ACCEPTED));
+    public void moduleExecution() throws IOException {
+        MockClient mock = MockClient.register();
+        mock.expect(HttpMethod.POST, "http://localhost:1111/module?_pConfigURL=/tmp/config*.ttl&id=http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels")
+                .thenReturn("body");
+        File f = new File("src/test/resources/scripts_test/sample/skosify/metadata.ttl");
 
         String entity = service.moduleExecution(
-                "moduleInput",
-                "moduleId",
+                f.getAbsolutePath(),
+                "turtleInput",
+                "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels",
                 new HashMap<>()
         );
 
-        Assertions.assertEquals("module executed", entity);
-
+        Assertions.assertEquals("body", entity);
     }
 
 
