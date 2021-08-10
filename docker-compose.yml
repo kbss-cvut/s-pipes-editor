@@ -1,17 +1,6 @@
 version: '3.7'
 
 services:
-  s-pipes-editor-ui:
-    image: 'chlupnoha/s-pipes-editor-ui:latest'
-    ports:
-      - '3000:80'
-    networks:
-      - overlay
-    depends_on:
-      - s-pipes-editor-rest
-    environment:
-      SERVICE_URL: "s-pipes-editor-rest:18115"
-
   s-pipes-editor-rest:
     image: 'chlupnoha/s-pipes-editor-rest:latest'
     container_name: s-pipes-editor-rest
