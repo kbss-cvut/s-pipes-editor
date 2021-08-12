@@ -1,6 +1,7 @@
 package og_spipes.rest;
 
 import cz.cvut.kbss.jsonld.JsonLd;
+import cz.cvut.kbss.jsonld.exception.TargetTypeException;
 import cz.cvut.sforms.model.Question;
 import og_spipes.model.dto.*;
 import og_spipes.model.filetree.SubTree;
@@ -8,16 +9,21 @@ import og_spipes.model.spipes.DependencyDTO;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.service.*;
+import og_spipes.service.exception.FileExistsException;
+import og_spipes.service.exception.OntologyDuplicationException;
+import og_spipes.service.exception.SPipesEngineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +50,14 @@ public class FunctionController {
         this.formService = formService;
     }
 
+    @ExceptionHandler({ IOException.class, SPipesEngineException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleException(Exception exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(exception.getMessage());
+    }
+
     @PostMapping(path = "/script", produces = JsonLd.MEDIA_TYPE)
     public List<FunctionDTO> getScriptFunctions(@RequestBody ScriptDTO dto) {
         return functionService.moduleFunctions(dto.getAbsolutePath());
@@ -56,7 +70,7 @@ public class FunctionController {
     }
 
     @PostMapping(path = "/execute", produces = JsonLd.MEDIA_TYPE)
-    public String executeFunction(@RequestBody ExecuteFunctionDTO dto) {
+    public String executeFunction(@RequestBody ExecuteFunctionDTO dto) throws SPipesEngineException {
         LOG.info(dto.toString());
 
         String function = dto.getFunction();
@@ -73,7 +87,7 @@ public class FunctionController {
     }
 
     @PostMapping(path = "/module/execute")
-    public String executeModule(@RequestBody ExecuteModuleDTO dto) throws IOException {
+    public String executeModule(@RequestBody ExecuteModuleDTO dto) throws IOException, SPipesEngineException {
         LOG.info("Module execution DTO: " + dto.toString());
 
         Map<String, String> params = new HashMap<>();

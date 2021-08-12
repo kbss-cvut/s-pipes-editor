@@ -62,7 +62,7 @@ public class ScriptController {
      * @param exception - Covered exceptions
      * @return - Error message
      */
-    @ExceptionHandler({ OntologyDuplicationException.class, URISyntaxException.class, FileExistsException.class, TargetTypeException.class})
+    @ExceptionHandler({ NullPointerException.class, OntologyDuplicationException.class, URISyntaxException.class, FileExistsException.class, TargetTypeException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleException(Exception exception) {
         return ResponseEntity

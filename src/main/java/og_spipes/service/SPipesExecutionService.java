@@ -1,10 +1,13 @@
 package og_spipes.service;
 
+import kong.unirest.GetRequest;
+import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import og_spipes.model.spipes.ExecutionDTO;
 import og_spipes.model.spipes.TransformationDTO;
 import og_spipes.persistence.dao.ScriptDAO;
 import og_spipes.persistence.dao.TransformationDAO;
+import og_spipes.service.exception.SPipesEngineException;
 import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
@@ -60,7 +63,7 @@ public class SPipesExecutionService {
     public String serviceExecution (
             String functionId,
             Map<String, String> params
-    ) {
+    ) throws SPipesEngineException {
         String serviceUrl = engineUrl + "/service";
         params.put("id", functionId);
         params.put("_pConfigURL", pConfigURL);
@@ -71,14 +74,12 @@ public class SPipesExecutionService {
         }
 
         LOG.info("SPipes engine query: " + builder.build().toString());
-        String response = "";
-        try{
-            response = Unirest.get(builder.build().toString()).asString().getBody();
-            LOG.info(response);
-        }catch (Exception e){
-            LOG.warn("SPipes response exception: " + e.getMessage());
+        HttpResponse<String> request = Unirest.get(builder.build().toString()).asString();
+        if(request.getStatus() != 200){
+            LOG.warn(request.getBody());
+            throw new SPipesEngineException("SPipes engine error.");
         }
-        return response;
+        return request.getBody();
     }
 
     private void createDebugConfig(String configLocation, String moduleScript){
@@ -99,7 +100,7 @@ public class SPipesExecutionService {
 
     }
 
-    public String moduleExecution(String moduleScript, String moduleInput, String moduleId, Map<String, String> params) throws IOException {
+    public String moduleExecution(String moduleScript, String moduleInput, String moduleId, Map<String, String> params) throws IOException, SPipesEngineException {
         String configLocation = File.createTempFile("config", ".ttl").getAbsolutePath();
         LOG.info("ConfigLocation: " + configLocation);
         String serviceUrl = engineUrl + "/module";
@@ -113,20 +114,18 @@ public class SPipesExecutionService {
         }
 
         LOG.info("SPipes engine query: " + builder.build().toString());
-        String response;
-        try{
-            String nonEmptyInput = moduleInput.equals("") ? "\n" : moduleInput;
-            response = Unirest.post(builder.build().toString())
-                    .header("content-type", "text/turtle")
-                    .body(nonEmptyInput)
-                    .asString()
-                    .getBody();
-            LOG.info(response);
-        }catch (Exception e){
-            LOG.warn("SPipes response exception: " + e.getMessage());
-            response = e.getMessage();
+        String nonEmptyInput = moduleInput.equals("") ? "\n" : moduleInput;
+        HttpResponse<String> response = Unirest.post(builder.build().toString())
+                .header("content-type", "text/turtle")
+                .body(nonEmptyInput)
+                .asString();
+
+        if(response.getStatus() != 200){
+            LOG.warn(response.getBody());
+            throw new SPipesEngineException("SPipes engine error.");
         }
-        return response;
+
+        return response.getBody();
     }
 
 

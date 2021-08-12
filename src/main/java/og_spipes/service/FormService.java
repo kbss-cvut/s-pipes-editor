@@ -114,6 +114,7 @@ public class FormService {
         );
     }
 
+    //Base concept taken from original project; however the original one contains major bugs
     class OwnTransformer implements Transformer {
 
         private final Logger LOG = LoggerFactory.getLogger(OwnTransformer.class);
@@ -184,7 +185,6 @@ public class FormService {
                             }
                         }
                     }else{
-                        //duplicated code for testing purpose
                         Model m = inputScript;
                         RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
                         if (answerNode != null) {

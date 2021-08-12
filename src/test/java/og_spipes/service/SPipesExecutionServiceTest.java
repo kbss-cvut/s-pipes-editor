@@ -6,6 +6,7 @@ import og_spipes.model.spipes.ExecutionDTO;
 import og_spipes.model.spipes.TransformationDTO;
 import og_spipes.persistence.dao.ScriptDAO;
 import og_spipes.persistence.dao.TransformationDAO;
+import og_spipes.service.exception.SPipesEngineException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -37,7 +38,7 @@ public class SPipesExecutionServiceTest {
     );
 
     @Test
-    public void serviceExecution(){
+    public void serviceExecution() throws SPipesEngineException {
         MockClient mock = MockClient.register();
 
         mock.expect(HttpMethod.GET, "http://localhost:1111/service?firstName=karel&_pConfigURL=pConfigURL&id=execute-greeding")
@@ -54,7 +55,7 @@ public class SPipesExecutionServiceTest {
     }
 
     @Test
-    public void moduleExecution() throws IOException {
+    public void moduleExecution() throws IOException, SPipesEngineException {
         MockClient mock = MockClient.register();
         mock.expect(HttpMethod.POST, "http://localhost:1111/module?_pConfigURL=/tmp/config*.ttl&id=http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels")
                 .thenReturn("body");
