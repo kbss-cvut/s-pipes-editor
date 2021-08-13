@@ -114,7 +114,9 @@ public class FormService {
         );
     }
 
-    //Base concept taken from original project; however the original one contains major bugs
+    /**
+     *  Base concept taken from original project; however the original one contains major bugs
+     */
     class OwnTransformer implements Transformer {
 
         private final Logger LOG = LoggerFactory.getLogger(OwnTransformer.class);
@@ -128,6 +130,17 @@ public class FormService {
             return null;
         }
 
+        /**
+         * Update Module in script based on Question from the SForms.
+         *
+         * **NOTE**
+         * Solution requires more complex test for every SPipes Module type and structure of Question. However, both
+         * objects are very large so it requires good evaluation method.
+         * @param inputScript Model of loaded script
+         * @param form Question from SFroms
+         * @param moduleType Module type from SPipes
+         * @return
+         */
         @Override
         public Map<String, Model> form2Script(Model inputScript, Question form, String moduleType) {
 
