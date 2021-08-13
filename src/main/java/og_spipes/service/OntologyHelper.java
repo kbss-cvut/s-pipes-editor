@@ -57,8 +57,10 @@ public class OntologyHelper {
         documentManager.setReadFailureHandler((s, model, e) -> LOG.debug(s + "; " +e.getLocalizedMessage()));
         for(File s : scripts){
             String ontologyUri = getOntologyUri(s);
-            String absolutePath = s.getAbsolutePath();
-            documentManager.addAltEntry(ontologyUri, absolutePath);
+            if(!ontologyUri.equals("")){
+                String absolutePath = s.getAbsolutePath();
+                documentManager.addAltEntry(ontologyUri, absolutePath);
+            }
         }
         ModelMakerImpl modelMaker = new ModelMakerImpl(new SimpleGraphMaker());
         OntModelSpec ontModelSpec = new OntModelSpec(modelMaker, null, null, ProfileRegistry.OWL_LANG);
@@ -76,7 +78,10 @@ public class OntologyHelper {
         List<String> listURI = statements.stream().map(x -> x.getSubject().getURI())
                 .collect(Collectors.toList());
 
-        //TODO handle errors later - such as HttpException etc...
+        if(listURI.size() == 0){
+            LOG.error("Missing ontology in file: " + f.getAbsolutePath());
+            return "";
+        }
 
         return listURI.get(0);
     }

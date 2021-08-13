@@ -54,6 +54,7 @@ public class ScriptDAO {
         props.put(JOPAPersistenceProperties.SCAN_PACKAGE, "og_spipes.model");
         // Persistence provider name
         props.put(JOPAPersistenceProperties.JPA_PERSISTENCE_PROVIDER, JOPAPersistenceProvider.class.getName());
+        props.put(JOPAPersistenceProperties.DISABLE_IC_VALIDATION_ON_LOAD, "true");
         props.put(JenaOntoDriverProperties.IN_MEMORY, "true");
 
         this.emf = Persistence.createEntityManagerFactory("og_spipesPU", props);

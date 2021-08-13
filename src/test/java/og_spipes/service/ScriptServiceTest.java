@@ -2,51 +2,33 @@ package og_spipes.service;
 
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
-import og_spipes.persistence.dao.ScriptDAO;
 import og_spipes.service.exception.FileExistsException;
 import og_spipes.service.exception.MissingOntologyException;
 import og_spipes.service.exception.OntologyDuplicationException;
 import org.apache.commons.io.FileUtils;
-import org.apache.jena.ontology.OntDocumentManager;
-import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
-import org.apache.jena.util.ResourceUtils;
-import org.apache.jena.vocabulary.OWL;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.FileSystemUtils;
 
-import static org.apache.jena.util.FileUtils.langTurtle;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.apache.jena.util.FileUtils.langTurtle;
 
 @SpringBootTest
 public class ScriptServiceTest {
@@ -181,7 +163,6 @@ public class ScriptServiceTest {
                 .getScriptImportedOntologies("/tmp/og_spipes/skosify/skosify.sms.ttl");
 
         List<String> expectedRes = Arrays.asList(
-                "http://onto.fel.cvut.cz/ontologies/s-pipes-lib",
                 "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata",
                 "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations"
         );

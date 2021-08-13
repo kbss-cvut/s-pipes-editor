@@ -1,6 +1,7 @@
 package og_spipes.rest;
 
 import cz.cvut.kbss.jsonld.exception.TargetTypeException;
+import og_spipes.model.view.ErrorMessage;
 import og_spipes.service.exception.FileExistsException;
 import og_spipes.service.exception.OntologyDuplicationException;
 import org.slf4j.Logger;
@@ -28,14 +29,14 @@ public class FileController {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileController.class);
 
+    @ResponseBody
     @ExceptionHandler({ Exception.class })
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleException(Exception exception) {
-        LOG.error(exception.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(exception.getMessage());
+    public ErrorMessage handleException(Exception exception) {
+        LOG.error("Error FileController: ", exception);
+        return new ErrorMessage(exception.getMessage());
     }
+
 
     @RequestMapping(path = "/download", method = RequestMethod.GET)
     public ResponseEntity<Resource> generateModuleForm(String file) throws Exception {

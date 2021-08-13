@@ -41,6 +41,7 @@ public class ScriptDAOTest {
         expectedMap.put("in-memory", "true");
         expectedMap.put("cz.cvut.jopa.ontology.logicalUri", "http://temporary");
         expectedMap.put("cz.cvut.jopa.ontology.physicalURI", "local://temporary");
+        expectedMap.put("cz.cvut.jopa.ic.validation.disableOnLoad", "true");
 
         Assertions.assertEquals(
                 scriptDao.emf.getProperties(),

@@ -101,8 +101,8 @@ public class ScriptControllerTest {
                 )
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("hello-world.sms.ttl already exists"));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("{\"message\":\"hello-world.sms.ttl already exists\"}"));
     }
 
     @Test

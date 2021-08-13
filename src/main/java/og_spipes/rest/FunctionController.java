@@ -8,6 +8,7 @@ import og_spipes.model.filetree.SubTree;
 import og_spipes.model.spipes.DependencyDTO;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.ModuleType;
+import og_spipes.model.view.ErrorMessage;
 import og_spipes.service.*;
 import og_spipes.service.exception.FileExistsException;
 import og_spipes.service.exception.OntologyDuplicationException;
@@ -50,13 +51,12 @@ public class FunctionController {
         this.formService = formService;
     }
 
+    @ResponseBody
     @ExceptionHandler({ IOException.class, SPipesEngineException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleException(Exception exception) {
-        LOG.error("Error FunctionController: ", exception);
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(exception.getMessage());
+    public ErrorMessage handleException(Exception exception) {
+        LOG.error("Error ScriptController: ", exception);
+        return new ErrorMessage(exception.getMessage());
     }
 
     @PostMapping(path = "/script", produces = JsonLd.MEDIA_TYPE)

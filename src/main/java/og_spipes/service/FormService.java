@@ -11,6 +11,7 @@ import cz.cvut.spipes.transform.Transformer;
 import cz.cvut.spipes.transform.TransformerImpl;
 import og_spipes.model.Vocabulary;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.ReadWrite;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.topbraid.spin.arq.ARQ2SPIN;
+import org.topbraid.spin.model.Construct;
 import org.topbraid.spin.system.SPINModuleRegistry;
 import org.topbraid.spin.vocabulary.SPIN;
 import org.topbraid.spin.vocabulary.SPL;
@@ -47,7 +49,7 @@ public class FormService {
 
     private final OntologyHelper helper;
 
-    private final Transformer transformer = new TransformerImpl();
+//    private final Transformer transformer = new TransformerImpl();
 
     private final Transformer ownTransformer = new OwnTransformer();
 
@@ -70,7 +72,7 @@ public class FormService {
         Resource mType = moduleType.map(x -> x.getObject().asResource()).orElse(ontModel.getResource(moduleTypeUri));
         mType.listProperties().forEachRemaining(x -> LOG.info(x.toString()));
 
-        return transformer.script2Form(
+        return ownTransformer.script2Form(
                 resolveURI(ontModel, moduleUri, scriptPath),
                 mType
         );
@@ -127,7 +129,149 @@ public class FormService {
 
         @Override
         public Question script2Form(Resource module, Resource moduleType) {
-            return null;
+            if (!URI.create(module.getURI()).isAbsolute()) {
+                throw new IllegalArgumentException("Module uri '" + module.getURI() + "' is not absolute.");
+            }
+            if (!URI.create(moduleType.getURI()).isAbsolute()) {
+                throw new IllegalArgumentException("Module type uri '" + module.getURI() + "' is not absolute.");
+            }
+
+            Question formRootQ = new Question();
+            initializeQuestionUri(formRootQ);
+            formRootQ.setOrigin(toUri(module));
+            formRootQ.setLayoutClass(Collections.singleton("form"));
+
+            Question wizardStepQ = new Question();
+            initializeQuestionUri(wizardStepQ);
+            wizardStepQ.setLabel("Module of type " + moduleType.getProperty(RDFS.label).getString() + " (" + moduleType.getURI() + ")");
+            wizardStepQ.setOrigin(toUri(module));
+            Set<String> wizardStepLayoutClass = new HashSet<>();
+            wizardStepLayoutClass.add("wizard-step");
+            wizardStepLayoutClass.add("section");
+            wizardStepQ.setLayoutClass(wizardStepLayoutClass);
+
+            List<Question> subQuestions = new LinkedList<>();
+            Question labelQ = null;
+            final Question idQ = new Question();
+            initializeQuestionUri(idQ);
+            idQ.setLabel("URI");
+            idQ.setOrigin(URI.create(RDFS.Resource.getURI()));
+            Answer idAnswer = new Answer();
+            idAnswer.setCodeValue(URI.create(module.getURI()));
+            idAnswer.setHash(DigestUtils.sha1Hex(module.getURI()));
+            idQ.setAnswers(Collections.singleton(idAnswer));
+
+            Set<Resource> processedPredicates = new HashSet<>();
+
+            Map<OriginPair<URI, URI>, Statement> origin2st = getOrigin2StatementMap(module);
+
+            LOG.info("Creating new form.");
+            for (Map.Entry<OriginPair<URI, URI>, Statement> e : origin2st.entrySet()) {
+                OriginPair<URI, URI> key = e.getKey();
+                Statement st = e.getValue();
+
+                Resource p = st.getPredicate();
+
+                processedPredicates.add(p);
+
+                Question subQ = createQuestion(p);
+                subQ.setProperties(extractQuestionMetadata(st));
+
+                //problem with other types SPipesUtil.getSpinQueryUri has to be outdated
+                if (st.getObject().isAnon() && SPipesUtil.getSpinQueryUri(st.getObject().asResource()) != null) {
+                    subQ.setLayoutClass(Collections.singleton("sparql"));
+                    subQ.getProperties().put(cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type, Collections.singleton(SPipesUtil.getSpinQueryUri(st.getObject().asResource())));
+                    subQ.setDeclaredPrefix(p.getModel().getNsPrefixMap().entrySet().stream().map(prefix -> new PrefixDefinition(prefix.getKey(), prefix.getValue())).collect(Collectors.toSet()));
+                }
+
+                Answer a = getAnswer(st.getObject());
+                a.setOrigin(key.a);
+
+                subQ.getAnswers().add(a);
+                subQ.setOrigin(key.q);
+
+                if (RDFS.label.equals(st.getPredicate())) {
+                    labelQ = subQ;
+                }
+
+                subQuestions.add(subQ);
+            }
+
+            List<Statement> typeDefinitionStatements = moduleType.listProperties().filterKeep(
+                    st -> st.getPredicate().hasURI(VocabularyJena.s_p_constraint.getURI())).toList();
+            for (Statement st : typeDefinitionStatements) {
+                Resource p = st.getObject().asResource().getPropertyResourceValue(VocabularyJena.s_p_predicate_A);
+
+                if (processedPredicates.contains(p)) {
+                    continue;
+                }
+
+                Question subQ = createQuestion(p);
+
+                subQ.setProperties(extractQuestionMetadata(st));
+
+                //problem with other types SPipesUtil.getSpinQueryUri has to be outdated
+//                if (p.getURI().equals("http://topbraid.org/sparqlmotionlib#constructQuery")) {
+//                    subQ.setLayoutClass(Collections.singleton("sparql"));
+//                    subQ.getProperties().put(cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type, Collections.singleton("http://topbraid.org/sparqlmotionlib#constructQuery"));
+//                    subQ.setDeclaredPrefix(p.getModel().getNsPrefixMap().entrySet().stream().map(prefix -> new PrefixDefinition(prefix.getKey(), prefix.getValue())).collect(Collectors.toSet()));
+//                }
+
+                subQ.setOrigin(URI.create(p.getURI()));
+                subQ.setAnswers(Collections.singleton(new Answer()));
+
+                subQuestions.add(subQ);
+
+                processedPredicates.add(p);
+            }
+
+
+            final Question lQ;
+            if (labelQ == null) {
+                lQ = new Question();
+                initializeQuestionUri(lQ);
+                lQ.setOrigin(URI.create(RDFS.label.getURI()));
+                lQ.setLabel(RDFS.label.getURI());
+                lQ.setAnswers(Collections.singleton(new Answer()));
+                subQuestions.add(lQ);
+            } else
+                lQ = labelQ;
+            lQ.setPrecedingQuestions(Collections.singleton(idQ));
+            subQuestions.stream()
+                    .filter(q -> q != lQ)
+                    .filter(q -> q != idQ)
+                    .forEach(
+                            q -> q.setPrecedingQuestions(Collections.singleton(lQ)));
+
+            subQuestions.add(idQ);
+
+            Question ttlQ = new Question();
+            initializeQuestionUri(ttlQ);
+            ttlQ.setLayoutClass(Collections.singleton("ttl"));
+            Answer ttlA = new Answer();
+
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ModelFactory.createDefaultModel().add(module.listProperties()).write(os, "TTL");
+            String ttlStr = new String(os.toByteArray());
+            ttlA.setTextValue(ttlStr);
+            ttlA.setHash(DigestUtils.sha1Hex(ttlStr));
+
+            ttlQ.setAnswers(Collections.singleton(ttlA));
+
+            Question ttlStepQ = new Question();
+            initializeQuestionUri(ttlStepQ);
+            ttlStepQ.setLabel("TTL");
+            ttlStepQ.setOrigin(toUri(module));
+            ttlStepQ.setLayoutClass(wizardStepLayoutClass);
+            ttlStepQ.setSubQuestions(Collections.singleton(ttlQ));
+
+            HashSet<Question> steps = new HashSet<>();
+            steps.add(wizardStepQ);
+            steps.add(ttlStepQ);
+
+            wizardStepQ.setSubQuestions(new HashSet<>(subQuestions));
+            formRootQ.setSubQuestions(steps);
+            return formRootQ;
         }
 
         /**
@@ -186,12 +330,20 @@ public class FormService {
                                 changingModel.add(an.getSubject(), an.getPredicate(), answerNode);
                             }else{
                                 changingModel.remove(s);
+                                //handle only value - should handle other types
                                 if(q.getLabel().equals("http://topbraid.org/sparqlmotionlib#value")){
                                     Resource subject = m.createResource(newUri.toString());
                                     Property predicate = m.createProperty("http://topbraid.org/sparqlmotionlib#value");
                                     Resource object = m.createResource();
                                     m.add(subject, predicate, object);
                                     m.add(object, new PropertyImpl("http://spinrdf.org/sp#varName"), answerNode);
+                                }else if(q.getLabel().equals("http://topbraid.org/sparqlmotionlib#constructQuery")){
+                                    Resource subject = m.createResource(newUri.toString());
+                                    Property predicate = m.createProperty("http://topbraid.org/sparqlmotionlib#constructQuery");
+                                    Resource object = m.createResource();
+                                    m.add(subject, predicate, object);
+                                    m.add(object, new PropertyImpl("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), ResourceFactory.createResource("http://spinrdf.org/sp#Construct"));
+                                    m.add(object, new PropertyImpl("http://spinrdf.org/sp#text"), answerNode);
                                 }else {
                                     changingModel.add(s.getSubject(), s.getPredicate(), answerNode);
                                 }
@@ -200,18 +352,7 @@ public class FormService {
                     }else{
                         Model m = inputScript;
                         RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
-                        if (answerNode != null) {
-                            LOG.info("answerNode: " + answerNode.toString());
-                            if(q.getLabel().equals("http://topbraid.org/sparqlmotionlib#value")){
-                                Resource subject = m.createResource(newUri.toString());
-                                Property predicate = m.createProperty("http://topbraid.org/sparqlmotionlib#value");
-                                Resource object = m.createResource();
-                                m.add(subject, predicate, object);
-                                m.add(object, new PropertyImpl("http://spinrdf.org/sp#varName"), answerNode);
-                            }else {
-                                m.add(m.getResource(newUri.toString()), new PropertyImpl(q.getOrigin().toString()), answerNode);
-                            }
-                        }
+                        handleFormUpdate(answerNode, m, q, newUri);
                         changed.put(((OntModel) inputScript).getBaseModel().listStatements(null, RDF.type, OWL.Ontology).next().getSubject().getURI(), m);
                     }
                 });
@@ -220,20 +361,9 @@ public class FormService {
                 m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(moduleType));
                 m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(cz.cvut.sforms.Vocabulary.s_c_Modules_A));
                 findRegularQ(form).forEach((q) -> {
-                    LOG.info("QUESTION: " + q.toString());
+                    LOG.info("QUESTION_NEW: " + q.toString());
                     RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
-                    if (answerNode != null) {
-                        LOG.info("answerNode: " + answerNode.toString());
-                        if(q.getLabel().equals("http://topbraid.org/sparqlmotionlib#value")){
-                            Resource subject = m.createResource(newUri.toString());
-                            Property predicate = m.createProperty("http://topbraid.org/sparqlmotionlib#value");
-                            Resource object = m.createResource();
-                            m.add(subject, predicate, object);
-                            m.add(object, new PropertyImpl("http://spinrdf.org/sp#varName"), answerNode);
-                        }else {
-                            m.add(m.getResource(newUri.toString()), new PropertyImpl(q.getOrigin().toString()), answerNode);
-                        }
-                    }
+                    handleFormUpdate(answerNode, m, q, newUri);
                 });
                 changed.put(((OntModel) inputScript).getBaseModel().listStatements(null, RDF.type, OWL.Ontology).next().getSubject().getURI(), m);
             }
@@ -250,6 +380,37 @@ public class FormService {
             ResourceUtils.renameResource(module, newUri.toString());
 
             return changed;
+        }
+
+        /**
+         * Replacement for isSupportedAnon(), which not working correctly. Supported types VALUE; CONSTRUCT
+         *
+         * @param answerNode
+         * @param m
+         * @param q
+         * @param newUri
+         */
+        private void handleFormUpdate(RDFNode answerNode, Model m, Question q, URI newUri){
+            LOG.info("answerNode: " + answerNode);
+            if (answerNode != null) {
+                LOG.info("answerNode: " + answerNode.toString());
+                if(q.getLabel().equals("http://topbraid.org/sparqlmotionlib#value")){
+                    Resource subject = m.createResource(newUri.toString());
+                    Property predicate = m.createProperty("http://topbraid.org/sparqlmotionlib#value");
+                    Resource object = m.createResource();
+                    m.add(subject, predicate, object);
+                    m.add(object, new PropertyImpl("http://spinrdf.org/sp#varName"), answerNode);
+                }else if(q.getLabel().equals("http://topbraid.org/sparqlmotionlib#constructQuery")){
+                    Resource subject = m.createResource(newUri.toString());
+                    Property predicate = m.createProperty("http://topbraid.org/sparqlmotionlib#constructQuery");
+                    Resource object = m.createResource();
+                    m.add(subject, predicate, object);
+                    m.add(object, new PropertyImpl("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"), ResourceFactory.createResource("http://spinrdf.org/sp#Construct"));
+                    m.add(object, new PropertyImpl("http://spinrdf.org/sp#text"), answerNode);
+                }else {
+                    m.add(m.getResource(newUri.toString()), new PropertyImpl(q.getOrigin().toString()), answerNode);
+                }
+            }
         }
 
         @Override
@@ -461,6 +622,7 @@ public class FormService {
             }
         }
 
+        //does not work
         private boolean isSupportedAnon(Question q) {
             if (q.getProperties().containsKey(cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type)) {
                 Set<String> types = q.getProperties().get(cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type);

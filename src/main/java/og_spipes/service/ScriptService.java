@@ -214,7 +214,9 @@ public class ScriptService {
                 .read(f.getAbsolutePath(), langTurtle)
                 .listStatements(null, OWL.imports, (RDFNode) null).toList();
 
-        return statements.stream().map(x -> x.getObject().toString()).collect(Collectors.toList());
+        return statements.stream().map(x -> x.getObject().toString())
+                .filter(x -> !x.equals("http://onto.fel.cvut.cz/ontologies/s-pipes-lib"))
+                .collect(Collectors.toList());
      }
 
 }

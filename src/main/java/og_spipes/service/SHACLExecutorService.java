@@ -49,6 +49,7 @@ public class SHACLExecutorService {
 
         try{
             OntDocumentManager.getInstance().setProcessImports(false);
+            OntDocumentManager.getInstance().setReadFailureHandler((s, model, e) -> LOG.debug(s + "; " +e.getLocalizedMessage()));
             for(File f : importGroup.getUsedFiles()){
                 dataModel.read(new FileInputStream(f), "urn:dummy", FileUtils.langTurtle);
             }

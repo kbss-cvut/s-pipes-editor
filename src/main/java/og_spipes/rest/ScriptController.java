@@ -7,6 +7,7 @@ import og_spipes.model.filetree.SubTree;
 import og_spipes.model.spipes.DependencyDTO;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.model.spipes.ScriptOntologyDTO;
+import og_spipes.model.view.ErrorMessage;
 import og_spipes.service.FileTreeService;
 import og_spipes.service.OntologyHelper;
 import og_spipes.service.SHACLExecutorService;
@@ -33,6 +34,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static og_spipes.service.OntologyHelper.getOntologyUri;
 
 @RestController
 @RequestMapping("/scripts")
@@ -62,13 +65,12 @@ public class ScriptController {
      * @param exception - Covered exceptions
      * @return - Error message
      */
+    @ResponseBody
     @ExceptionHandler({ NullPointerException.class, OntologyDuplicationException.class, URISyntaxException.class, FileExistsException.class, TargetTypeException.class})
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> handleException(Exception exception) {
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ErrorMessage handleException(Exception exception) {
         LOG.error("Error ScriptController: ", exception);
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(exception.getMessage());
+        return new ErrorMessage(exception.getMessage());
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -98,7 +100,7 @@ public class ScriptController {
         ScriptImportGroup importGroup = new ScriptImportGroup(scriptPaths, new File(script));
 
         return importGroup.getUsedFiles().stream().map(f ->{
-            String ontologyUri = OntologyHelper.getOntologyUri(f);
+            String ontologyUri = getOntologyUri(f);
             return new ScriptOntologyDTO(f.getAbsolutePath(), ontologyUri);
         }).collect(Collectors.toList());
     }
