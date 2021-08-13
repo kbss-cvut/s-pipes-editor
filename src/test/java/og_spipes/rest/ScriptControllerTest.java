@@ -185,7 +185,7 @@ public class ScriptControllerTest {
                                 "      \"id\": \"/tmp/og_spipes\"\n" +
                                 "    }\n" +
                                 "  ],\n" +
-                                "  \"name\": \"spipes_modules\",\n" +
+                                "  \"name\": \"[SCRIPTS ROOT]\",\n" +
                                 "  \"id\": \"\"\n" +
                                 "}"
                 ));

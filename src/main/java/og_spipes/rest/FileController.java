@@ -31,6 +31,7 @@ public class FileController {
     @ExceptionHandler({ Exception.class })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleException(Exception exception) {
+        LOG.error(exception.getMessage());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());

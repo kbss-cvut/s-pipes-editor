@@ -37,7 +37,7 @@ public class FileTreeService {
             fileTrees.add(ttlFileTree);
         }
 
-        return new SubTree(fileTrees, "spipes_modules", "");
+        return new SubTree(fileTrees, "[SCRIPTS ROOT]", "");
     }
 
     private SubTree getTtlFileTree(File file) {

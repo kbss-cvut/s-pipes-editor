@@ -53,6 +53,7 @@ public class FunctionController {
     @ExceptionHandler({ IOException.class, SPipesEngineException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleException(Exception exception) {
+        LOG.error("Error FunctionController: ", exception);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());

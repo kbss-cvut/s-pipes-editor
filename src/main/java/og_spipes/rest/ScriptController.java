@@ -63,8 +63,9 @@ public class ScriptController {
      * @return - Error message
      */
     @ExceptionHandler({ NullPointerException.class, OntologyDuplicationException.class, URISyntaxException.class, FileExistsException.class, TargetTypeException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleException(Exception exception) {
+        LOG.error("Error ScriptController: ", exception);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
