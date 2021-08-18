@@ -33,7 +33,7 @@ public class NotificationHandler extends TextWebSocketHandler implements Initial
     private static final Map<String, Set<WebSocketSession>> fileSubscribers = Collections.synchronizedMap(new HashMap<>());
 
     @Value("${scriptPaths}")
-    private String scriptPaths;
+    private String[] scriptPaths;
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -59,7 +59,7 @@ public class NotificationHandler extends TextWebSocketHandler implements Initial
         if(fileSubscribers.containsKey(file)){
             fileSubscribers.get(file).forEach(session -> {
                 try {
-                    LOG.info("sending message: " + message + ", to: " + session.toString());
+                    LOG.info("File has changed: " + file + ", sending message: " + message + ", to: " + session.toString());
                     session.sendMessage(new TextMessage(message));
                 } catch (IOException e) {
                     LOG.error(e.getLocalizedMessage());
@@ -71,27 +71,34 @@ public class NotificationHandler extends TextWebSocketHandler implements Initial
     //TODO write to thesis about simplification
     @Override
     public void afterPropertiesSet() throws Exception {
-        FileAlterationObserver observer = new FileAlterationObserver(scriptPaths);
-        FileAlterationMonitor monitor = new FileAlterationMonitor(3000);
-        FileAlterationListener listener = new FileAlterationListenerAdaptor() {
-            @Override
-            public void onFileCreate(File file) {
-                NotificationHandler.this.notify(file.getAbsolutePath(), "File created");
-            }
+        for(String folderToObserve : scriptPaths){
+            LOG.info("Monitoring folder: " + folderToObserve);
+            FileAlterationObserver observer = new FileAlterationObserver(folderToObserve);
+            FileAlterationMonitor monitor = new FileAlterationMonitor(3000);
+            FileAlterationListener listener = new FileAlterationListenerAdaptor() {
+                @Override
+                public void onFileCreate(File file) {
+                    LOG.info("File created: " + file.getAbsolutePath());
+                    NotificationHandler.this.notify(file.getAbsolutePath(), "File created");
+                }
 
-            @Override
-            public void onFileDelete(File file) {
-                NotificationHandler.this.notify(file.getAbsolutePath(), "File deleted");
-            }
+                @Override
+                public void onFileDelete(File file) {
+                    LOG.info("File deleted: " + file.getAbsolutePath());
+                    NotificationHandler.this.notify(file.getAbsolutePath(), "File deleted");
+                }
 
-            @Override
-            public void onFileChange(File file) {
-                NotificationHandler.this.notify(file.getAbsolutePath(), "File changed");
-            }
-        };
-        observer.addListener(listener);
-        monitor.addObserver(observer);
-        monitor.start();
+                @Override
+                public void onFileChange(File file) {
+                    LOG.info("File changed: " + file.getAbsolutePath());
+                    NotificationHandler.this.notify(file.getAbsolutePath(), "File changed");
+                }
+            };
+            observer.addListener(listener);
+            monitor.addObserver(observer);
+            monitor.start();
+
+        }
     }
 
     //TODO use later for tests -
