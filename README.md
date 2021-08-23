@@ -51,7 +51,7 @@ Installation without Docker requires to download and setup [SPipes engine](https
 required params are the same as the docker env variables. The installation of the engine is described in its README. 
 The SPipes editor is the Spring boot application and could be run via the main method in Main. However, the editor
 requires the running instance of SPipes engine and RDF4J. All necessary configuration is in `application.properties`. It
-is important to mention the [UI](https://github.com/chlupnoha/s-pipes-editor-ui) exist.<br>
+is important to mention the [UI](https://github.com/kbss-cvut/s-pipes-editor-ui) exist.<br>
 Nevertheless, the installation via Docker is recommended.
 
 ###License
