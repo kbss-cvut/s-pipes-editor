@@ -1,10 +1,8 @@
 package og_spipes.service;
 
 import com.google.common.collect.Sets;
+import og_spipes.config.Constants;
 import org.apache.commons.io.FileUtils;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +23,7 @@ import java.util.Set;
 @SpringBootTest
 class ScriptOntologyHelperTest {
 
-    @Value("${scriptPaths}")
+    @Value(Constants.SCRIPTPATH_SPEL)
     private String[] scriptPaths;
 
     @BeforeEach

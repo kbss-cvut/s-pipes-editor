@@ -1,6 +1,7 @@
 package og_spipes.service;
 
 import cz.cvut.sforms.model.Question;
+import og_spipes.config.Constants;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -23,7 +24,7 @@ public class FormServiceTest {
     @Autowired
     private FormService formService;
 
-    @Value("${scriptPaths}")
+    @Value(Constants.SCRIPTPATH_SPEL)
     private String scriptPaths;
 
     @BeforeEach

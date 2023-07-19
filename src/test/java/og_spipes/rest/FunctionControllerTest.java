@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
 import cz.cvut.sforms.model.Question;
+import og_spipes.config.Constants;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.service.FormService;
 import og_spipes.service.FunctionService;
@@ -43,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations="classpath:application.properties")
 public class FunctionControllerTest {
 
-    @Value("${scriptPaths}")
+    @Value(Constants.SCRIPTPATH_SPEL)
     private String scriptPaths;
 
     @MockBean
