@@ -1,30 +1,22 @@
 package og_spipes.rest;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.dto.SHACLValidationResultDTO;
 import og_spipes.model.dto.ScriptCreateDTO;
-import og_spipes.model.dto.ScriptDTO;
-import og_spipes.model.dto.ScriptOntologyCreateDTO;
-import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.ScriptOntologyDTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
-import org.junit.Assert;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.FileSystemUtils;
@@ -231,8 +223,8 @@ public class ScriptControllerTest {
                 .map(x -> x.getProperty(new PropertyImpl(Vocabulary.s_p_next))).count();
         long afterExecutionCount = afterModel.listSubjectsWithProperty(new PropertyImpl(Vocabulary.s_p_next)).toList().stream()
                 .map(x -> x.getProperty(new PropertyImpl(Vocabulary.s_p_next))).count();
-        Assert.assertEquals("Before execution count is 2 of next property", 2, beforeExecutionCount);
-        Assert.assertEquals("After execution count is 3 of next property", 3, afterExecutionCount);
+        Assertions.assertEquals(2, beforeExecutionCount, "Before execution count is 2 of next property");
+        Assertions.assertEquals(3, afterExecutionCount, "After execution count is 3 of next property");
     }
 
     @Test
@@ -256,8 +248,8 @@ public class ScriptControllerTest {
         Model afterModel = ModelFactory.createDefaultModel().read(tmpScripts);
         long afterCount = afterModel.listSubjects().toList().stream()
                 .filter(x -> x.toString().equals("http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname")).count();
-        Assert.assertEquals("Bind-firstname appear in hello-world.sms.ttl", 1, beforeCount);
-        Assert.assertEquals("Bind-firstname is deleted", 0, afterCount);
+        Assertions.assertEquals(1, beforeCount, "Bind-firstname appear in hello-world.sms.ttl");
+        Assertions.assertEquals(0, afterCount, "Bind-firstname is deleted");
     }
 
     @Test
@@ -284,8 +276,8 @@ public class ScriptControllerTest {
                 .map(x -> x.getProperty(new PropertyImpl(Vocabulary.s_p_next))).count();
         long afterExecutionCount = afterModel.listSubjectsWithProperty(new PropertyImpl(Vocabulary.s_p_next)).toList().stream()
                 .map(x -> x.getProperty(new PropertyImpl(Vocabulary.s_p_next))).count();
-        Assert.assertEquals("Before deletion is count 2 of next property", 2, beforeExecutionCount);
-        Assert.assertEquals("After deletion is count 1 of next property", 1, afterExecutionCount);
+        Assertions.assertEquals(2, beforeExecutionCount, "Before deletion is count 2 of next property");
+        Assertions.assertEquals(1, afterExecutionCount, "After deletion is count 1 of next property");
     }
 
     @Test
@@ -327,7 +319,7 @@ public class ScriptControllerTest {
                 mapper.readValue(content, new TypeReference<Set<SHACLValidationResultDTO>>(){})
         );
 
-        Assert.assertEquals(1, res.size());
+        Assertions.assertEquals(1, res.size());
         SHACLValidationResultDTO resultDTO = res.get(0);
         Assertions.assertEquals("http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.6/construct-greeding", resultDTO.getModuleURI());
         Assertions.assertEquals("Violation", resultDTO.getSeverityMessage());

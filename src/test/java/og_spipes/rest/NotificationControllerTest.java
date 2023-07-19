@@ -2,7 +2,7 @@ package og_spipes.rest;
 
 import org.apache.commons.io.FileUtils;
 import org.java_websocket.WebSocket;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -73,7 +73,7 @@ public class NotificationControllerTest {
         file.delete();
         Thread.sleep(2000);
 
-        Assert.assertTrue(myWebSocketClient.getOnMessageCounter().get() > 1);
+        Assertions.assertTrue(myWebSocketClient.getOnMessageCounter().get() > 1);
         myWebSocketClient.close();
     }
 
