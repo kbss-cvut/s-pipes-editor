@@ -41,7 +41,7 @@
         <repository>
             <id>kbss</id>
             <name>KBSS Maven 2 Repository</name>
-            <url>http://kbss.felk.cvut.cz/m2repo</url>
+            <url>https://kbss.felk.cvut.cz/m2repo</url>
             <snapshots>
                 <checksumPolicy>ignore</checksumPolicy>
                 <enabled>true</enabled>
@@ -51,7 +51,7 @@
         <repository>
             <id>topquadrant</id>
             <name>topquadrant Repository</name>
-            <url>http://topquadrant.com/repository/spin/</url>
+            <url>https://archive.topquadrant.com/repository/spin/</url>
             <snapshots>
                 <checksumPolicy>ignore</checksumPolicy>
                 <enabled>true</enabled>
