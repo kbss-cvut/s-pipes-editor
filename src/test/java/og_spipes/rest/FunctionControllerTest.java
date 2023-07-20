@@ -9,7 +9,7 @@ import og_spipes.service.FormService;
 import og_spipes.service.FunctionService;
 import og_spipes.service.SPipesExecutionService;
 import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,10 +33,11 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+
 
 @WebMvcTest(controllers = FunctionController.class)
 @TestPropertySource(locations="classpath:application.properties")
@@ -93,8 +94,8 @@ public class FunctionControllerTest {
 
         List<FunctionDTO> obj = mapper.readValue(content, new TypeReference<List<FunctionDTO>>(){});
 
-        Assert.assertEquals(1, obj.size());
-        Assert.assertEquals("execute-greeding", obj.get(0).getFunctionLocalName());
+        Assertions.assertEquals(1, obj.size());
+        Assertions.assertEquals("execute-greeding", obj.get(0).getFunctionLocalName());
     }
 
     @Test
