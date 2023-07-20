@@ -1,6 +1,7 @@
 package og_spipes.service;
 
 import com.google.common.collect.Sets;
+import og_spipes.config.Constants;
 import og_spipes.model.dto.SHACLValidationResultDTO;
 import og_spipes.service.util.ScriptImportGroup;
 import og_spipes.shacl.Validator;
@@ -37,7 +38,7 @@ public class SHACLExecutorService {
 
     private final String[] scriptPaths;
 
-    public SHACLExecutorService(@Value("${scriptPaths}") String[] scriptPaths) {
+    public SHACLExecutorService(@Value(Constants.SCRIPTPATH_SPEL) String[] scriptPaths) {
         this.scriptPaths = scriptPaths;
     }
 

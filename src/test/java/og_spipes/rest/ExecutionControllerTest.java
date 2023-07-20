@@ -1,6 +1,7 @@
 package og_spipes.rest;
 
 import com.google.common.collect.Sets;
+import og_spipes.config.Constants;
 import og_spipes.service.ModuleExecutionInfo;
 import og_spipes.service.ViewService;
 import org.apache.commons.io.FileUtils;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations="classpath:application.properties")
 public class ExecutionControllerTest {
 
-    @Value("${scriptPaths}")
+    @Value(Constants.SCRIPTPATH_SPEL)
     private String scriptPaths;
 
     @Mock

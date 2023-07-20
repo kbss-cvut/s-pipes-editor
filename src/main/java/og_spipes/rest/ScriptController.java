@@ -2,6 +2,7 @@ package og_spipes.rest;
 
 import cz.cvut.kbss.jsonld.JsonLd;
 import cz.cvut.kbss.jsonld.exception.TargetTypeException;
+import og_spipes.config.Constants;
 import og_spipes.model.dto.*;
 import og_spipes.model.filetree.SubTree;
 import og_spipes.model.spipes.DependencyDTO;
@@ -43,7 +44,7 @@ public class ScriptController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScriptController.class);
 
-    @Value("${scriptPaths}")
+    @Value(Constants.SCRIPTPATH_SPEL)
     private String[] scriptPaths;
 
     @Value("${scriptRules}")

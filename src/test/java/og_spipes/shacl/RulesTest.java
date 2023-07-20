@@ -1,5 +1,6 @@
 package og_spipes.shacl;
 
+import og_spipes.config.Constants;
 import og_spipes.model.dto.SHACLValidationResultDTO;
 import og_spipes.service.SHACLExecutorService;
 import org.apache.jena.rdf.model.Resource;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 @SpringBootTest
 public class RulesTest {
 
-    @Value("${scriptPaths}")
+    @Value(Constants.SCRIPTPATH_SPEL)
     private String[] scriptPaths;
 
     @BeforeEach

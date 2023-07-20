@@ -1,5 +1,6 @@
 package og_spipes.service;
 
+import og_spipes.config.Constants;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.service.exception.FileExistsException;
@@ -39,7 +40,7 @@ public class ScriptServiceTest {
     @Autowired
     private ScriptService scriptService;
 
-    @Value("${scriptPaths}")
+    @Value(Constants.SCRIPTPATH_SPEL)
     private String[] scriptPaths;
 
     @BeforeEach

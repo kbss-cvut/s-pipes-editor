@@ -7,6 +7,7 @@ import cz.cvut.kbss.jopa.model.JOPAPersistenceProperties;
 import cz.cvut.kbss.jopa.model.JOPAPersistenceProvider;
 import cz.cvut.kbss.ontodriver.jena.JenaDataSource;
 import cz.cvut.kbss.ontodriver.jena.config.JenaOntoDriverProperties;
+import og_spipes.config.Constants;
 import og_spipes.model.AbstractEntitySP;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.spipes.FunctionDTO;
@@ -42,7 +43,7 @@ public class ScriptDAO {
     final EntityManagerFactory emf;
 
     //TODO try to use created EM - check if working while editing
-    public ScriptDAO(@Value("${scriptPaths}") String[] scriptPaths) {
+    public ScriptDAO(@Value(Constants.SCRIPTPATH_SPEL) String[] scriptPaths) {
         final Map<String, String> props = new HashMap<>();
         // Here we set up basic storage access properties - driver class, physical location of the storage
         props.put(JOPAPersistenceProperties.ONTOLOGY_PHYSICAL_URI_KEY, "local://temporary"); // jopa uses the URI scheme to choose between local and remote repo, file and (http, https and ftp)resp.

@@ -1,5 +1,6 @@
 package og_spipes.rest;
 
+import og_spipes.config.Constants;
 import org.apache.commons.io.FileUtils;
 import org.java_websocket.WebSocket;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +32,7 @@ public class NotificationControllerTest {
 
     private String URL;
 
-    @Value("${scriptPaths}")
+    @Value(Constants.SCRIPTPATH_SPEL)
     private String scriptPaths;
 
     @Value("${server.servlet.context-path}")

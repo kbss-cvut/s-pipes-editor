@@ -1,6 +1,7 @@
 package og_spipes.websocket;
 
 
+import og_spipes.config.Constants;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
@@ -32,7 +33,7 @@ public class NotificationHandler extends TextWebSocketHandler implements Initial
     private static final Logger LOG = LoggerFactory.getLogger(NotificationHandler.class);
     private static final Map<String, Set<WebSocketSession>> fileSubscribers = Collections.synchronizedMap(new HashMap<>());
 
-    @Value("${scriptPaths}")
+    @Value(Constants.SCRIPTPATH_SPEL)
     private String[] scriptPaths;
 
     @Override

@@ -2,6 +2,7 @@ package og_spipes.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
+import og_spipes.config.Constants;
 import og_spipes.model.view.View;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.rdf4j.repository.Repository;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class ViewControllerTest {
 
-    @Value("${scriptPaths}")
+    @Value(Constants.SCRIPTPATH_SPEL)
     private String scriptPaths;
 
     @Autowired

@@ -3,6 +3,7 @@ package og_spipes.rest;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
+import og_spipes.config.Constants;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.dto.SHACLValidationResultDTO;
 import og_spipes.model.dto.ScriptCreateDTO;
@@ -39,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class ScriptControllerTest {
 
-    @Value("${scriptPaths}")
+    @Value(Constants.SCRIPTPATH_SPEL)
     private String scriptPaths;
 
     @Autowired
