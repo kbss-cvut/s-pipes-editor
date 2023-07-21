@@ -20,10 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
@@ -57,7 +54,7 @@ public class ScriptService {
         return scriptDao.getModuleTypes(ontModel);
     }
 
-    public void createDependency(String scriptPath, String from, String to) throws FileNotFoundException {
+    public void createDependency(String scriptPath, String from, String to) throws IOException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
         List<Resource> resources = ontModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
         Optional<Resource> moduleFrom = resources.stream().filter(x -> x.getURI().equals(from)).findAny();
@@ -68,39 +65,43 @@ public class ScriptService {
         }
 
         ontModel.add(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
-        FileOutputStream os = new FileOutputStream(scriptPath);
-        ontModel.write(os, langTurtle);
+        try (OutputStream os = new FileOutputStream(scriptPath);){
+            ontModel.write(os, langTurtle);
+        }
     }
 
-    public void deleteDependency(String scriptPath, String from, String to) throws FileNotFoundException {
+    public void deleteDependency(String scriptPath, String from, String to) throws IOException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
         ontModel.removeAll(
                 ontModel.getResource(from),
                 new PropertyImpl(Vocabulary.s_p_next),
                 ontModel.getResource(to)
         );
-        FileOutputStream os = new FileOutputStream(scriptPath);
-        ontModel.write(os, langTurtle);
+        try(OutputStream os = new FileOutputStream(scriptPath)) {
+            ontModel.write(os, langTurtle);
+        }
     }
 
-    public void deleteModule(String scriptPath, String module) throws FileNotFoundException {
+    public void deleteModule(String scriptPath, String module) throws IOException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
         List<Statement> fromStatements = OntologyHelper.getAllStatementsRecursively(ontModel, module);
         ontModel.remove(fromStatements);
         ontModel.removeAll(null, null, ontModel.getResource(module));
-        FileOutputStream os = new FileOutputStream(scriptPath);
-        ontModel.write(os, langTurtle);
+        try(OutputStream os = new FileOutputStream(scriptPath)) {
+            ontModel.write(os, langTurtle);
+        }
     }
 
-    public void deleteModuleOnly(String scriptPath, String module) throws FileNotFoundException {
+    public void deleteModuleOnly(String scriptPath, String module) throws IOException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
         List<Statement> fromStatements = OntologyHelper.getAllStatementsRecursively(ontModel, module);
         ontModel.remove(fromStatements);
-        FileOutputStream os = new FileOutputStream(scriptPath);
-        ontModel.write(os, langTurtle);
+        try(OutputStream os = new FileOutputStream(scriptPath)) {
+            ontModel.write(os, langTurtle);
+        }
     }
 
-    public void moveModule(String scriptFrom, String scriptTo, String moduleURI, boolean renameBaseOntology) throws FileNotFoundException {
+    public void moveModule(String scriptFrom, String scriptTo, String moduleURI, boolean renameBaseOntology) throws IOException {
         String fromOntology = OntologyHelper.getOntologyUri(new File(scriptFrom));
         String toOntology = OntologyHelper.getOntologyUri(new File(scriptTo));
 
@@ -122,8 +123,10 @@ public class ScriptService {
                 }
             });
         }
-        toModel.write(new FileOutputStream(toFile), langTurtle);
-        toModel.close();
+        try(OutputStream os = new FileOutputStream(toFile)) {
+            toModel.write(os, langTurtle);
+            toModel.close();
+        }
 
         deleteModuleOnly(scriptFrom, moduleURI);
 
@@ -151,8 +154,10 @@ public class ScriptService {
                     }
                 });
                 if(changed.get()){
-                    resModel.write(new FileOutputStream(file), langTurtle);
-                    resModel.close();
+                    try(OutputStream os = new FileOutputStream(file)) {
+                        resModel.write(os, langTurtle);
+                        resModel.close();
+                    }
                 }
             }
         }
@@ -181,15 +186,16 @@ public class ScriptService {
         sink.write(lines);
     }
 
-    public void removeScriptOntology(String scriptPath, String ontology) throws FileNotFoundException {
+    public void removeScriptOntology(String scriptPath, String ontology) throws IOException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
         ontModel.removeAll(ontModel.getResource(ontology), OWL.imports, null);
         ontModel.removeAll(null, OWL.imports, ontModel.getResource(ontology));
-        FileOutputStream os = new FileOutputStream(scriptPath);
-        ontModel.write(os, langTurtle);
+        try(OutputStream os = new FileOutputStream(scriptPath)) {
+            ontModel.write(os, langTurtle);
+        }
     }
 
-    public void addScriptOntology(String scriptPath, String ontologyName) throws MissingOntologyException, FileNotFoundException {
+    public void addScriptOntology(String scriptPath, String ontologyName) throws MissingOntologyException, IOException {
         File f = new File(scriptPath);
         Model defaultModel = ontologyHelper.createOntModel(f);
         List<Statement> statements = defaultModel
@@ -203,8 +209,9 @@ public class ScriptService {
         Model resModel = ontologyHelper.createOntModel(f);
         Statement ontology = statements.get(0);
         resModel.add(ontology.getSubject(), OWL.imports, new ResourceImpl(ontologyName));
-        FileOutputStream os = new FileOutputStream(scriptPath);
-        resModel.write(os, langTurtle);
+        try(OutputStream os = new FileOutputStream(scriptPath)) {
+            resModel.write(os, langTurtle);
+        }
     }
 
     public List<String> getScriptImportedOntologies(String scriptPath) {
