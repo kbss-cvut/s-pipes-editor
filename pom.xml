@@ -306,6 +306,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${org.springframework.boot.version}</version>
                 <configuration>
                     <mainClass>og_spipes.Main</mainClass>
                 </configuration>
