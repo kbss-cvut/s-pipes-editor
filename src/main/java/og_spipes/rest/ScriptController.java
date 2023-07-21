@@ -10,7 +10,6 @@ import og_spipes.model.spipes.ModuleType;
 import og_spipes.model.spipes.ScriptOntologyDTO;
 import og_spipes.model.view.ErrorMessage;
 import og_spipes.service.FileTreeService;
-import og_spipes.service.OntologyHelper;
 import og_spipes.service.SHACLExecutorService;
 import og_spipes.service.ScriptService;
 import og_spipes.service.exception.FileExistsException;
@@ -22,12 +21,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -116,7 +113,7 @@ public class ScriptController {
 
     @PostMapping(path = "/modules/move")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void moveModule(@RequestBody MoveModuleDTO dto) throws FileNotFoundException {
+    public void moveModule(@RequestBody MoveModuleDTO dto) throws IOException {
         LOG.info(dto.toString());
         boolean rename = Boolean.parseBoolean(dto.getRenameModule());
         scriptService.moveModule(
@@ -129,14 +126,14 @@ public class ScriptController {
 
     @PostMapping(path = "/modules/dependency")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void createDependency(@RequestBody DependencyDTO dto) throws FileNotFoundException {
+    public void createDependency(@RequestBody DependencyDTO dto) throws IOException {
         String script = dto.getAbsolutePath();
         scriptService.createDependency(script, dto.getModuleUri(), dto.getTargetModuleUri());
     }
 
     @PostMapping(path = "/modules/delete")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteModule(@RequestBody ModuleDTO dto) throws FileNotFoundException {
+    public void deleteModule(@RequestBody ModuleDTO dto) throws IOException {
         String scriptPath = dto.getAbsolutePath();
         String moduleUri = dto.getModuleUri();
         scriptService.deleteModule(scriptPath, moduleUri);
@@ -144,7 +141,7 @@ public class ScriptController {
 
     @PostMapping(path = "/modules/dependencies/delete")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void deleteDependency(@RequestBody DependencyDTO dto) throws FileNotFoundException {
+    public void deleteDependency(@RequestBody DependencyDTO dto) throws IOException {
         String scriptPath = dto.getAbsolutePath();
         scriptService.deleteDependency(scriptPath, dto.getModuleUri(), dto.getTargetModuleUri());
     }
@@ -168,7 +165,7 @@ public class ScriptController {
     }
 
     @PostMapping(path = "/ontology/remove", produces = JsonLd.MEDIA_TYPE)
-    public void removeScriptOntology(@RequestBody ScriptOntologyCreateDTO dto) throws FileNotFoundException {
+    public void removeScriptOntology(@RequestBody ScriptOntologyCreateDTO dto) throws IOException {
         LOG.info(dto.toString());
         scriptService.removeScriptOntology(
                 dto.getScriptPath(),
@@ -177,7 +174,7 @@ public class ScriptController {
     }
 
     @PostMapping(path = "/ontology/add", produces = JsonLd.MEDIA_TYPE)
-    public void addModuleOntology(@RequestBody ScriptOntologyCreateDTO dto) throws FileNotFoundException, MissingOntologyException {
+    public void addModuleOntology(@RequestBody ScriptOntologyCreateDTO dto) throws IOException, MissingOntologyException {
         scriptService.addScriptOntology(
                 dto.getScriptPath(),
                 dto.getOntologyUri()

@@ -24,6 +24,7 @@ import org.topbraid.shacl.validation.ValidationResult;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
@@ -52,7 +53,9 @@ public class SHACLExecutorService {
             OntDocumentManager.getInstance().setProcessImports(false);
             OntDocumentManager.getInstance().setReadFailureHandler((s, model, e) -> LOG.debug(s + "; " +e.getLocalizedMessage()));
             for(File f : importGroup.getUsedFiles()){
-                dataModel.read(new FileInputStream(f), "urn:dummy", FileUtils.langTurtle);
+                try(InputStream is = new FileInputStream(f)) {
+                    dataModel.read(is, "urn:dummy", FileUtils.langTurtle);
+                }
             }
 
             final Validator validator = new Validator();

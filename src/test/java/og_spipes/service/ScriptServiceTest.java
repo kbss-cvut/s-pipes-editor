@@ -21,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -70,7 +69,7 @@ public class ScriptServiceTest {
     }
 
     @Test
-    public void moveModuleBasic() throws FileNotFoundException {
+    public void moveModuleBasic() throws IOException {
         String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname";
 
         scriptService.moveModule(
@@ -92,7 +91,7 @@ public class ScriptServiceTest {
     }
 
     @Test
-    public void moveModuleBasicWithRename() throws FileNotFoundException {
+    public void moveModuleBasicWithRename() throws IOException {
         String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname";
 
         scriptService.moveModule(
@@ -114,7 +113,7 @@ public class ScriptServiceTest {
     }
 
     @Test
-    public void moveModuleAffectMoreFiles() throws FileNotFoundException {
+    public void moveModuleAffectMoreFiles() throws IOException {
         String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels";
 
         scriptService.moveModule(
@@ -132,7 +131,7 @@ public class ScriptServiceTest {
     }
 
     @Test
-    public void deleteModuleOnly() throws FileNotFoundException {
+    public void deleteModuleOnly() throws IOException {
         String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels";
 
         scriptService.deleteModuleOnly(
@@ -172,7 +171,7 @@ public class ScriptServiceTest {
     }
 
     @Test
-    public void addScriptOntology() throws FileNotFoundException, MissingOntologyException {
+    public void addScriptOntology() throws IOException, MissingOntologyException {
         File f = new File("/tmp/og_spipes/skosify/skosify.sms.ttl");
         scriptService.addScriptOntology(
                 f.getAbsolutePath(),
@@ -189,7 +188,7 @@ public class ScriptServiceTest {
     }
 
     @Test
-    public void removeScriptOntology() throws FileNotFoundException {
+    public void removeScriptOntology() throws IOException {
         File f = new File("/tmp/og_spipes/skosify/skosify.sms.ttl");
         scriptService.removeScriptOntology(
                 f.getAbsolutePath(),

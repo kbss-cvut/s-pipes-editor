@@ -36,9 +36,8 @@ public class RulesTest {
             File scriptsHomeTmp = new File(scriptPath);
             if(scriptsHomeTmp.exists()){
                 FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-            }else{
-                Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
             }
+            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
         }
     }
 

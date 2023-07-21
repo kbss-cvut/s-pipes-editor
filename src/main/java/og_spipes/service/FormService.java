@@ -8,13 +8,9 @@ import cz.cvut.sforms.util.FormUtils;
 import cz.cvut.spipes.transform.AnonNodeTransformer;
 import cz.cvut.spipes.transform.SPipesUtil;
 import cz.cvut.spipes.transform.Transformer;
-import cz.cvut.spipes.transform.TransformerImpl;
 import og_spipes.model.Vocabulary;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.ontology.OntModel;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.util.FileUtils;
@@ -26,16 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.topbraid.spin.arq.ARQ2SPIN;
-import org.topbraid.spin.model.Construct;
 import org.topbraid.spin.system.SPINModuleRegistry;
-import org.topbraid.spin.vocabulary.SPIN;
-import org.topbraid.spin.vocabulary.SPL;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -83,10 +72,11 @@ public class FormService {
         Model ontModel = helper.createOntModel(new File(scriptPath));
         Map<String, Model> modelMap = ownTransformer.form2Script(ontModel, rootQuestion, moduleType);
         modelMap.forEach((file, model) -> {
-            try {
-                FileOutputStream os = new FileOutputStream(scriptPath);
+            try (OutputStream os = new FileOutputStream(scriptPath)){
                 model.write(os, FileUtils.langTurtle);
             } catch (FileNotFoundException e) {
+                LOG.error(e.getMessage());
+            } catch (IOException e) {
                 LOG.error(e.getMessage());
             }
         });
