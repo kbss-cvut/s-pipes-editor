@@ -158,24 +158,24 @@ public class ScriptControllerTest {
                                 "    {\n" +
                                 "      \"children\": [\n" +
                                 "        {\n" +
-                                "          \"id\": \"/tmp/og_spipes/hello-world.sms.ttl\",\n" +
+                                "          \"id\": \"" + new File("/tmp/og_spipes/hello-world.sms.ttl").toURI().getPath() + "\",\n" +
                                 "          \"name\": \"hello-world.sms.ttl\"\n" +
                                 "        },\n" +
                                 "        {\n" +
-                                "          \"id\": \"/tmp/og_spipes/hello-world2.sms.ttl\",\n" +
+                                "          \"id\": \"" + new File("/tmp/og_spipes/hello-world2.sms.ttl").toURI().getPath() + "\",\n" +
                                 "          \"name\": \"hello-world2.sms.ttl\"\n" +
                                 "        },\n" +
                                 "        {\n" +
-                                "          \"id\": \"/tmp/og_spipes/hello-world3.sms.ttl\",\n" +
+                                "          \"id\": \"" + new File("/tmp/og_spipes/hello-world3.sms.ttl").toURI().getPath() + "\",\n" +
                                 "          \"name\": \"hello-world3.sms.ttl\"\n" +
                                 "        },\n" +
                                 "        {\n" +
-                                "          \"id\": \"/tmp/og_spipes/data-without-label.ttl\",\n" +
+                                "          \"id\": \"" + new File("/tmp/og_spipes/data-without-label.ttl").toURI().getPath() + "\",\n" +
                                 "          \"name\": \"data-without-label.ttl\"\n" +
                                 "        }\n" +
                                 "      ],\n" +
                                 "      \"name\": \"og_spipes\",\n" +
-                                "      \"id\": \"/tmp/og_spipes\"\n" +
+                                "      \"id\": \"" + new File("/tmp/og_spipes").toURI().getPath() + "\" \n" +
                                 "    }\n" +
                                 "  ],\n" +
                                 "  \"name\": \"[SCRIPTS ROOT]\",\n" +

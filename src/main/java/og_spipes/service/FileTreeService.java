@@ -45,13 +45,13 @@ public class FileTreeService {
 
         for(File f : Objects.requireNonNull(file.listFiles())){
             if (f.isFile() && f.getName().endsWith(".ttl")) {
-                fileTrees.add(new Leaf(f.getAbsolutePath(), f.getName()));
+                fileTrees.add(new Leaf(f.getAbsoluteFile().toURI().getPath(), f.getName()));
             } else if (f.isDirectory()) {
                 fileTrees.add(getTtlFileTree(f));
             }
         }
 
-        return new SubTree(fileTrees, file.getName(), file.getAbsolutePath());
+        return new SubTree(fileTrees, file.getName(), file.getAbsoluteFile().toURI().getPath());
     }
 
 }
