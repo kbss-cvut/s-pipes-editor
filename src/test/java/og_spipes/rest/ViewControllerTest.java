@@ -75,7 +75,8 @@ public class ViewControllerTest {
                 .content(
                         "{" +
                                 "\"@type\":\"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\":\"" + scriptPath + "\"" +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\":\"" +
+                                scriptPath.toURI().getPath() + "\"" +
                                 "}"
                 )
                 .contentType(MediaType.APPLICATION_JSON)
@@ -99,7 +100,8 @@ public class ViewControllerTest {
                 .content(
                         "{" +
                                 "\"@type\":\"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\":\"" + scriptPath + "\", " +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\":\"" +
+                                scriptPath.toURI().getPath() + "\", " +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-transformation-id\":\"" + transformationId + "\"" +
                                 "}"
                 )
