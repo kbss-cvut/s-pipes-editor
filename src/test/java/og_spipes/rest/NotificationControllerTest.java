@@ -62,10 +62,10 @@ public class NotificationControllerTest {
             Thread.sleep(500);
         }
 
-        myWebSocketClient.send(scriptPaths + "/sample-script.ttl");
+        File file = new File(scriptPaths + "/sample-script.ttl");
+        myWebSocketClient.send(file.toURI().getPath());
         Thread.sleep(1000);
 
-        File file = new File(scriptPaths + "/sample-script.ttl");
         String fileContext = FileUtils.readFileToString(file, "UTF-8");
         fileContext = fileContext + "\nnew_line";
         FileUtils.write(file, fileContext, "UTF-8");

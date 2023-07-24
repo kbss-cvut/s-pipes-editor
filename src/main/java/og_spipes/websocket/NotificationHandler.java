@@ -59,8 +59,9 @@ public class NotificationHandler extends TextWebSocketHandler implements Initial
     }
 
     private void notify(String file, String message) {
-        if(fileSubscribers.containsKey(file)){
-            fileSubscribers.get(file).forEach(session -> {
+        String fileUri = new File(file).toURI().getPath();
+        if(fileSubscribers.containsKey(fileUri)){
+            fileSubscribers.get(fileUri).forEach(session -> {
                 try {
                     LOG.info("File has changed: " + file + ", sending message: " + message + ", to: " + session.toString());
                     session.sendMessage(new TextMessage(message));
