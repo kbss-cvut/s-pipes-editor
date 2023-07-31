@@ -2,7 +2,7 @@ package og_spipes.rest;
 
 import og_spipes.config.Constants;
 import org.apache.commons.io.FileUtils;
-import org.java_websocket.WebSocket;
+import org.java_websocket.enums.ReadyState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +57,7 @@ public class NotificationControllerTest {
     void testMonitoringOfRootFSAndNotificationService() throws Exception{
         MyWebSocketClient myWebSocketClient = new MyWebSocketClient(new URI(URL));
         myWebSocketClient.connect();
-        while (!WebSocket.READYSTATE.OPEN.equals(myWebSocketClient.getReadyState())){
+        while (!ReadyState.OPEN.equals(myWebSocketClient.getReadyState())){
             LOG.info("WebSocket Client connection, please wait...");
             Thread.sleep(500);
         }
