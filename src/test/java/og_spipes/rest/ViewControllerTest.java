@@ -1,6 +1,7 @@
 package og_spipes.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.cvut.kbss.jsonld.ConfigParam;
 import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
 import og_spipes.config.Constants;
 import og_spipes.model.view.View;
@@ -54,7 +55,9 @@ public class ViewControllerTest {
         conn.add(new File("src/test/resources/rdf4j_source/repositories/rdf4j_export"), null, RDFFormat.TURTLE);
         conn.close();
         sesameRepo.shutDown();
-        mapper.registerModule(new JsonLdModule());
+        JsonLdModule module = new JsonLdModule();
+        module.configure(ConfigParam.SCAN_PACKAGE, "og_spipes");
+        mapper.registerModule(module);
     }
 
     @BeforeEach
