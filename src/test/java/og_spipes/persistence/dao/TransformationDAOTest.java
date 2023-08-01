@@ -28,8 +28,6 @@ class TransformationDAOTest {
     @Autowired
     private TransformationDAO transformationDAO;
 
-    private static final ObjectMapper mapper = new ObjectMapper();
-
     @BeforeAll
     public static void beforeAll() throws IOException {
         File dataDir = new File("/tmp/og_spipes_sesame/repositories/transformation-dao/s-pipes-hello-world");
@@ -40,7 +38,6 @@ class TransformationDAOTest {
         conn.add(new File("src/test/resources/rdf4j_source/repositories/rdf4j_export"), null, RDFFormat.TURTLE);
         conn.close();
         sesameRepo.shutDown();
-        mapper.registerModule(new JsonLdModule());
     }
 
     @Test

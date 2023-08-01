@@ -1,8 +1,8 @@
 package og_spipes.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
 import og_spipes.config.Constants;
+import og_spipes.config.RestConfig;
 import og_spipes.model.view.View;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.rdf4j.repository.Repository;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.FileSystemUtils;
@@ -54,7 +53,7 @@ public class ViewControllerTest {
         conn.add(new File("src/test/resources/rdf4j_source/repositories/rdf4j_export"), null, RDFFormat.TURTLE);
         conn.close();
         sesameRepo.shutDown();
-        mapper.registerModule(new JsonLdModule());
+        RestConfig.configureObjectMapper(mapper);
     }
 
     @BeforeEach
