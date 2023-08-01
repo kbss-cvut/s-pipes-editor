@@ -2,10 +2,9 @@ package og_spipes.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.cvut.kbss.jsonld.ConfigParam;
-import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
 import cz.cvut.sforms.model.Question;
 import og_spipes.config.Constants;
+import og_spipes.config.RestConfig;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.service.FormService;
 import og_spipes.service.FunctionService;
@@ -70,9 +69,7 @@ public class FunctionControllerTest {
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
         }
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/hello-world"), scriptsHomeTmp);
-        JsonLdModule module = new JsonLdModule();
-        module.configure(ConfigParam.SCAN_PACKAGE, "og_spipes");
-        mapper.registerModule(module);
+        RestConfig.configureObjectMapper(mapper);
     }
 
     @Test

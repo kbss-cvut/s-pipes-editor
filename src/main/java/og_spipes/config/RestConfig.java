@@ -33,9 +33,11 @@ import java.util.List;
 @Configuration
 public class RestConfig implements WebMvcConfigurer {
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        final ObjectMapper objectMapper = new ObjectMapper();
+    /**
+     * Configure the provided objectMapper.
+     * @param objectMapper
+     */
+    public static void configureObjectMapper(ObjectMapper objectMapper){
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         // Here we register the JSON-LD serialization/deserialization module
@@ -43,6 +45,12 @@ public class RestConfig implements WebMvcConfigurer {
         // Package scan is important for polymorphic deserialization
         module.configure(ConfigParam.SCAN_PACKAGE, "og_spipes");
         objectMapper.registerModule(module);
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        configureObjectMapper(objectMapper);
         return objectMapper;
     }
 

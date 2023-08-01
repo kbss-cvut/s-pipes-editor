@@ -2,9 +2,8 @@ package og_spipes.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.cvut.kbss.jsonld.ConfigParam;
-import cz.cvut.kbss.jsonld.jackson.JsonLdModule;
 import og_spipes.config.Constants;
+import og_spipes.config.RestConfig;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.dto.SHACLValidationResultDTO;
 import og_spipes.model.dto.ScriptCreateDTO;
@@ -58,9 +57,7 @@ public class ScriptControllerTest {
         }
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/hello-world"), scriptsHomeTmp);
         FileUtils.copyFileToDirectory(new File("src/test/resources/SHACL/rule-test-cases/data-without-label.ttl"), scriptsHomeTmp);
-        JsonLdModule module = new JsonLdModule();
-        module.configure(ConfigParam.SCAN_PACKAGE, "og_spipes");
-        mapper.registerModule(module);
+        RestConfig.configureObjectMapper(mapper);
     }
 
     @Test
