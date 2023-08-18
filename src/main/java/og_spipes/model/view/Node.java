@@ -160,11 +160,11 @@ public class Node extends AbstractEntitySP {
         if (this == o) return true;
         if (!(o instanceof Node)) return false;
         Node node = (Node) o;
-        return Objects.equals(getLabel(), node.getLabel()) && Objects.equals(getComponent(), node.getComponent()) && Objects.equals(getX(), node.getX()) && Objects.equals(getY(), node.getY()) && Objects.equals(getScriptPath(), node.getScriptPath()) && Objects.equals(getGroup(), node.getGroup()) && Objects.equals(getModuleTypes(), node.getModuleTypes()) && Objects.equals(getInParameters(), node.getInParameters()) && Objects.equals(getOutParameters(), node.getOutParameters()) && Objects.equals(moduleVariables, node.moduleVariables);
+        return Objects.equals(getUri(), node.getUri()) && Objects.equals(getLabel(), node.getLabel()) && Objects.equals(getComponent(), node.getComponent()) && Objects.equals(getX(), node.getX()) && Objects.equals(getY(), node.getY()) && Objects.equals(getScriptPath(), node.getScriptPath()) && Objects.equals(getGroup(), node.getGroup()) && Objects.equals(getModuleTypes(), node.getModuleTypes()) && Objects.equals(getInParameters(), node.getInParameters()) && Objects.equals(getOutParameters(), node.getOutParameters()) && Objects.equals(moduleVariables, node.moduleVariables);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLabel(), getComponent(), getX(), getY(), getScriptPath(), getGroup(), getModuleTypes(), getInParameters(), getOutParameters(), moduleVariables);
+        return Objects.hash(getUri(), getLabel(), getComponent(), getX(), getY(), getScriptPath(), getGroup(), getModuleTypes(), getInParameters(), getOutParameters(), moduleVariables);
     }
 }
