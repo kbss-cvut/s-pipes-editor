@@ -62,6 +62,7 @@ public class SPipesExecutionService {
     ) throws SPipesEngineException {
         String serviceUrl = engineUrl + "/service";
         params.put("_pId", functionId);
+        params.put("_pConfigURL", pConfigURL);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUrl);
         for (Map.Entry<String, String> pair : params.entrySet()) {
