@@ -1,5 +1,6 @@
 package og_spipes.service;
 
+import cz.cvut.spipes.util.DateUtils;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import og_spipes.model.spipes.ExecutionDTO;
@@ -138,8 +139,8 @@ public class SPipesExecutionService {
                     String pipelineURI = moduleProps.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name").stream().findFirst().orElse("").toString();
                     String name = pipelineURI.substring(pipelineURI.lastIndexOf("/")+1);
                     String duration = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-duration").stream().findFirst().orElse("").toString();
-                    Date startDate = (Date) properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-start-date").stream().findFirst().orElse(new Date());
-                    Date finishDate = (Date) properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-finish-date").stream().findFirst().orElse(new Date());
+                    Date startDate = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-start-date").stream().findFirst().map(DateUtils::toDate).orElse(new Date());
+                    Date finishDate = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-finish-date").stream().findFirst().map(DateUtils::toDate).orElse(new Date());
                     try {
                         return new ExecutionDTO(
                                 pipelineURI,
