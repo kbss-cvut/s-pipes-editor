@@ -168,9 +168,12 @@ public class FormService {
                 subQ.setProperties(extractQuestionMetadata(st));
 
                 //problem with other types SPipesUtil.getSpinQueryUri has to be outdated
-                if (st.getObject().isAnon() && SPipesUtil.getSpinQueryUri(st.getObject().asResource()) != null) {
+                if (st.getObject().isAnon() && SPipesUtil.getSPinCommandType(st.getObject().asResource()) != null) {
                     subQ.setLayoutClass(Collections.singleton("sparql"));
-                    subQ.getProperties().put(cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type, Collections.singleton(SPipesUtil.getSpinQueryUri(st.getObject().asResource())));
+                    subQ.getProperties().put(
+                            cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type,
+                            Collections.singleton(SPipesUtil.getSPinCommandType(st.getObject().asResource()).getResource().getURI())
+                    );
                     subQ.setDeclaredPrefix(p.getModel().getNsPrefixMap().entrySet().stream().map(prefix -> new PrefixDefinition(prefix.getKey(), prefix.getValue())).collect(Collectors.toSet()));
                 }
 
