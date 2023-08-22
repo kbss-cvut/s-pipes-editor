@@ -1,6 +1,6 @@
 package og_spipes.service;
 
-import cz.cvut.sforms.VocabularyJena;
+import cz.cvut.sforms.SFormsVocabularyJena;
 import cz.cvut.sforms.model.Answer;
 import cz.cvut.sforms.model.PrefixDefinition;
 import cz.cvut.sforms.model.Question;
@@ -168,9 +168,12 @@ public class FormService {
                 subQ.setProperties(extractQuestionMetadata(st));
 
                 //problem with other types SPipesUtil.getSpinQueryUri has to be outdated
-                if (st.getObject().isAnon() && SPipesUtil.getSpinQueryUri(st.getObject().asResource()) != null) {
+                if (st.getObject().isAnon() && SPipesUtil.getSPinCommandType(st.getObject().asResource()) != null) {
                     subQ.setLayoutClass(Collections.singleton("sparql"));
-                    subQ.getProperties().put(cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type, Collections.singleton(SPipesUtil.getSpinQueryUri(st.getObject().asResource())));
+                    subQ.getProperties().put(
+                            cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type,
+                            Collections.singleton(SPipesUtil.getSPinCommandType(st.getObject().asResource()).getResource().getURI())
+                    );
                     subQ.setDeclaredPrefix(p.getModel().getNsPrefixMap().entrySet().stream().map(prefix -> new PrefixDefinition(prefix.getKey(), prefix.getValue())).collect(Collectors.toSet()));
                 }
 
@@ -188,9 +191,9 @@ public class FormService {
             }
 
             List<Statement> typeDefinitionStatements = moduleType.listProperties().filterKeep(
-                    st -> st.getPredicate().hasURI(VocabularyJena.s_p_constraint.getURI())).toList();
+                    st -> st.getPredicate().hasURI(SFormsVocabularyJena.s_p_constraint.getURI())).toList();
             for (Statement st : typeDefinitionStatements) {
-                Resource p = st.getObject().asResource().getPropertyResourceValue(VocabularyJena.s_p_predicate_A);
+                Resource p = st.getObject().asResource().getPropertyResourceValue(SFormsVocabularyJena.s_p_predicate_A);
 
                 if (processedPredicates.contains(p)) {
                     continue;
@@ -538,9 +541,9 @@ public class FormService {
 
         private URI createAnswerOrigin(Statement statement) {
             if (!statement.getObject().isAnon())
-                return URI.create(VocabularyJena.s_c_answer_origin.toString() +
+                return URI.create(SFormsVocabularyJena.s_c_answer_origin.toString() +
                         "/" + createMd5Hash(statement.getObject().toString()));
-            return URI.create(VocabularyJena.s_c_answer_origin.toString() +
+            return URI.create(SFormsVocabularyJena.s_c_answer_origin.toString() +
                     "/" + createMd5Hash(AnonNodeTransformer.serialize(statement.getObject())));
         }
 
@@ -549,7 +552,7 @@ public class FormService {
         }
 
         private void initializeQuestionUri(Question q) {
-            q.setUri(URI.create(VocabularyJena.s_c_question + "-" + UUID.randomUUID().toString()));
+            q.setUri(URI.create(SFormsVocabularyJena.s_c_question + "-" + UUID.randomUUID().toString()));
         }
 
         private Question createQuestion(Resource resource) {

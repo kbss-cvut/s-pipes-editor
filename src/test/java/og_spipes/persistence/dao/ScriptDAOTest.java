@@ -1,5 +1,6 @@
 package og_spipes.persistence.dao;
 
+import cz.cvut.kbss.jopa.model.JOPAPersistenceProperties;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
@@ -33,7 +34,7 @@ public class ScriptDAOTest {
     public void correctInitOfEntityManagerFactory() {
         Map<String, String> expectedMap = new HashMap<>();
         expectedMap.put("cz.cvut.jopa.scanPackage", "og_spipes.model");
-        expectedMap.put("javax.persistence.provider", "cz.cvut.kbss.jopa.model.JOPAPersistenceProvider");
+        expectedMap.put(JOPAPersistenceProperties.JPA_PERSISTENCE_PROVIDER, "cz.cvut.kbss.jopa.model.JOPAPersistenceProvider");
         expectedMap.put("cz.cvut.jopa.dataSource.class", "cz.cvut.kbss.ontodriver.jena.JenaDataSource");
         expectedMap.put("cz.cvut.jopa.lang", "en");
         expectedMap.put("in-memory", "true");
