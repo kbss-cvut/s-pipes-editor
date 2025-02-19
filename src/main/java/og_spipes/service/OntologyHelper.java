@@ -1,32 +1,22 @@
 package og_spipes.service;
 
-import com.google.common.collect.ImmutableList;
 import og_spipes.persistence.dao.ScriptDAO;
-import og_spipes.service.util.ScriptImportGroup;
-import org.apache.jena.assembler.ImportManager;
 import org.apache.jena.graph.impl.SimpleGraphMaker;
 import org.apache.jena.ontology.OntDocumentManager;
-import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.ontology.ProfileRegistry;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.ModelMakerImpl;
-import org.apache.jena.sys.JenaSystem;
-import org.apache.jena.util.FileManager;
-import org.apache.jena.util.LocationMapper;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.topbraid.jenax.util.JenaUtil;
 
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.apache.jena.util.FileUtils.langTurtle;
 
 @Service
 public class OntologyHelper {
@@ -57,16 +47,14 @@ public class OntologyHelper {
         documentManager.setReadFailureHandler((s, model, e) -> LOG.debug(s + "; " +e.getLocalizedMessage()));
         for(File s : scripts){
             String ontologyUri = getOntologyUri(s);
-            if(!ontologyUri.equals("")){
+            if(!ontologyUri.isEmpty()){
                 String absolutePath = s.getAbsolutePath();
                 documentManager.addAltEntry(ontologyUri, absolutePath);
             }
         }
         ModelMakerImpl modelMaker = new ModelMakerImpl(new SimpleGraphMaker());
         OntModelSpec ontModelSpec = new OntModelSpec(modelMaker, null, null, ProfileRegistry.OWL_LANG);
-        OntModel model = documentManager.getOntology(fileUri, ontModelSpec);
-
-        return model;
+        return documentManager.getOntology(fileUri, ontModelSpec);
     }
 
     public static String getOntologyUri(File f) {
@@ -78,8 +66,8 @@ public class OntologyHelper {
         List<String> listURI = statements.stream().map(x -> x.getSubject().getURI())
                 .collect(Collectors.toList());
 
-        if(listURI.size() == 0){
-            LOG.error("Missing ontology in file: " + f.getAbsolutePath());
+        if(listURI.isEmpty()){
+            LOG.warn("Missing owl:Ontology declaration in file: " + f.getAbsolutePath());
             return "";
         }
 
