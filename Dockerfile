@@ -1,5 +1,4 @@
-# the first stage of our build will use a maven 3.6.1 parent image
-FROM maven:3.9.3-eclipse-temurin-11-alpine AS MAVEN_BUILD
+FROM maven:3-eclipse-temurin-17 AS MAVEN_BUILD
 
 # copy the pom and src code to the container
 COPY ./ ./

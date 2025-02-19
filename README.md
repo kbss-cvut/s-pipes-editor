@@ -1,6 +1,10 @@
 # S-Pipes Editor Backend
 Backend for SPipes editor UI
 
+## Required Technologies
+
+- JDK 17
+
 ## Features
 * Script creation
 * Script validation
