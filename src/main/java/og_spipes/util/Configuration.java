@@ -10,6 +10,7 @@ public class Configuration {
     String scriptRules;
 
     Rdf4j rdf4j = new Rdf4j();
+    Cors cors = new Cors();
 
     public String getScriptPaths() {
         return scriptPaths;
@@ -41,6 +42,14 @@ public class Configuration {
 
     public void setRdf4j(Rdf4j rdf4j) {
         this.rdf4j = rdf4j;
+    }
+
+    public Cors getCors() {
+        return cors;
+    }
+
+    public void setCors(Cors cors) {
+        this.cors = cors;
     }
 
     public static class Rdf4j {
@@ -88,6 +97,18 @@ public class Configuration {
 
         public void setDriver(String driver) {
             this.driver = driver;
+        }
+    }
+
+    public static class Cors {
+        String allowedOrigins;
+
+        public String getAllowedOrigins() {
+            return allowedOrigins;
+        }
+
+        public void setAllowedOrigins(String allowedOrigins) {
+            this.allowedOrigins = allowedOrigins;
         }
     }
 }
