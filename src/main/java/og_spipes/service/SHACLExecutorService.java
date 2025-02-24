@@ -27,9 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,4 +97,113 @@ public class SHACLExecutorService {
         return "";
     }
 
+    public Set<SHACLValidationResultDTO> testModel(List<File> rules, String rootScript) throws IOException, URISyntaxException {
+        File rootScriptFile = new File(rootScript);
+
+        Set<SHACLValidationResultDTO> violations = new HashSet<>();
+        if(! shouldTest(rules, rootScriptFile))
+            return violations;
+        long timestamp = System.currentTimeMillis();
+        try(ValidationContext context = createValidationContext(rootScript)){
+            for(File f : rules){
+                violations.addAll(context.testModel(Collections.singleton(f.toURI().toURL())));
+            }
+        }
+
+        cacheValidationResult(rootScriptFile, violations.isEmpty(), timestamp);
+        return violations;
+    }
+
+    protected Map<File, VR> validationCache = new HashMap<>();
+
+    protected void cacheValidationResult(File file, boolean valid, long timestamp){
+        validationCache.put(file, new VR(timestamp, valid));
+    }
+
+    protected boolean shouldTest(List<File> rules, File rootScriptFile){
+        VR v = validationCache.get(rootScriptFile);
+        if(v == null)
+            return true;
+        boolean rootScriptFileOutdated = og_spipes.utils.FileUtils.isOutdated(rootScriptFile, v.timestamp);
+        boolean rulesOutdated = rules.stream().filter(rf -> og_spipes.utils.FileUtils.isOutdated(rf, v.timestamp))
+                .findAny().isPresent();
+        return rootScriptFileOutdated || rulesOutdated || !v.getValid();
+    }
+
+    protected ValidationContext createValidationContext(String rootScript) throws IOException {
+        final Model dataModel = JenaUtil.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF, null);
+        ScriptImportGroup importGroup = new ScriptImportGroup(scriptPaths, new File(rootScript));
+
+        OntDocumentManager.getInstance().setProcessImports(false);
+        OntDocumentManager.getInstance().setReadFailureHandler((s, model, e) -> LOG.debug(s + "; " +e.getLocalizedMessage()));
+        for(File f : importGroup.getUsedFiles()){
+            try(InputStream is = new FileInputStream(f)) {
+                dataModel.read(is, "urn:dummy", FileUtils.langTurtle);
+            }
+        }
+        return new ValidationContext(dataModel);
+    }
+
+    protected class ValidationContext implements AutoCloseable{
+        protected Model dataModel;
+
+        public ValidationContext() {
+        }
+
+        public ValidationContext(Model dataModel) {
+            this.dataModel = dataModel;
+        }
+
+        public Model getDataModel() {
+            return dataModel;
+        }
+
+        public void setDataModel(Model dataModel) {
+            this.dataModel = dataModel;
+        }
+
+        public Set<SHACLValidationResultDTO> testModel(Set<URL> ruleSet) throws IOException, URISyntaxException {
+            final Set<SHACLValidationResultDTO> res = new HashSet<>();
+            final Validator validator = new Validator();
+            for(URL url : ruleSet){
+                ValidationReport report = validator.validate(dataModel, Sets.newHashSet(url));
+                for(ValidationResult result : report.results()){
+                    String ruleComment = getRuleComment(new File(url.toURI()).getAbsolutePath());
+                    res.add(new SHACLValidationResultDTO(
+                            result.getFocusNode().toString(),
+                            result.getSeverity().getLocalName(),
+                            result.getMessage().replace("@en", ""),
+                            url.toString(),
+                            ruleComment
+                    ));
+                }
+            }
+            return res;
+        }
+
+        @Override
+        public void close() {
+            dataModel.removeAll();
+            OntDocumentManager.getInstance().setProcessImports(true);
+        }
+    }
+
+
+    class VR {
+        protected Long timestamp;
+        protected Boolean valid;
+
+        public VR(Long timestamp, Boolean valid) {
+            this.timestamp = timestamp;
+            this.valid = valid;
+        }
+
+        public Long getTimestamp() {
+            return timestamp;
+        }
+
+        public Boolean getValid() {
+            return valid;
+        }
+    }
 }
