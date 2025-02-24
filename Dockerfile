@@ -15,6 +15,6 @@ COPY --from=build  /s-pipes-editor/target/og-spipes-*.jar s-pipes-editor.jar
 
 EXPOSE 18115
 
-ENV JAVA_OPTS=""
+ENV JAVA_TOOL_OPTIONS=""
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /s-pipes-editor.jar"]
+ENTRYPOINT ["java","-jar","/s-pipes-editor.jar"]
