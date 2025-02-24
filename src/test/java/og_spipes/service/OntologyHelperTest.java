@@ -1,5 +1,6 @@
 package og_spipes.service;
 
+import og_spipes.persistence.dao.OntologyDao;
 import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.jena.rdf.model.Model;
 import org.junit.jupiter.api.Assertions;
@@ -26,7 +27,7 @@ public class OntologyHelperTest {
     @Test
     public void getOntologyUri() {
         //TODO parametrize later
-        String res = ontologyHelper.getOntologyUri(new File("src/test/resources/scripts_test/sample/sample-script.ttl"));
+        String res = OntologyDao.getOntologyUri(new File("src/test/resources/scripts_test/sample/sample-script.ttl"));
 
         Assertions.assertEquals("http://www.semanticweb.org/sample-script", res);
     }
