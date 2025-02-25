@@ -66,6 +66,7 @@ public class ScriptDAO {
         EntityManager em = emf.createEntityManager();
         InfModel infModel = ModelFactory.createRDFSModel(m);
         Dataset dataset = em.unwrap(Dataset.class);
+        // TODO - optimize performance. This call results in calling DatasetGraphInMemory.setGraph which results in inferencing all statements.
         dataset.setDefaultModel(infModel);
         emf.getCache().evict(ModuleType.class);
         List<ModuleType> moduleTypes = em.createNativeQuery("select ?s where { ?s a ?type . }", ModuleType.class)
