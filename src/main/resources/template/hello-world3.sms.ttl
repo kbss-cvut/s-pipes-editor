@@ -4,8 +4,17 @@
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 
 <ONTOLOGY_NAME>
-    a            owl:Ontology ;
-    owl:imports  <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> .
+    a  owl:Ontology ;
+    owl:imports  <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> ;
+.
 
-:dummy a sml:BindWithConstant ;
-     rdfs:label         "Dummy" .
+:FUNCTION_PREFIX_Return
+  a sml:ReturnRDF ;
+  sml:serialization sml:Turtle ;
+.
+
+:FUNCTION_PREFIX-SCRIPT_NAME
+  a sml:Function ;
+  sml:returnModule :transform-data_Return ;
+  rdfs:subClassOf sml:Functions ;
+.
