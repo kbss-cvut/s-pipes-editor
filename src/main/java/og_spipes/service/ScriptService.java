@@ -177,12 +177,15 @@ public class ScriptService {
             throw new OntologyDuplicationException(ontologyURI + " ontology already exists");
         }
 
-        List<String> directoryFiles = ScriptDAO.getScripts(directory).stream().map(File::getName).collect(Collectors.toList());
-        if(directoryFiles.contains(filename)){
+        List<String> directoryFiles = ScriptDAO.getScripts(directory).stream().map(File::getName)
+                .collect(Collectors.toList());
+        String filename = scriptName + scriptType;
+        if (directoryFiles.contains(filename)) {
             throw new FileExistsException(filename + " already exists");
         }
 
-        String lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_NAME", ontologyURI.toString());
+        String lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_NAME", ontologyURI.toString())
+                .replace("FUNCTION_PREFIX", functionPrefix).replace("SCRIPT_NAME", scriptName);
         File file = new File(directory + "/" + filename);
         CharSink sink = Files.asCharSink(file, Charsets.UTF_8);
         sink.write(lines);

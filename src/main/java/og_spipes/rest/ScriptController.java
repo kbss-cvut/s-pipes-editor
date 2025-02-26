@@ -83,7 +83,8 @@ public class ScriptController {
     public void createScript(@RequestBody ScriptCreateDTO dto) throws IOException, OntologyDuplicationException, URISyntaxException, FileExistsException {
         LOG.info("Create script: " + dto);
         URI ontologyURI = new URI(dto.getOntologyUri());
-        scriptService.createScript(dto.getDirectoryPath(), dto.getName(), ontologyURI);
+        scriptService.createScript(dto.getDirectoryPath(), dto.getName(), dto.getType(), ontologyURI,
+                dto.getFunctionPrefix());
     }
 
     @PostMapping(path = "/delete", produces = JsonLd.MEDIA_TYPE)
