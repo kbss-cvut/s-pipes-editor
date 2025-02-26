@@ -166,7 +166,7 @@ public class ScriptService {
         //TODO resolve imports
     }
 
-    public void createScript(String directory, String filename, URI ontologyURI) throws IOException, OntologyDuplicationException, FileExistsException {
+    public void createScript(String directory, String scriptName,String scriptType, URI ontologyURI, String functionPrefix) throws IOException, OntologyDuplicationException, FileExistsException {
         File template = new File("src/main/resources/template/hello-world3.sms.ttl");
 
         List<String> ontologyNames = scriptDao.getScripts().stream()
