@@ -3,6 +3,7 @@ package og_spipes.service;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharSink;
 import com.google.common.io.Files;
+import cz.cvut.spipes.util.JenaUtils;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
@@ -66,7 +67,7 @@ public class ScriptService {
 
         ontModel.add(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
         try (OutputStream os = new FileOutputStream(scriptPath);){
-            ontModel.write(os, langTurtle);
+            JenaUtils.writeScript(os, ontModel);
         }
     }
 
@@ -78,7 +79,7 @@ public class ScriptService {
                 ontModel.getResource(to)
         );
         try(OutputStream os = new FileOutputStream(scriptPath)) {
-            ontModel.write(os, langTurtle);
+            JenaUtils.writeScript(os, ontModel);
         }
     }
 
@@ -88,7 +89,7 @@ public class ScriptService {
         ontModel.remove(fromStatements);
         ontModel.removeAll(null, null, ontModel.getResource(module));
         try(OutputStream os = new FileOutputStream(scriptPath)) {
-            ontModel.write(os, langTurtle);
+            JenaUtils.writeScript(os, ontModel);
         }
     }
 
@@ -97,7 +98,7 @@ public class ScriptService {
         List<Statement> fromStatements = OntologyHelper.getAllStatementsRecursively(ontModel, module);
         ontModel.remove(fromStatements);
         try(OutputStream os = new FileOutputStream(scriptPath)) {
-            ontModel.write(os, langTurtle);
+            JenaUtils.writeScript(os, ontModel);;
         }
     }
 
@@ -124,7 +125,7 @@ public class ScriptService {
             });
         }
         try(OutputStream os = new FileOutputStream(toFile)) {
-            toModel.write(os, langTurtle);
+            JenaUtils.writeScript(os, toModel);
             toModel.close();
         }
 
@@ -155,7 +156,7 @@ public class ScriptService {
                 });
                 if(changed.get()){
                     try(OutputStream os = new FileOutputStream(file)) {
-                        resModel.write(os, langTurtle);
+                        JenaUtils.writeScript(os, resModel);
                         resModel.close();
                     }
                 }
@@ -191,7 +192,7 @@ public class ScriptService {
         ontModel.removeAll(ontModel.getResource(ontology), OWL.imports, null);
         ontModel.removeAll(null, OWL.imports, ontModel.getResource(ontology));
         try(OutputStream os = new FileOutputStream(scriptPath)) {
-            ontModel.write(os, langTurtle);
+            JenaUtils.writeScript(os, ontModel);
         }
     }
 
@@ -210,7 +211,7 @@ public class ScriptService {
         Statement ontology = statements.get(0);
         resModel.add(ontology.getSubject(), OWL.imports, new ResourceImpl(ontologyName));
         try(OutputStream os = new FileOutputStream(scriptPath)) {
-            resModel.write(os, langTurtle);
+            JenaUtils.writeScript(os, resModel);
         }
     }
 

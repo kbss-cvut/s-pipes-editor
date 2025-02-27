@@ -8,6 +8,7 @@ import cz.cvut.sforms.util.FormUtils;
 import cz.cvut.spipes.transform.AnonNodeTransformer;
 import cz.cvut.spipes.transform.SPipesUtil;
 import cz.cvut.spipes.transform.Transformer;
+import cz.cvut.spipes.util.JenaUtils;
 import og_spipes.model.Vocabulary;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.jena.ontology.OntModel;
@@ -73,7 +74,7 @@ public class FormService {
         Map<String, Model> modelMap = ownTransformer.form2Script(ontModel, rootQuestion, moduleType);
         modelMap.forEach((file, model) -> {
             try (OutputStream os = new FileOutputStream(scriptPath)){
-                model.write(os, FileUtils.langTurtle);
+                JenaUtils.writeScript(os, model);
             } catch (FileNotFoundException e) {
                 LOG.error(e.getMessage());
             } catch (IOException e) {
@@ -244,7 +245,7 @@ public class FormService {
             Answer ttlA = new Answer();
 
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ModelFactory.createDefaultModel().add(module.listProperties()).write(os, "TTL");
+            JenaUtils.writeScript(os, ModelFactory.createDefaultModel().add(module.listProperties()));
             String ttlStr = new String(os.toByteArray());
             ttlA.setTextValue(ttlStr);
             ttlA.setHash(DigestUtils.sha1Hex(ttlStr));
