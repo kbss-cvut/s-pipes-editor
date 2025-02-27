@@ -86,7 +86,7 @@ public class SPipesExecutionService {
 
         File file = new File(configLocation);
         try (FileWriter writer = new FileWriter(file)){
-            model.write(writer, "TTL");
+            model.write(writer, "TTL");  // TODO apply JenaUtils.writeScript(writer, ontModel);
             LOG.info("Debug config created");
         } catch (IOException e) {
             LOG.warn(e.getMessage());
