@@ -149,9 +149,10 @@ public class ScriptServiceTest {
     public void createScript() throws OntologyDuplicationException, IOException, FileExistsException {
         scriptService.createScript(
                 "/tmp/og_spipes/hello-world",
-                "karel.ttl",
-                URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/karel")
-        );
+                "karel",
+                ".ttl",
+                URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/karel"),
+                "test");
 
         File file = new File("/tmp/og_spipes/hello-world/karel.ttl");
         Assertions.assertTrue(file.exists());
