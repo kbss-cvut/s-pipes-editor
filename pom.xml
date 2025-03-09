@@ -102,6 +102,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>cz.cvut.kbss.jopa</groupId>
+            <artifactId>ontodriver-sesame</artifactId>
+            <version>${cz.cvut.kbss.jopa.version}</version>
+        </dependency>
 
         <!-- S-Pipes Forms -->
         <dependency>
