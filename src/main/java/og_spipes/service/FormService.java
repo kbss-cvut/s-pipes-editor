@@ -352,7 +352,7 @@ public class FormService {
             } else {
                 Model m = inputScript;
                 m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(moduleType));
-                m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(cz.cvut.sforms.Vocabulary.s_c_Modules_A));
+                m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(cz.cvut.sforms.Vocabulary.s_c_Modules));
                 findRegularQ(form).forEach((q) -> {
                     LOG.info("QUESTION_NEW: " + q.toString());
                     RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
