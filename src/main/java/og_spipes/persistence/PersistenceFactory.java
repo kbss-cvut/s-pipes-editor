@@ -19,7 +19,7 @@ import cz.cvut.kbss.jopa.model.JOPAPersistenceProvider;
 import cz.cvut.kbss.ontodriver.config.OntoDriverProperties;
 import cz.cvut.kbss.ontodriver.jena.JenaDataSource;
 import cz.cvut.kbss.ontodriver.jena.config.JenaOntoDriverProperties;
-import cz.cvut.kbss.ontodriver.sesame.SesameDataSource;
+import cz.cvut.kbss.ontodriver.rdf4j.Rdf4jDataSource;
 import org.apache.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class PersistenceFactory {
         final Map<String, String> props = new HashMap<>();
         // Here we set up basic storage access properties - driver class, physical location of the storage
         props.put(JOPAPersistenceProperties.ONTOLOGY_PHYSICAL_URI_KEY, scriptPath);
-        props.put(JOPAPersistenceProperties.DATA_SOURCE_CLASS, SesameDataSource.class.getName());
+        props.put(JOPAPersistenceProperties.DATA_SOURCE_CLASS, Rdf4jDataSource.class.getName());
 //        // Let's use Jena TDB for storage
 //        props.put(JenaOntoDriverProperties.JENA_STORAGE_TYPE, repoType);
 //        // Use Jena's rule-based RDFS reasoner
