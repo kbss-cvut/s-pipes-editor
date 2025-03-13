@@ -12,6 +12,7 @@
         <jdk.version>17</jdk.version>
         <maven.compiler.source>${jdk.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.version}</maven.compiler.target>
+        <org.aspectj.version>1.9.21</org.aspectj.version>
         <!-- problem with murmurhash in 16 version -->
 <!--        <cz.cvut.kbss.jopa.version>0.16.2</cz.cvut.kbss.jopa.version>-->
         <cz.cvut.kbss.jopa.version>0.19.3</cz.cvut.kbss.jopa.version>
@@ -104,8 +105,15 @@
         </dependency>
         <dependency>
             <groupId>cz.cvut.kbss.jopa</groupId>
-            <artifactId>ontodriver-sesame</artifactId>
+            <artifactId>ontodriver-rdf4j</artifactId>
             <version>${cz.cvut.kbss.jopa.version}</version>
+        </dependency>
+
+        <!-- Static analysis annotations -->
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>annotations</artifactId>
+            <version>9.0.4</version>
         </dependency>
 
         <!-- S-Pipes Forms -->
@@ -127,6 +135,16 @@
                     <artifactId>log4j</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>cz.cvut.kbss</groupId>
+            <artifactId>s-pipes-model</artifactId>
+            <version>${cz.cvut.kbss.s-pipes.forms.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cz.cvut.kbss</groupId>
+            <artifactId>s-pipes-core</artifactId>
+            <version>${cz.cvut.kbss.s-pipes.forms.version}</version>
         </dependency>
 
         <dependency>
@@ -264,16 +282,21 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                </configuration>
             </plugin>
             <plugin>
-                <groupId>com.nickwongdev</groupId>
+                <groupId>dev.aspectj</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.12.6</version>
+                <version>1.13.1</version>
                 <configuration>
                     <complianceLevel>${jdk.version}</complianceLevel>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
+                    <showWeaveInfo>true</showWeaveInfo>
                     <aspectLibraries>
                         <aspectLibrary>
                             <groupId>cz.cvut.kbss.jopa</groupId>
@@ -285,12 +308,12 @@
                     <dependency>
                         <groupId>org.aspectj</groupId>
                         <artifactId>aspectjtools</artifactId>
-                        <version>1.9.5</version>
+                        <version>${org.aspectj.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>org.aspectj</groupId>
                         <artifactId>aspectjrt</artifactId>
-                        <version>1.9.5</version>
+                        <version>${org.aspectj.version}</version>
                     </dependency>
                 </dependencies>
                 <executions>
