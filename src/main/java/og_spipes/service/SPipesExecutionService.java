@@ -1,6 +1,5 @@
 package og_spipes.service;
 
-import cz.cvut.spipes.util.DateUtils;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import og_spipes.model.spipes.ExecutionDTO;
@@ -20,7 +19,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +68,7 @@ public class SPipesExecutionService {
             builder.queryParam(pair.getKey(), pair.getValue());
         }
 
-        LOG.info("SPipes engine query: " + builder.build().toString());
+        LOG.info("SPipes engine query: " + builder.build());
         HttpResponse<String> request = Unirest.get(builder.build().toString()).asString();
         if(request.getStatus() != 200){
             LOG.warn(request.getBody());
@@ -109,8 +107,8 @@ public class SPipesExecutionService {
             builder.queryParam(pair.getKey(), pair.getValue());
         }
 
-        LOG.info("SPipes engine query: " + builder.build().toString());
-        String nonEmptyInput = moduleInput.equals("") ? "\n" : moduleInput;
+        LOG.info("SPipes engine query: " + builder.build());
+        String nonEmptyInput = moduleInput.isEmpty() ? "\n" : moduleInput;
         HttpResponse<String> response = Unirest.post(builder.build().toString())
                 .header("content-type", "text/turtle")
                 .body(nonEmptyInput)
@@ -134,13 +132,11 @@ public class SPipesExecutionService {
                 .filter(x -> x.getProperties().containsKey("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name"))
                 .map(x -> {
                     Map<String, Set<Object>> properties = x.getProperties();
-                    String part = properties.get("http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-part").stream().findFirst().orElse("").toString();
-                    Map<String, Set<Object>> moduleProps = transformationDAO.find(URI.create(part)).getProperties();
-                    String pipelineURI = moduleProps.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name").stream().findFirst().orElse("").toString();
+                    String pipelineURI = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name").stream().findFirst().orElse("").toString();
                     String name = pipelineURI.substring(pipelineURI.lastIndexOf("/")+1);
                     String duration = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-duration").stream().findFirst().orElse("").toString();
-                    Date startDate = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-start-date").stream().findFirst().map(DateUtils::toDate).orElse(new Date());
-                    Date finishDate = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-finish-date").stream().findFirst().map(DateUtils::toDate).orElse(new Date());
+                    Date startDate = x.getStart_date();
+                    Date finishDate = x.getFinish_date();
                     try {
                         return new ExecutionDTO(
                                 pipelineURI,
