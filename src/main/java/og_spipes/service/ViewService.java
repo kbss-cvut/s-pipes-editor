@@ -1,5 +1,7 @@
 package og_spipes.service;
 
+import cz.cvut.spipes.model.Thing;
+import cz.cvut.spipes.model.Transformation;
 import og_spipes.model.dto.ExecutionVariableDTO;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.TransformationDTO;
@@ -98,28 +100,42 @@ public class ViewService {
             LOG.warn("Transformation uri is not valid: {}", e.getMessage());
             return new HashSet<>();
         }
-        Set<URI> uris = transformation.getProperties().get("http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-part")
-                .stream().map(x -> URI.create(x.toString())).collect(Collectors.toSet());
 
-        List<TransformationDTO> transformationDTOS = transformationDAO.find(uris);
-        LOG.info("Execution has following transformations: {}", uris);
+//        Set<URI> uris = transformation.getHas_part().stream()
+//            .map(t -> URI.create(t.getId())).collect(Collectors.toSet());
+//
+//        List<TransformationDTO> transformationDTOS = transformationDAO.find(uris);
+        Set<Transformation> transformationParts = transformation.getHas_part();
+        LOG.info("Execution has following transformations: {}",
+            transformationParts.stream().map(Transformation::getId).collect(Collectors.toList()) );
 
         //Node_URI -> Set<NodeExecutionInfo>
         Map<URI, ModuleExecutionInfo> nodesExecution = new HashMap<>();
-        for(TransformationDTO t : transformationDTOS){
+        for(Transformation t : transformationParts){
 
             //Use later in mapping
-            URI inputBinding = URI.create(t.getProperties().get("http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input-binding").stream().findFirst().orElse("").toString());
+            URI inputBinding = URI.create(
+                t.getHas_input_binding().stream().map(Thing::getId).findFirst().orElse("")
+            );
             Set<ExecutionVariableDTO> variableDTOSet = loadExecutionVariables(inputBinding);
 
-            String moduleUri = t.getProperty("http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-id");
+            String moduleUri = t.getHas_module_id();
             URI moduleId = URI.create(moduleUri);
             ModuleExecutionInfo executionInfo = new ModuleExecutionInfo();
             executionInfo.setModuleVariables(variableDTOSet);
             executionInfo.setModuleUri(moduleUri);
-            executionInfo.setExecutionDuration(t.getProperty("http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-duration"));
-            executionInfo.setExecutionStartDate(t.getProperty("http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-start-date-unix"));
-            executionInfo.setExecutionFinishDate(t.getProperty("http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date-unix"));
+            executionInfo.setExecutionDuration(
+                t.getProperties().get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-duration")
+                .iterator().next().toString()
+            );
+            executionInfo.setExecutionStartDate(
+                (Long) t.getProperties().get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-start-date-unix")
+                    .iterator().next()
+            );
+            executionInfo.setExecutionFinishDate(
+                (Long) t.getProperties().get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date-unix")
+                    .iterator().next()
+            );
             File file = new File(t.getHas_input().getId().replace("file:", ""));
             executionInfo.getInput().add(file.getAbsolutePath());
             List<File> outputs = t.getHas_output().stream().map(x -> new File(x.getId().replace("file:", ""))).collect(Collectors.toList());
