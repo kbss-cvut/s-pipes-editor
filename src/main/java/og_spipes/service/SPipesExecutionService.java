@@ -1,5 +1,6 @@
 package og_spipes.service;
 
+import cz.cvut.spipes.util.JenaUtils;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import og_spipes.model.spipes.ExecutionDTO;
@@ -16,9 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -85,8 +84,8 @@ public class SPipesExecutionService {
         model.add(model2);
 
         File file = new File(configLocation);
-        try (FileWriter writer = new FileWriter(file)){
-            model.write(writer, "TTL");  // TODO apply JenaUtils.writeScript(writer, ontModel);
+        try (OutputStream os = new FileOutputStream(file)){
+            JenaUtils.writeScript(os, model);
             LOG.info("Debug config created");
         } catch (IOException e) {
             LOG.warn(e.getMessage());
