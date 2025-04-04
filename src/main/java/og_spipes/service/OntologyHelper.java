@@ -1,14 +1,15 @@
 package og_spipes.service;
 
+import og_spipes.persistence.dao.OntologyDao;
 import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.jena.graph.impl.SimpleGraphMaker;
 import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.ontology.ProfileRegistry;
-import org.apache.jena.rdf.model.*;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.ModelMakerImpl;
-import org.apache.jena.vocabulary.OWL;
-import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class OntologyHelper {
@@ -40,13 +40,13 @@ public class OntologyHelper {
      * @return - Ontology with all of the loaded imports
      */
     public Model createOntModel(File file) {
-        String fileUri = getOntologyUri(file);
+        String fileUri = OntologyDao.getOntologyUri(file);
         List<File> scripts = scriptDao.getScripts();
 
         OntDocumentManager documentManager = new OntDocumentManager();
         documentManager.setReadFailureHandler((s, model, e) -> LOG.debug(s + "; " +e.getLocalizedMessage()));
         for(File s : scripts){
-            String ontologyUri = getOntologyUri(s);
+            String ontologyUri = OntologyDao.getOntologyUri(s);
             if(!ontologyUri.isEmpty()){
                 String absolutePath = s.getAbsolutePath();
                 documentManager.addAltEntry(ontologyUri, absolutePath);
@@ -55,23 +55,6 @@ public class OntologyHelper {
         ModelMakerImpl modelMaker = new ModelMakerImpl(new SimpleGraphMaker());
         OntModelSpec ontModelSpec = new OntModelSpec(modelMaker, null, null, ProfileRegistry.OWL_LANG);
         return documentManager.getOntology(fileUri, ontModelSpec);
-    }
-
-    public static String getOntologyUri(File f) {
-        LOG.debug("Looking for an ontology in file " + f.getName());
-        Model defaultModel = ModelFactory.createDefaultModel();
-        List<Statement> statements = defaultModel
-                .read(f.getAbsolutePath(), org.apache.jena.util.FileUtils.langTurtle)
-                .listStatements(null, RDF.type, OWL.Ontology).toList();
-        List<String> listURI = statements.stream().map(x -> x.getSubject().getURI())
-                .collect(Collectors.toList());
-
-        if(listURI.isEmpty()){
-            LOG.warn("Missing owl:Ontology declaration in file: " + f.getAbsolutePath());
-            return "";
-        }
-
-        return listURI.get(0);
     }
 
     public static List<Statement> getAllStatementsRecursively(Model fromModel, String moduleURI) {
@@ -111,5 +94,6 @@ public class OntologyHelper {
 
         return moduleStatements;
     }
+
 
 }

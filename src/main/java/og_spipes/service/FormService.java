@@ -10,6 +10,7 @@ import cz.cvut.spipes.transform.SPipesUtil;
 import cz.cvut.spipes.transform.Transformer;
 import cz.cvut.spipes.util.JenaUtils;
 import og_spipes.model.Vocabulary;
+import og_spipes.persistence.dao.OntologyDao;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.*;
@@ -87,7 +88,7 @@ public class FormService {
         Resource origin = model.getResource(moduleUri);
         Random rand = new Random();
         if(origin.getURI() == null){
-            String baseURI = OntologyHelper.getOntologyUri(new File(scriptPath));
+            String baseURI = OntologyDao.getOntologyUri(new File(scriptPath));
             URI dummyURI = URI.create(baseURI + "/change_" + rand.nextInt(Integer.MAX_VALUE));
             Model defaultModel = ModelFactory.createDefaultModel();
             return defaultModel.createResource(dummyURI.toString());

@@ -7,6 +7,7 @@ import cz.cvut.spipes.util.JenaUtils;
 import og_spipes.model.Vocabulary;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
+import og_spipes.persistence.dao.OntologyDao;
 import og_spipes.persistence.dao.ScriptDAO;
 import og_spipes.service.exception.FileExistsException;
 import og_spipes.service.exception.MissingOntologyException;
@@ -103,8 +104,8 @@ public class ScriptService {
     }
 
     public void moveModule(String scriptFrom, String scriptTo, String moduleURI, boolean renameBaseOntology) throws IOException {
-        String fromOntology = OntologyHelper.getOntologyUri(new File(scriptFrom));
-        String toOntology = OntologyHelper.getOntologyUri(new File(scriptTo));
+        String fromOntology = OntologyDao.getOntologyUri(new File(scriptFrom));
+        String toOntology = OntologyDao.getOntologyUri(new File(scriptTo));
 
         File fromFile = new File(scriptFrom);
         Model fromModel = ModelFactory.createDefaultModel().read(fromFile.getAbsolutePath(), langTurtle);
@@ -169,7 +170,7 @@ public class ScriptService {
         File template = new File("src/main/resources/template/hello-world3.sms.ttl");
 
         List<String> ontologyNames = scriptDao.getScripts().stream()
-                .map(OntologyHelper::getOntologyUri)
+                .map(OntologyDao::getOntologyUri)
                 .collect(Collectors.toList());
 
         if(ontologyNames.contains(ontologyURI)){
@@ -198,18 +199,14 @@ public class ScriptService {
 
     public void addScriptOntology(String scriptPath, String ontologyName) throws MissingOntologyException, IOException {
         File f = new File(scriptPath);
-        Model defaultModel = ontologyHelper.createOntModel(f);
-        List<Statement> statements = defaultModel
-                .read(f.getAbsolutePath(), langTurtle)
-                .listStatements(null, OWL.imports, (RDFNode) null).toList();
 
-        if(statements.size() == 0){
+        String ontology = OntologyDao.getOntologyUri(f);
+        if(ontology == null){
             throw new MissingOntologyException("Script does not contain ontology.");
         }
 
         Model resModel = ontologyHelper.createOntModel(f);
-        Statement ontology = statements.get(0);
-        resModel.add(ontology.getSubject(), OWL.imports, new ResourceImpl(ontologyName));
+        resModel.add(ResourceFactory.createResource(ontology), OWL.imports, new ResourceImpl(ontologyName));
         try(OutputStream os = new FileOutputStream(scriptPath)) {
             JenaUtils.writeScript(os, resModel);
         }
@@ -217,12 +214,9 @@ public class ScriptService {
 
     public List<String> getScriptImportedOntologies(String scriptPath) {
         File f = new File(scriptPath);
-        Model defaultModel = ModelFactory.createDefaultModel();
-        List<Statement> statements = defaultModel
-                .read(f.getAbsolutePath(), langTurtle)
-                .listStatements(null, OWL.imports, (RDFNode) null).toList();
+        List<String> imports = OntologyDao.getOntologyImports(f);
 
-        return statements.stream().map(x -> x.getObject().toString())
+        return imports.stream()
                 .filter(x -> !x.equals("http://onto.fel.cvut.cz/ontologies/s-pipes-lib"))
                 .collect(Collectors.toList());
      }
