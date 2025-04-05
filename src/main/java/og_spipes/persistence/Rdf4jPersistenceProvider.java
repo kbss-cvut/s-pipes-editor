@@ -19,9 +19,9 @@ import javax.annotation.PostConstruct;
 import java.net.URI;
 
 @Configuration
-public class SesamePersistenceProvider {
+public class Rdf4jPersistenceProvider {
 
-    private static final Logger log = LoggerFactory.getLogger(SesamePersistenceProvider.class);
+    private static final Logger log = LoggerFactory.getLogger(Rdf4jPersistenceProvider.class);
 
     private final String repositoryUrl;
 
@@ -32,7 +32,7 @@ public class SesamePersistenceProvider {
     private Repository repository;
 
     @Autowired
-    public SesamePersistenceProvider(@Value("${rdf4j.repositoryUrl}") String repositoryUrl, @Value("${rdf4j.repositoryName}") String repositoryName, @Qualifier("rdf4jEMF") EntityManagerFactory emf) {
+    public Rdf4jPersistenceProvider(@Value("${rdf4j.repositoryUrl}") String repositoryUrl, @Value("${rdf4j.repositoryName}") String repositoryName, @Qualifier("rdf4jEMF") EntityManagerFactory emf) {
         this.repositoryUrl = repositoryUrl;
         this.repositoryName = repositoryName;
         this.emf = emf;
