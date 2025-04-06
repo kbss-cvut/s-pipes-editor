@@ -69,6 +69,7 @@ public class ScriptControllerTest {
                                 "new-ontology",
                                 ".ttl",
                                 "http://onto.fel.cvut.cz/ontologies/s-pipes/new-ontology",
+                                "test-return",
                                 "test-create-file");
                 String json = mapper.writeValueAsString(scriptCreateDTO);
 

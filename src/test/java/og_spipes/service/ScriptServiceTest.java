@@ -152,7 +152,8 @@ public class ScriptServiceTest {
                 "karel",
                 ".ttl",
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/karel"),
-                "test");
+                "say_Return",
+                "say-hello-world");
 
         File file = new File("/tmp/og_spipes/hello-world/karel.ttl");
         Assertions.assertTrue(file.exists());

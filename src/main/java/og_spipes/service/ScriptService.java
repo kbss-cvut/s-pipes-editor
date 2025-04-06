@@ -166,8 +166,7 @@ public class ScriptService {
         //TODO resolve imports
     }
 
-    public void createScript(String directory, String scriptName,String scriptType, URI ontologyURI, String functionPrefix) throws IOException, OntologyDuplicationException, FileExistsException {
-        File template = new File("src/main/resources/template/hello-world3.sms.ttl");
+    public void createScript(String directory, String scriptName, String scriptType, URI ontologyURI, String returnModuleName, String functionName) throws IOException, OntologyDuplicationException, FileExistsException {
 
         List<String> ontologyNames = scriptDao.getScripts().stream()
                 .map(OntologyDao::getOntologyUri)
@@ -184,8 +183,17 @@ public class ScriptService {
             throw new FileExistsException(filename + " already exists");
         }
 
-        String lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_NAME", ontologyURI.toString())
-                .replace("FUNCTION_PREFIX", functionPrefix).replace("SCRIPT_NAME", scriptName);
+        File template;
+        String lines;
+        if (returnModuleName == null && functionName == null) {
+            template = new File("src/main/resources/template/template-script.sms.ttl");
+            lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_NAME", ontologyURI.toString());
+        } else {
+            template = new File("src/main/resources/template/hello-world3.sms.ttl");
+            lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_NAME", ontologyURI.toString())
+                    .replace("RETURN_MODULE_NAME", returnModuleName).replace("FUNCTION_NAME", functionName);
+        }
+
         File file = new File(directory + "/" + filename);
         CharSink sink = Files.asCharSink(file, Charsets.UTF_8);
         sink.write(lines);

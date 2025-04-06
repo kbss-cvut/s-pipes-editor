@@ -23,19 +23,20 @@ public class ScriptCreateDTO extends AbstractEntity {
 
     @OWLDataProperty(iri = s_p_has_ontology_uri)
     private String ontologyUri;
-
-    @OWLDataProperty(iri = s_p_has_function_prefix)
-    private String functionPrefix;
+    @OWLDataProperty(iri = s_p_has_return_module_name)
+    private String returnModuleName;
+    @OWLDataProperty(iri = s_p_has_function_name)
+    private String functionName;
 
     public ScriptCreateDTO() {
     }
-
-    public ScriptCreateDTO(String directoryPath, String name, String ontologyUri, String type, String functionPrefix) {
+    public ScriptCreateDTO(String directoryPath, String name, String ontologyUri, String type, String returnModuleName, String functionName) {
         this.directoryPath = directoryPath;
         this.name = name;
         this.ontologyUri = ontologyUri;
         this.type = type;
-        this.functionPrefix = functionPrefix;
+        this.returnModuleName = returnModuleName;
+        this.functionName = functionName;
     }
 
     public String getDirectoryPath() {
@@ -70,12 +71,20 @@ public class ScriptCreateDTO extends AbstractEntity {
         this.type = type;
     }
 
-    public String getFunctionPrefix() {
-        return functionPrefix;
+    public String getReturnModuleName() {
+        return returnModuleName;
     }
 
-    public void setFunctionPrefix(String functionPrefix) {
-        this.functionPrefix = functionPrefix;
+    public void setReturnModuleName(String returnModuleName) {
+        this.returnModuleName = returnModuleName;
+    }
+
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
     }
 
     @Override
@@ -85,7 +94,8 @@ public class ScriptCreateDTO extends AbstractEntity {
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", ontologyUri='" + ontologyUri + '\'' +
-                ", functionPrefix='" + functionPrefix + '\'' +
+                ", returnModuleName='" + returnModuleName + '\'' +
+                ", functionName='" + functionName + '\'' +
                 '}';
     }
 }
