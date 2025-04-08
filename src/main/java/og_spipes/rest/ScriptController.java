@@ -154,7 +154,7 @@ public class ScriptController {
                 .filter(Files::isRegularFile)
                 .map(Path::toFile)
                 .collect(Collectors.toList());
-        Set<SHACLValidationResultDTO> violations = executorService.testModel(rules, dto.getAbsolutePath());// new HashSet<>();
+        Set<SHACLValidationResultDTO> violations = executorService.testModel(rules, dto.getAbsolutePath());
         return violations;
     }
 
