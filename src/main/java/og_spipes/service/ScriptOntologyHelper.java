@@ -1,11 +1,9 @@
 package og_spipes.service;
 
+import og_spipes.persistence.dao.OntologyDao;
 import og_spipes.persistence.dao.ScriptDAO;
 import og_spipes.service.util.ScriptImportGroup;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.util.FileUtils;
-import org.apache.jena.vocabulary.OWL;
-import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,27 +26,24 @@ public class ScriptOntologyHelper {
      */
     public Map<URI, File> moduleFile(Set<URI> modules){
         Map<URI, File> res = new HashMap<>();
-        Model defaultModel = ModelFactory.createDefaultModel();
 
         List<File> files = ScriptDAO.getScripts(scriptPath);
         for(File ff : files){
-            Model model = defaultModel.read(ff.getAbsolutePath(), FileUtils.langTurtle);
 
-            List<Statement> baseURI = model.listStatements(null, RDF.type, OWL.Ontology).toList();
-            if(baseURI.size() > 0){
-                String importName = baseURI.get(0).getSubject().getURI() + "/";
+            String baseURI = OntologyDao.getOntologyUri(ff);
+            if(!baseURI.isBlank()){
+                String importName = baseURI + "/";
                 List<String> okModules = modules.stream().map(URI::toString)
                         .filter(x -> !x.replace(importName, "").contains("/"))
                         .collect(Collectors.toList());
 
-                List<Resource> subjects = model.listSubjects().toList();
+                Set<String> subjects = OntologyDao.getSubjects(ff);
                 for(String module : okModules){
-                    if(subjects.stream().anyMatch(x -> x.getURI() != null && x.getURI().equals(module))){
+                    if(subjects.stream().anyMatch(x -> x.equals(module))){
                         res.put(URI.create(module), ff);
                     }
                 }
             }
-            model.removeAll();
         }
 
         return res;

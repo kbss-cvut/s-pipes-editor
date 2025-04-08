@@ -9,6 +9,7 @@ import og_spipes.model.spipes.DependencyDTO;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.model.spipes.ScriptOntologyDTO;
 import og_spipes.model.view.ErrorMessage;
+import og_spipes.persistence.dao.OntologyDao;
 import og_spipes.service.FileTreeService;
 import og_spipes.service.SHACLExecutorService;
 import og_spipes.service.ScriptService;
@@ -30,10 +31,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static og_spipes.service.OntologyHelper.getOntologyUri;
 
 @RestController
 @RequestMapping("/scripts")
@@ -98,7 +100,7 @@ public class ScriptController {
         ScriptImportGroup importGroup = new ScriptImportGroup(scriptPaths, new File(script));
 
         return importGroup.getUsedFiles().stream().map(f ->{
-            String ontologyUri = getOntologyUri(f);
+            String ontologyUri = OntologyDao.getOntologyUri(f);
             return new ScriptOntologyDTO(f.getAbsolutePath(), ontologyUri);
         }).collect(Collectors.toList());
     }
@@ -152,15 +154,7 @@ public class ScriptController {
                 .filter(Files::isRegularFile)
                 .map(Path::toFile)
                 .collect(Collectors.toList());
-        Set<SHACLValidationResultDTO> violations = new HashSet<>();
-        for(File f : rules){
-            violations.addAll(
-                    executorService.testModel(
-                        Collections.singleton(f.toURI().toURL()),
-                        dto.getAbsolutePath()
-                    )
-            );
-        }
+        Set<SHACLValidationResultDTO> violations = executorService.testModel(rules, dto.getAbsolutePath());
         return violations;
     }
 
