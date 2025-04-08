@@ -1,5 +1,6 @@
 package og_spipes.service.util;
 
+import java.util.stream.Collectors;
 import og_spipes.persistence.dao.OntologyDao;
 import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.jena.rdf.model.Model;
@@ -42,7 +43,7 @@ public class ScriptImportGroup {
     }
 
     private void findFiles(File f){
-        List<String> imports = scriptImports(f);
+        List<String> imports = scriptNonSystemImports(f);
         for(String s : imports){
             File file = scriptImportNameFile.get(s);
             if(file == null){
@@ -55,8 +56,15 @@ public class ScriptImportGroup {
         }
     }
 
-    private List<String> scriptImports(File file){
-        return OntologyDao.getOntologyImports(file);
+    /**
+     * Returns a list of imports that are not system imports.
+     * @param file the file to check
+     * @return a list of non-system imports
+     */
+    private List<String> scriptNonSystemImports(File file){
+        return OntologyDao.getOntologyImports(file).stream()
+            .filter(i -> !i.equals("http://onto.fel.cvut.cz/ontologies/s-pipes-lib"))
+            .collect(Collectors.toList());
     }
 
     public Set<File> getUsedFiles() {

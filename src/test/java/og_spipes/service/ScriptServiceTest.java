@@ -163,8 +163,8 @@ public class ScriptServiceTest {
                 .getScriptImportedOntologies("/tmp/og_spipes/skosify/skosify.sms.ttl");
 
         List<String> expectedRes = Arrays.asList(
-                "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata",
-                "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations"
+            "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations",
+            "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata"
         );
 
         Assertions.assertEquals(expectedRes, scriptImportedOntologies);
