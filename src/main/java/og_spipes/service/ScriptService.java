@@ -185,11 +185,11 @@ public class ScriptService {
         File template;
         String lines;
         if (returnModuleName == null && functionName == null) {
-            template = new File("src/main/resources/template/template-script.sms.ttl");
-            lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_NAME", ontologyURI.toString());
+            template = new File("src/main/resources/template/template-script-without-functions.sms.ttl");
+            lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_IRI", ontologyURI.toString());
         } else {
-            template = new File("src/main/resources/template/hello-world3.sms.ttl");
-            lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_NAME", ontologyURI.toString())
+            template = new File("src/main/resources/template/template-script-with-functions.sms.ttl");
+            lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_IRI", ontologyURI.toString())
                     .replace("RETURN_MODULE_NAME", returnModuleName).replace("FUNCTION_NAME", functionName);
         }
 
