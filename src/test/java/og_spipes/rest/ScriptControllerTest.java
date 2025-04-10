@@ -66,8 +66,7 @@ public class ScriptControllerTest {
         public void testCreateFile() throws Exception {
                 ScriptCreateDTO scriptCreateDTO = new ScriptCreateDTO(
                                 scriptPaths,
-                                "new-ontology",
-                                ".ttl",
+                                "new-ontology.ttl",
                                 "http://onto.fel.cvut.cz/ontologies/s-pipes/new-ontology",
                                 "test-return",
                                 "test-create-file");

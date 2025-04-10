@@ -83,7 +83,7 @@ public class ScriptController {
     public void createScript(@RequestBody ScriptCreateDTO dto) throws IOException, OntologyDuplicationException, URISyntaxException, FileExistsException {
         LOG.info("Create script: " + dto);
         URI ontologyURI = new URI(dto.getOntologyUri());
-        scriptService.createScript(dto.getDirectoryPath(), dto.getName(), dto.getType(), ontologyURI, dto.getReturnModuleName(),
+        scriptService.createScript(dto.getDirectoryPath(), dto.getName(), ontologyURI, dto.getReturnModuleName(),
                 dto.getFunctionName());
     }
 

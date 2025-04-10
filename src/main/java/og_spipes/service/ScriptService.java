@@ -166,7 +166,7 @@ public class ScriptService {
         //TODO resolve imports
     }
 
-    public void createScript(String directory, String scriptName, String scriptType, URI ontologyURI, String returnModuleName, String functionName) throws IOException, OntologyDuplicationException, FileExistsException {
+    public void createScript(String directory, String filename, URI ontologyURI, String returnModuleName, String functionName) throws IOException, OntologyDuplicationException, FileExistsException {
 
         List<String> ontologyNames = scriptDao.getScripts().stream()
                 .map(OntologyDao::getOntologyUri)
@@ -178,7 +178,6 @@ public class ScriptService {
 
         List<String> directoryFiles = ScriptDAO.getScripts(directory).stream().map(File::getName)
                 .collect(Collectors.toList());
-        String filename = scriptName + scriptType;
         if (directoryFiles.contains(filename)) {
             throw new FileExistsException(filename + " already exists");
         }
