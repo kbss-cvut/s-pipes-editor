@@ -1,6 +1,7 @@
 package og_spipes.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import og_spipes.config.Constants;
 import og_spipes.config.RestConfig;
@@ -139,8 +140,11 @@ public class ScriptControllerTest {
 
         String content = mvcResult.getResponse().getContentAsString();
 
+        JsonNode rootNode = mapper.readTree(content);
+        JsonNode listNode = rootNode.get("@list");
+
         List<ScriptOntologyDTO> res = new ArrayList<>(
-                mapper.readValue(content, new TypeReference<Set<ScriptOntologyDTO>>(){})
+                mapper.readValue(listNode.toString(), new TypeReference<Set<ScriptOntologyDTO>>(){})
         );
 
         Assertions.assertEquals(4, res.size());
