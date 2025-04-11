@@ -166,8 +166,7 @@ public class ScriptService {
         //TODO resolve imports
     }
 
-    public void createScript(String directory, String filename, URI ontologyURI) throws IOException, OntologyDuplicationException, FileExistsException {
-        File template = new File("src/main/resources/template/hello-world3.sms.ttl");
+    public void createScript(String directory, String filename, URI ontologyURI, String returnModuleName, String functionName) throws IOException, OntologyDuplicationException, FileExistsException {
 
         List<String> ontologyNames = scriptDao.getScripts().stream()
                 .map(OntologyDao::getOntologyUri)
@@ -177,12 +176,23 @@ public class ScriptService {
             throw new OntologyDuplicationException(ontologyURI + " ontology already exists");
         }
 
-        List<String> directoryFiles = ScriptDAO.getScripts(directory).stream().map(File::getName).collect(Collectors.toList());
-        if(directoryFiles.contains(filename)){
+        List<String> directoryFiles = ScriptDAO.getScripts(directory).stream().map(File::getName)
+                .collect(Collectors.toList());
+        if (directoryFiles.contains(filename)) {
             throw new FileExistsException(filename + " already exists");
         }
 
-        String lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_NAME", ontologyURI.toString());
+        File template;
+        String lines;
+        if (returnModuleName == null && functionName == null) {
+            template = new File("src/main/resources/template/template-script-without-functions.sms.ttl");
+            lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_IRI", ontologyURI.toString());
+        } else {
+            template = new File("src/main/resources/template/template-script-with-functions.sms.ttl");
+            lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_IRI", ontologyURI.toString())
+                    .replace("RETURN_MODULE_NAME", returnModuleName).replace("FUNCTION_NAME", functionName);
+        }
+
         File file = new File(directory + "/" + filename);
         CharSink sink = Files.asCharSink(file, Charsets.UTF_8);
         sink.write(lines);

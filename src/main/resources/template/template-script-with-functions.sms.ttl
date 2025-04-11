@@ -1,0 +1,20 @@
+@prefix :      <ONTOLOGY_IRI/> .
+@prefix sml:   <http://topbraid.org/sparqlmotionlib#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+<ONTOLOGY_IRI>
+    a  owl:Ontology ;
+    owl:imports  <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> ;
+.
+
+:RETURN_MODULE_NAME
+  a sml:ReturnRDF ;
+  sml:serialization sml:Turtle ;
+.
+
+:FUNCTION_NAME
+  a sml:Function ;
+  sml:returnModule :transform-data_Return ;
+  rdfs:subClassOf sml:Functions ;
+.

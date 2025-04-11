@@ -21,13 +21,20 @@ public class ScriptCreateDTO extends AbstractEntity {
     @OWLDataProperty(iri = s_p_has_ontology_uri)
     private String ontologyUri;
 
+    @OWLDataProperty(iri = s_p_has_return_module_name)
+    private String returnModuleName;
+
+    @OWLDataProperty(iri = s_p_has_function_name)
+    private String functionName;
+
     public ScriptCreateDTO() {
     }
-
-    public ScriptCreateDTO(String directoryPath, String name, String ontologyUri) {
+    public ScriptCreateDTO(String directoryPath, String name, String ontologyUri, String returnModuleName, String functionName) {
         this.directoryPath = directoryPath;
         this.name = name;
         this.ontologyUri = ontologyUri;
+        this.returnModuleName = returnModuleName;
+        this.functionName = functionName;
     }
 
     public String getDirectoryPath() {
@@ -54,12 +61,30 @@ public class ScriptCreateDTO extends AbstractEntity {
         this.ontologyUri = ontologyUri;
     }
 
+    public String getReturnModuleName() {
+        return returnModuleName;
+    }
+
+    public void setReturnModuleName(String returnModuleName) {
+        this.returnModuleName = returnModuleName;
+    }
+
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    public void setFunctionName(String functionName) {
+        this.functionName = functionName;
+    }
+
     @Override
     public String toString() {
         return "ScriptCreateDTO{" +
                 "directoryPath='" + directoryPath + '\'' +
                 ", name='" + name + '\'' +
                 ", ontologyUri='" + ontologyUri + '\'' +
+                ", returnModuleName='" + returnModuleName + '\'' +
+                ", functionName='" + functionName + '\'' +
                 '}';
     }
 }

@@ -87,6 +87,8 @@ public class Vocabulary {
     public final static String s_p_has_absolute_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path";
     public final static String s_p_has_display_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-display-name";
     public final static String s_p_has_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-name";
+    public final static String s_p_has_return_module_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-return-module-name";
+    public final static String s_p_has_function_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-name";
     public final static String s_p_has_data_value = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-data-value";
     public final static String s_p_has_transformation_id = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-transformation-id";
     public final static String s_p_has_function_local_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-local-name";
