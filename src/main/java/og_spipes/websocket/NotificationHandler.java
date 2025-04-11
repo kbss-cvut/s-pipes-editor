@@ -16,7 +16,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import javax.websocket.server.ServerEndpoint;
+import jakarta.websocket.server.ServerEndpoint;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;

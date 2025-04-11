@@ -33,7 +33,7 @@ public class FileController {
 
 
     @RequestMapping(path = "/download", method = RequestMethod.GET)
-    public ResponseEntity<Resource> generateModuleForm(String file) throws Exception {
+    public ResponseEntity<Resource> generateModuleForm(@RequestParam("file") String file) throws Exception {
         File f = new File(file);
         if(!f.getName().endsWith(".ttl")){
             throw new Exception("Only ttl files are allowed to read.");

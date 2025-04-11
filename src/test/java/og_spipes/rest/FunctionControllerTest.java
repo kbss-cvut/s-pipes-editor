@@ -1,6 +1,7 @@
 package og_spipes.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.sforms.model.Question;
 import og_spipes.config.Constants;
@@ -93,7 +94,10 @@ public class FunctionControllerTest {
 
         String content = mvcResult.getResponse().getContentAsString();
 
-        List<FunctionDTO> obj = mapper.readValue(content, new TypeReference<List<FunctionDTO>>(){});
+        JsonNode rootNode = mapper.readTree(content);
+        JsonNode listNode = rootNode.get("@list");
+
+        List<FunctionDTO> obj = mapper.readValue(listNode.toString(), new TypeReference<List<FunctionDTO>>(){});
 
         Assertions.assertEquals(1, obj.size());
         Assertions.assertEquals("execute-greeding", obj.get(0).getFunctionLocalName());

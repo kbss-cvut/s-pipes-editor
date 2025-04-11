@@ -38,6 +38,7 @@ public class ScriptDAOTest {
         expectedMap.put("cz.cvut.jopa.dataSource.class", "cz.cvut.kbss.ontodriver.jena.JenaDataSource");
         expectedMap.put("cz.cvut.jopa.lang", "en");
         expectedMap.put("in-memory", "true");
+        expectedMap.put("cz.cvut.jopa.classpathScanner", "og_spipes.utils.SPipesEngineClasspathScanner");
         expectedMap.put("cz.cvut.jopa.ontology.logicalUri", "http://temporary");
         expectedMap.put("cz.cvut.jopa.ontology.physicalURI", "local://temporary");
         expectedMap.put("cz.cvut.jopa.ic.validation.disableOnLoad", "true");
