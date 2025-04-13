@@ -182,20 +182,28 @@ public class ScriptService {
             throw new FileExistsException(filename + " already exists");
         }
 
-        File template;
-        String lines;
-        if (returnModuleName == null && functionName == null) {
-            template = new File("src/main/resources/template/template-script-without-functions.sms.ttl");
-            lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_IRI", ontologyURI.toString());
-        } else {
-            template = new File("src/main/resources/template/template-script-with-functions.sms.ttl");
-            lines = Files.toString(template, Charsets.UTF_8).replace("ONTOLOGY_IRI", ontologyURI.toString())
-                    .replace("RETURN_MODULE_NAME", returnModuleName).replace("FUNCTION_NAME", functionName);
+        boolean isWithoutFunctions = (returnModuleName == null && functionName == null);
+
+        String templateScript = isWithoutFunctions
+                ? "template/template-script-without-functions.sms.ttl"
+                : "template/template-script-with-functions.sms.ttl";
+
+        InputStream in = getClass().getClassLoader().getResourceAsStream(templateScript);
+        if (in == null) {
+            throw new FileNotFoundException("Template file not found: " + templateScript);
+        }
+
+        String content = new String(in.readAllBytes(), Charsets.UTF_8)
+                .replace("ONTOLOGY_IRI", ontologyURI.toString());
+
+        if (!isWithoutFunctions) {
+            content = content.replace("RETURN_MODULE_NAME", returnModuleName)
+                    .replace("FUNCTION_NAME", functionName);
         }
 
         File file = new File(directory + "/" + filename);
         CharSink sink = Files.asCharSink(file, Charsets.UTF_8);
-        sink.write(lines);
+        sink.write(content);
     }
 
     public void removeScriptOntology(String scriptPath, String ontology) throws IOException {
