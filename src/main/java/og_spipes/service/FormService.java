@@ -15,7 +15,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
-import org.apache.jena.util.FileUtils;
 import org.apache.jena.util.ResourceUtils;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
@@ -75,13 +74,20 @@ public class FormService {
         Map<String, Model> modelMap = ownTransformer.form2Script(ontModel, rootQuestion, moduleType);
         modelMap.forEach((file, model) -> {
             try (OutputStream os = new FileOutputStream(scriptPath)){
-                JenaUtils.writeScript(os, model);
+                JenaUtils.writeScript(os, getBaseModel(model));
             } catch (FileNotFoundException e) {
                 LOG.error(e.getMessage());
             } catch (IOException e) {
                 LOG.error(e.getMessage());
             }
         });
+    }
+
+    private Model getBaseModel(Model model){
+        if (model instanceof OntModel) {
+            return ((OntModel) model).getBaseModel();
+        }
+        return model;
     }
 
     private Resource resolveURI(Model model, String moduleUri, String scriptPath){
