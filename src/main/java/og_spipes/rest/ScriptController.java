@@ -84,7 +84,7 @@ public class ScriptController {
         LOG.info("Create script: " + dto);
         URI ontologyURI = new URI(dto.getOntologyUri());
         scriptService.createScript(dto.getDirectoryPath(), dto.getName(), ontologyURI, dto.getReturnModuleName(),
-                dto.getFunctionName());
+                dto.getFunctionName(), dto.getFunctionArguments());
     }
 
     @PostMapping(path = "/delete", produces = JsonLd.MEDIA_TYPE)

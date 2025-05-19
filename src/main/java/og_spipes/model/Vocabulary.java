@@ -40,6 +40,7 @@ public class Vocabulary {
     public final static String s_c_module_execution_info = "http://onto.fel.cvut.cz/ontologies/s-pipes/module-execution-info";
     public final static String s_c_execution_variable_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/execution-variable-dto";
     public final static String s_c_script_ontology_create_dto = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-ontology-create-dto";
+    public final static String s_c_script_function_argument = "http://onto.fel.cvut.cz/ontologies/s-pipes/script-function-argument";
     public final static String s_p_has_severity_message = "http://onto.fel.cvut.cz/ontologies/s-pipes/severity-message";
     public final static String s_p_has_error_message = "http://onto.fel.cvut.cz/ontologies/s-pipes/error-message";
     public final static String s_p_has_rule_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/rule-uri";
@@ -89,6 +90,10 @@ public class Vocabulary {
     public final static String s_p_has_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-name";
     public final static String s_p_has_return_module_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-return-module-name";
     public final static String s_p_has_function_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-name";
+    public final static String s_p_has_function_arguments = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-arguments";
+    public final static String s_p_has_function_argument_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-argument-name";
+    public final static String s_p_has_function_argument_label = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-argument-label";
+    public final static String s_p_has_function_argument_comment = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-argument-comment";
     public final static String s_p_has_data_value = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-data-value";
     public final static String s_p_has_transformation_id = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-transformation-id";
     public final static String s_p_has_function_local_name = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-local-name";
