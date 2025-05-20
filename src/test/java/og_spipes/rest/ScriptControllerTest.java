@@ -69,7 +69,8 @@ public class ScriptControllerTest {
                                 "new-ontology.ttl",
                                 "http://onto.fel.cvut.cz/ontologies/s-pipes/new-ontology",
                                 "test-return",
-                                "test-create-file");
+                                "test-create-file",
+                        new ArrayList<>());
                 String json = mapper.writeValueAsString(scriptCreateDTO);
 
         this.mockMvc.perform(post("/scripts/create")

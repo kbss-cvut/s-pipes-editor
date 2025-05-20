@@ -5,6 +5,7 @@ import com.google.common.io.CharSink;
 import com.google.common.io.Files;
 import cz.cvut.spipes.util.JenaUtils;
 import og_spipes.model.Vocabulary;
+import og_spipes.model.dto.ScriptFunctionArgument;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.persistence.dao.OntologyDao;
@@ -166,7 +167,7 @@ public class ScriptService {
         //TODO resolve imports
     }
 
-    public void createScript(String directory, String filename, URI ontologyURI, String returnModuleName, String functionName) throws IOException, OntologyDuplicationException, FileExistsException {
+    public void createScript(String directory, String filename, URI ontologyURI, String returnModuleName, String functionName, List<ScriptFunctionArgument> scriptFunctionArguments) throws IOException, OntologyDuplicationException, FileExistsException {
 
         List<String> ontologyNames = scriptDao.getScripts().stream()
                 .map(OntologyDao::getOntologyUri)
@@ -199,6 +200,28 @@ public class ScriptService {
         if (!isWithoutFunctions) {
             content = content.replace("RETURN_MODULE_NAME", returnModuleName)
                     .replace("FUNCTION_NAME", functionName);
+
+            StringBuilder argumentsBuilder = new StringBuilder();
+            for (ScriptFunctionArgument arg : scriptFunctionArguments) {
+                argumentsBuilder.append("  spin:constraint [\n");
+                argumentsBuilder.append("    rdf:type spl:Argument ;\n");
+                argumentsBuilder.append("    spl:predicate :").append(arg.getName()).append(" ;\n");
+                argumentsBuilder.append("    rdfs:label \"").append(arg.getLabel()).append("\" ;\n");
+                argumentsBuilder.append("    rdfs:comment \"").append(arg.getComment()).append("\" ;\n");
+
+                String argString = argumentsBuilder.toString();
+                argumentsBuilder = new StringBuilder(argString);
+                argumentsBuilder.append("  ] ;\n");
+            }
+
+            String arguments = argumentsBuilder.toString();
+            if (!arguments.isEmpty()) {
+                content = content.replace("FUNCTION_ARGUMENTS", arguments);
+            } else {
+                content = content.replace("FUNCTION_ARGUMENTS", "");
+            }
+        } else {
+            content = content.replace("FUNCTION_ARGUMENTS", "");
         }
 
         File file = new File(directory + "/" + filename);

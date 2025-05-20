@@ -1,6 +1,7 @@
 package og_spipes.service;
 
 import og_spipes.config.Constants;
+import og_spipes.model.dto.ScriptFunctionArgument;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.service.exception.FileExistsException;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -152,7 +154,10 @@ public class ScriptServiceTest {
                 "karel.ttl",
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/karel"),
                 "say_Return",
-                "say-hello-world");
+                "say-hello-world",
+                new ArrayList<>());
+
+
 
         File file = new File("/tmp/og_spipes/hello-world/karel.ttl");
         Assertions.assertTrue(file.exists());

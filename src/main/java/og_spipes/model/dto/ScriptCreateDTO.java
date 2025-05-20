@@ -5,6 +5,9 @@ import cz.cvut.kbss.jopa.model.annotations.OWLClass;
 import cz.cvut.kbss.jopa.model.annotations.OWLDataProperty;
 import cz.cvut.sforms.model.AbstractEntity;
 import og_spipes.model.Vocabulary;
+import cz.cvut.kbss.jopa.model.annotations.Sequence;
+
+import java.util.List;
 
 import static og_spipes.model.Vocabulary.*;
 
@@ -27,14 +30,19 @@ public class ScriptCreateDTO extends AbstractEntity {
     @OWLDataProperty(iri = s_p_has_function_name)
     private String functionName;
 
+    @OWLDataProperty(iri = s_p_has_function_arguments)
+    @Sequence
+    private List<ScriptFunctionArgument> scriptFunctionArguments;
+
     public ScriptCreateDTO() {
     }
-    public ScriptCreateDTO(String directoryPath, String name, String ontologyUri, String returnModuleName, String functionName) {
+    public ScriptCreateDTO(String directoryPath, String name, String ontologyUri, String returnModuleName, String functionName, List<ScriptFunctionArgument> scriptFunctionArguments) {
         this.directoryPath = directoryPath;
         this.name = name;
         this.ontologyUri = ontologyUri;
         this.returnModuleName = returnModuleName;
         this.functionName = functionName;
+        this.scriptFunctionArguments = scriptFunctionArguments;
     }
 
     public String getDirectoryPath() {
@@ -77,6 +85,13 @@ public class ScriptCreateDTO extends AbstractEntity {
         this.functionName = functionName;
     }
 
+    public List<ScriptFunctionArgument> getFunctionArguments() {
+        return scriptFunctionArguments;
+    }
+
+    public void setFunctionArguments(List<ScriptFunctionArgument> scriptFunctionArguments) {
+        this.scriptFunctionArguments = scriptFunctionArguments;
+    }
     @Override
     public String toString() {
         return "ScriptCreateDTO{" +
@@ -85,7 +100,10 @@ public class ScriptCreateDTO extends AbstractEntity {
                 ", ontologyUri='" + ontologyUri + '\'' +
                 ", returnModuleName='" + returnModuleName + '\'' +
                 ", functionName='" + functionName + '\'' +
+                ", functionArguments=" + scriptFunctionArguments +
                 '}';
     }
+
+
 }
 
