@@ -54,7 +54,6 @@ public class SPipesDebugService {
         return makeGetRequest("/variable-origin/" + executionId, "variable", variable);
     }
 
-
     private String makeGetRequest(String path) throws SPipesEngineException {
         return makeGetRequest(path, null, null);
     }
@@ -69,7 +68,6 @@ public class SPipesDebugService {
             HttpResponse<String> request = Unirest.get(builder.build().toString()).asString();
             if (request.getStatus() != 200) {
                 LOG.error("Debug service error: {}", request.getBody());
-//                throw new SPipesEngineException("Debug service error: " + request.getBody());
             }
             return request.getBody();
         } catch (Exception e) {

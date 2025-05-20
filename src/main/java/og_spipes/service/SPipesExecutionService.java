@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -121,7 +118,6 @@ public class SPipesExecutionService {
         return response.getBody();
     }
 
-
     /**
      * Mapping is not working correctly so the complicated mapping has to be done
      * @return
@@ -154,4 +150,7 @@ public class SPipesExecutionService {
         }).collect(Collectors.toList());
     }
 
+    public String getPipelineName(String id) {
+        return transformationDAO.getPipelineName(id);
+    }
 }

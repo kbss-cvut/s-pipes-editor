@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-
 @RestController
 @RequestMapping("/log")
 public class DebugController {
@@ -19,7 +18,6 @@ public class DebugController {
     public DebugController(SPipesDebugService debugService) {
         this.debugService = debugService;
     }
-
 
     @GetMapping("/executions")
     public String getAllExecutions() throws SPipesEngineException {
@@ -33,13 +31,7 @@ public class DebugController {
 
     @GetMapping("/executions/{executionId}/modules")
     public String getExecutionModules(@PathVariable("executionId") String executionId) throws SPipesEngineException {
-//        System.out.println(requestBody.toString());
-//        String transformationId = (String) requestBody.get(s_p_has_transformation_id);
-//        String sortBy = (String) requestBody.get(sortBy);
-//        String orderType = (String) requestBody.get(orderType);
-
         return debugService.getExecutionModules(executionId);
-//        return debugService.getExecutionModules(transformationId, sortBy, orderType);
     }
 
     @GetMapping("/executions/{executionId}/compare/{compareToId}")
@@ -64,6 +56,5 @@ public class DebugController {
         String encodedVariable = URLEncoder.encode(variable, StandardCharsets.UTF_8);
         return debugService.findVariableOrigin(executionId, encodedVariable);
     }
-
 
 }
