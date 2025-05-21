@@ -94,7 +94,7 @@ public class SPipesExecutionService {
         String configLocation = File.createTempFile("config", ".ttl").getAbsolutePath();
         LOG.info("ConfigLocation: " + configLocation);
         String serviceUrl = engineUrl + "/module";
-        params.put("id", moduleId);
+        params.put("_pId", moduleId);
         createDebugConfig(configLocation, moduleScript);
         params.put("_pConfigURL", configLocation);
 
