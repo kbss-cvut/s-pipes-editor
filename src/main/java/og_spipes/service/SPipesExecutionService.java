@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,7 +94,7 @@ public class SPipesExecutionService {
         String configLocation = File.createTempFile("config", ".ttl").getAbsolutePath();
         LOG.info("ConfigLocation: " + configLocation);
         String serviceUrl = engineUrl + "/module";
-        params.put("id", moduleId);
+        params.put("_pId", moduleId);
         createDebugConfig(configLocation, moduleScript);
         params.put("_pConfigURL", configLocation);
 
@@ -120,7 +117,6 @@ public class SPipesExecutionService {
 
         return response.getBody();
     }
-
 
     /**
      * Mapping is not working correctly so the complicated mapping has to be done
@@ -154,4 +150,7 @@ public class SPipesExecutionService {
         }).collect(Collectors.toList());
     }
 
+    public String getPipelineName(String id) {
+        return transformationDAO.getPipelineName(id);
+    }
 }

@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.*;
 
 @RestController
@@ -41,6 +40,12 @@ public class ExecutionController {
     public Set<ModuleExecutionInfo> historyOfModule(@RequestBody ScriptDTO scriptDTO) {
         String transformationId = scriptDTO.getTransformationId();
         return viewService.modulesExecutionInfo(transformationId);
+    }
+
+    @GetMapping(path = "/{executionId}")
+    public String getPipelineName(@PathVariable("executionId") String executionId) {
+        return executionService.getPipelineName(executionId);
+
     }
 
 }
