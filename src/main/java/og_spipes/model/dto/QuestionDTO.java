@@ -19,7 +19,7 @@ public class QuestionDTO extends ModuleDTO {
     private String originalScriptPath;
 
     public String getOriginalScriptPath() {
-        return originalScriptPath;
+        return originalScriptPath != null && !originalScriptPath.isEmpty() ? originalScriptPath : getScriptPath();
     }
 
     public String getModuleTypeUri() {
