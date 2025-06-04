@@ -15,6 +15,13 @@ public class QuestionDTO extends ModuleDTO {
     @OWLObjectProperty(iri = s_p_has_root_question)
     private Question rootQuestion;
 
+    @OWLObjectProperty(iri = s_p_has_execution_script_path)
+    private String executionScriptPath;
+
+    public String getExecutionScriptPath() {
+        return executionScriptPath != null && !executionScriptPath.isEmpty() ? executionScriptPath : getScriptPath();
+    }
+
     public String getModuleTypeUri() {
         return moduleTypeUri;
     }

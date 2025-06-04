@@ -39,7 +39,7 @@ public class FormController {
 
     @PostMapping(path = "/forms")
     public Question generateModuleForm(@RequestBody QuestionDTO requestDTO) {
-        String script = requestDTO.getScriptPath();
+        String script = requestDTO.getExecutionScriptPath();
         LOG.info("Generating form for script " + script + ", module " + requestDTO.getModuleUri() + " of type " + requestDTO.getModuleTypeUri());
         return formService.generateModuleForm(
                 script,
