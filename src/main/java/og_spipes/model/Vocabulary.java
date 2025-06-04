@@ -102,6 +102,7 @@ public class Vocabulary {
     public final static String s_p_has_module_uri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri";
     public final static String s_p_has_module_variable = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-variables";
     public final static String s_p_has_script_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path";
+    // relates a module to a path of a script from which the module was executed.
     public final static String s_p_has_execution_script_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-execution-script-path";
     public final static String s_p_has_module_from_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-from-path";
     public final static String s_p_has_module_to_path = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-to-path";
