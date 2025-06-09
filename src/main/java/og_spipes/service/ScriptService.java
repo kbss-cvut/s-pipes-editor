@@ -16,6 +16,8 @@ import og_spipes.service.exception.OntologyDuplicationException;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.util.ResourceUtils;
 import org.apache.jena.vocabulary.OWL;
 import org.slf4j.Logger;
@@ -261,5 +263,35 @@ public class ScriptService {
                 .filter(x -> !x.equals("http://onto.fel.cvut.cz/ontologies/s-pipes-lib"))
                 .collect(Collectors.toList());
      }
+
+
+    public void toggleNextDependency(String scriptPath, String fromUri, String toUri) throws IOException {
+        Model model = ModelFactory.createDefaultModel();
+        try (InputStream is = new FileInputStream(scriptPath)) {
+            RDFDataMgr.read(model, is, Lang.TURTLE);
+        }
+
+        Resource fromResource = model.getResource(fromUri);
+        Resource toResource = model.getResource(toUri);
+
+        if (fromResource == null || toResource == null) {
+            throw new IllegalArgumentException("One or both URIs not found in the model: " + fromUri + ", " + toUri);
+        }
+
+        Property nextProperty = model.createProperty(Vocabulary.s_p_next);
+
+        if (model.contains(fromResource, nextProperty, toResource)) { // Removal part
+            model.remove(fromResource, nextProperty, toResource);
+        } else { // Addition part
+            if (model.contains(toResource, nextProperty, fromResource)) {
+                model.remove(toResource, nextProperty, fromResource); // Remove the connection in the opposite direction if exists
+            }
+            model.add(fromResource, nextProperty, toResource);
+        }
+
+        try (OutputStream os = new FileOutputStream(scriptPath)) {
+            JenaUtils.writeScript(os, model);
+        }
+    }
 
 }

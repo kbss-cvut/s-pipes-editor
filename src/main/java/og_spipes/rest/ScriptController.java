@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -181,6 +182,21 @@ public class ScriptController {
         return scriptService.getScriptImportedOntologies(
                 dto.getAbsolutePath()
         );
+    }
+
+    @PostMapping(path = "/modules/link", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void linkModules(@RequestBody LinkModulesDTO dto) throws IOException {
+        List<String> moduleUris = dto.getModuleUris();
+        String scriptPath = dto.getAbsolutePath();
+
+        if (moduleUris == null || moduleUris.size() < 2) {
+            throw new IllegalArgumentException("Нужно минимум два модуля для связывания через sm:next");
+        }
+
+        String from = moduleUris.get(0);
+        String to = moduleUris.get(1);
+        scriptService.toggleNextDependency(scriptPath, from, to);
     }
 
 }
