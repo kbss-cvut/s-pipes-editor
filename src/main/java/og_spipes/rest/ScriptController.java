@@ -184,19 +184,4 @@ public class ScriptController {
         );
     }
 
-    @PostMapping(path = "/modules/link", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void linkModules(@RequestBody LinkModulesDTO dto) throws IOException {
-        List<String> moduleUris = dto.getModuleUris();
-        String scriptPath = dto.getAbsolutePath();
-
-        if (moduleUris == null || moduleUris.size() < 2) {
-            throw new IllegalArgumentException("Нужно минимум два модуля для связывания через sm:next");
-        }
-
-        String from = moduleUris.get(0);
-        String to = moduleUris.get(1);
-        scriptService.toggleNextDependency(scriptPath, from, to);
-    }
-
 }

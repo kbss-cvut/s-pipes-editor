@@ -60,8 +60,11 @@ public class ScriptService {
     }
 
     public void createDependency(String scriptPath, String from, String to) throws IOException {
-        Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
-        List<Resource> resources = ontModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
+        Model model = ModelFactory.createDefaultModel();
+        try (InputStream is = new FileInputStream(scriptPath)) {
+            RDFDataMgr.read(model, is, Lang.TURTLE);
+        }
+        List<Resource> resources = model.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
         Optional<Resource> moduleFrom = resources.stream().filter(x -> x.getURI().equals(from)).findAny();
         Optional<Resource> moduleTo = resources.stream().filter(x -> x.getURI().equals(to)).findAny();
 
@@ -69,9 +72,17 @@ public class ScriptService {
             throw new IllegalArgumentException("FROM MODULE: " + moduleFrom + " OR TO MODULE " + moduleTo + "CANT BE NULL");
         }
 
-        ontModel.add(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
+        if (model.contains(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get())) { // Removal part
+            model.remove(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
+        } else { // Addition part
+            if (model.contains(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get())) {
+                model.remove(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get()); // Remove the connection in the opposite direction if exists
+            }
+            model.add(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
+        }
+
         try (OutputStream os = new FileOutputStream(scriptPath);){
-            JenaUtils.writeScript(os, ontModel);
+            JenaUtils.writeScript(os, model);
         }
     }
 
@@ -263,35 +274,5 @@ public class ScriptService {
                 .filter(x -> !x.equals("http://onto.fel.cvut.cz/ontologies/s-pipes-lib"))
                 .collect(Collectors.toList());
      }
-
-
-    public void toggleNextDependency(String scriptPath, String fromUri, String toUri) throws IOException {
-        Model model = ModelFactory.createDefaultModel();
-        try (InputStream is = new FileInputStream(scriptPath)) {
-            RDFDataMgr.read(model, is, Lang.TURTLE);
-        }
-
-        Resource fromResource = model.getResource(fromUri);
-        Resource toResource = model.getResource(toUri);
-
-        if (fromResource == null || toResource == null) {
-            throw new IllegalArgumentException("One or both URIs not found in the model: " + fromUri + ", " + toUri);
-        }
-
-        Property nextProperty = model.createProperty(Vocabulary.s_p_next);
-
-        if (model.contains(fromResource, nextProperty, toResource)) { // Removal part
-            model.remove(fromResource, nextProperty, toResource);
-        } else { // Addition part
-            if (model.contains(toResource, nextProperty, fromResource)) {
-                model.remove(toResource, nextProperty, fromResource); // Remove the connection in the opposite direction if exists
-            }
-            model.add(fromResource, nextProperty, toResource);
-        }
-
-        try (OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, model);
-        }
-    }
 
 }
