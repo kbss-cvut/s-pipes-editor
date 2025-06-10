@@ -72,14 +72,10 @@ public class ScriptService {
             throw new IllegalArgumentException("FROM MODULE: " + moduleFrom + " OR TO MODULE " + moduleTo + "CANT BE NULL");
         }
 
-        if (model.contains(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get())) { // Removal part
-            model.remove(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
-        } else { // Addition part
-            if (model.contains(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get())) {
-                model.remove(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get()); // Remove the connection in the opposite direction if exists
-            }
-            model.add(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
+        if (model.contains(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get())) {
+            model.remove(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get()); // Remove the connection in the opposite direction if exists
         }
+        model.add(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
 
         try (OutputStream os = new FileOutputStream(scriptPath);){
             JenaUtils.writeScript(os, model);
@@ -87,14 +83,17 @@ public class ScriptService {
     }
 
     public void deleteDependency(String scriptPath, String from, String to) throws IOException {
-        Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
-        ontModel.removeAll(
-                ontModel.getResource(from),
+        Model model = ModelFactory.createDefaultModel();
+        try (InputStream is = new FileInputStream(scriptPath)) {
+            RDFDataMgr.read(model, is, Lang.TURTLE);
+        }
+        model.removeAll(
+                model.getResource(from),
                 new PropertyImpl(Vocabulary.s_p_next),
-                ontModel.getResource(to)
+                model.getResource(to)
         );
         try(OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, ontModel);
+            JenaUtils.writeScript(os, model);
         }
     }
 
@@ -273,6 +272,6 @@ public class ScriptService {
         return imports.stream()
                 .filter(x -> !x.equals("http://onto.fel.cvut.cz/ontologies/s-pipes-lib"))
                 .collect(Collectors.toList());
-     }
+    }
 
 }
