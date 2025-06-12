@@ -10,6 +10,7 @@ import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.persistence.dao.OntologyDao;
 import og_spipes.persistence.dao.ScriptDAO;
+import og_spipes.rest.exception.ModuleDependencyException;
 import og_spipes.service.exception.FileExistsException;
 import og_spipes.service.exception.MissingOntologyException;
 import og_spipes.service.exception.OntologyDuplicationException;
@@ -26,9 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URI;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -60,13 +59,15 @@ public class ScriptService {
 
     public void createDependency(String scriptPath, String from, String to) throws IOException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
-        List<Resource> resources = ontModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
-        Optional<Resource> moduleFrom = resources.stream().filter(x -> x.getURI().equals(from)).findAny();
-        Optional<Resource> moduleTo = resources.stream().filter(x -> x.getURI().equals(to)).findAny();
+        List<Resource> ontModelResources = ontModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
+        Optional<Resource> moduleFrom = ontModelResources.stream().filter(x -> x.getURI().equals(from)).findAny();
+        Optional<Resource> moduleTo = ontModelResources.stream().filter(x -> x.getURI().equals(to)).findAny();
 
         if(!moduleFrom.isPresent() || !moduleTo.isPresent()){
             throw new IllegalArgumentException("FROM MODULE: " + moduleFrom + " OR TO MODULE " + moduleTo + "CANT BE NULL");
         }
+
+        checkIfURItBelongsToBaseModel(scriptPath, from, ontModel, moduleFrom);
 
         if (ontModel.contains(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get())) {
             ontModel.remove(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get()); // Remove the connection in the opposite direction if exists
@@ -80,6 +81,17 @@ public class ScriptService {
 
     public void deleteDependency(String scriptPath, String from, String to) throws IOException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
+        List<Resource> ontModelResources = ontModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
+        Optional<Resource> moduleFrom = ontModelResources.stream().filter(x -> x.getURI().equals(from)).findAny();
+        Optional<Resource> moduleTo = ontModelResources.stream().filter(x -> x.getURI().equals(to)).findAny();
+
+
+        if(!moduleFrom.isPresent() || !moduleTo.isPresent()){
+            throw new IllegalArgumentException("FROM MODULE: " + moduleFrom + " OR TO MODULE " + moduleTo + "CANT BE NULL");
+        }
+
+        checkIfURItBelongsToBaseModel(scriptPath, from, ontModel, moduleFrom);
+
         ontModel.removeAll(
                 ontModel.getResource(from),
                 new PropertyImpl(Vocabulary.s_p_next),
@@ -87,6 +99,22 @@ public class ScriptService {
         );
         try(OutputStream os = new FileOutputStream(scriptPath)) {
             JenaUtils.writeScript(os, getBaseModel(ontModel));
+        }
+    }
+
+    private void checkIfURItBelongsToBaseModel(String scriptPath, String URI, Model ontModel, Optional<Resource> moduleFrom) {
+        Map<String, File> moduleUriToScriptMap = ontologyHelper.getUriToScriptMap();
+
+        Model baseModel = getBaseModel(ontModel);
+        List<Resource> baseModelResources = baseModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
+        Optional<Resource> baseModelModuleFrom = baseModelResources.stream().filter(x -> x.getURI().equals(URI)).findAny();
+
+        if (!baseModelModuleFrom.isPresent()) {
+            if (moduleFrom.isPresent()) {
+                throw new ModuleDependencyException("Cannot modify dependency.", URI, scriptPath, moduleUriToScriptMap.get(URI).getAbsolutePath());
+            } else {
+                throw new ModuleDependencyException("Cannot modify dependency.", URI, scriptPath, null);
+            }
         }
     }
 

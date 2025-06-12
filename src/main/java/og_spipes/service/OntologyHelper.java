@@ -24,9 +24,16 @@ public class OntologyHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OntologyHelper.class);
     private final ScriptDAO scriptDao;
 
+    private final Map<String, File> uriToScriptMap;
+
+    public Map<String, File> getUriToScriptMap() {
+        return uriToScriptMap;
+    }
+
     @Autowired
     public OntologyHelper(ScriptDAO scriptDao) {
         this.scriptDao = scriptDao;
+        this.uriToScriptMap = buildModuleUriToScriptMap(scriptDao.getScripts());
     }
 
     /**
@@ -55,6 +62,28 @@ public class OntologyHelper {
         ModelMakerImpl modelMaker = new ModelMakerImpl(new SimpleGraphMaker());
         OntModelSpec ontModelSpec = new OntModelSpec(modelMaker, null, null, ProfileRegistry.OWL_LANG);
         return documentManager.getOntology(fileUri, ontModelSpec);
+    }
+
+    public Map<String, File> buildModuleUriToScriptMap(List<File> scriptFiles) {
+        Map<String, File> uriToFile = new HashMap<>();
+
+        for (File file : scriptFiles) {
+            try {
+                Model model = createOntModel(file);
+                model.listSubjects()
+                        .filterDrop(RDFNode::isAnon)
+                        .forEachRemaining(resource -> {
+                            String uri = resource.getURI();
+                            if (uri != null && !uriToFile.containsKey(uri)) {
+                                uriToFile.put(uri, file);
+                            }
+                        });
+            } catch (Exception e) {
+                LOG.warn("Failed to parse file {}: {}", file.getAbsolutePath(), e.getMessage());
+            }
+        }
+
+        return uriToFile;
     }
 
     public static List<Statement> getAllStatementsRecursively(Model fromModel, String moduleURI) {
