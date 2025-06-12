@@ -67,7 +67,12 @@ public class ScriptService {
             throw new IllegalArgumentException("FROM MODULE: " + moduleFrom + " OR TO MODULE " + moduleTo + "CANT BE NULL");
         }
 
-        checkIfURItBelongsToBaseModel(scriptPath, from, ontModel, moduleFrom);
+        Map<String, File> moduleUriToScriptMap = ontologyHelper.getUriToScriptMap();
+
+        if (!moduleUriToScriptMap.get(from).getAbsolutePath().equals(new File(scriptPath).getAbsolutePath()) // None of two nodes belong to the open script?
+                && !moduleUriToScriptMap.get(to).getAbsolutePath().equals(new File(scriptPath).getAbsolutePath())) {
+            throw new ModuleDependencyException("Cannot modify dependency.", from, scriptPath, moduleUriToScriptMap.get(from).getAbsolutePath());
+        }
 
         if (ontModel.contains(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get())) {
             ontModel.remove(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get()); // Remove the connection in the opposite direction if exists
@@ -90,7 +95,12 @@ public class ScriptService {
             throw new IllegalArgumentException("FROM MODULE: " + moduleFrom + " OR TO MODULE " + moduleTo + "CANT BE NULL");
         }
 
-        checkIfURItBelongsToBaseModel(scriptPath, from, ontModel, moduleFrom);
+        Map<String, File> moduleUriToScriptMap = ontologyHelper.getUriToScriptMap();
+
+        if (!moduleUriToScriptMap.get(from).getAbsolutePath().equals(new File(scriptPath).getAbsolutePath()) // None of two nodes belong to the open script?
+                && !moduleUriToScriptMap.get(to).getAbsolutePath().equals(new File(scriptPath).getAbsolutePath())) {
+            throw new ModuleDependencyException("Cannot modify dependency.", from, scriptPath, moduleUriToScriptMap.get(from).getAbsolutePath());
+        }
 
         ontModel.removeAll(
                 ontModel.getResource(from),
@@ -99,22 +109,6 @@ public class ScriptService {
         );
         try(OutputStream os = new FileOutputStream(scriptPath)) {
             JenaUtils.writeScript(os, getBaseModel(ontModel));
-        }
-    }
-
-    private void checkIfURItBelongsToBaseModel(String scriptPath, String URI, Model ontModel, Optional<Resource> moduleFrom) {
-        Map<String, File> moduleUriToScriptMap = ontologyHelper.getUriToScriptMap();
-
-        Model baseModel = getBaseModel(ontModel);
-        List<Resource> baseModelResources = baseModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
-        Optional<Resource> baseModelModuleFrom = baseModelResources.stream().filter(x -> x.getURI().equals(URI)).findAny();
-
-        if (!baseModelModuleFrom.isPresent()) {
-            if (moduleFrom.isPresent()) {
-                throw new ModuleDependencyException("Cannot modify dependency.", URI, scriptPath, moduleUriToScriptMap.get(URI).getAbsolutePath());
-            } else {
-                throw new ModuleDependencyException("Cannot modify dependency.", URI, scriptPath, null);
-            }
         }
     }
 
