@@ -24,16 +24,18 @@ public class OntologyHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OntologyHelper.class);
     private final ScriptDAO scriptDao;
 
-    private final Map<String, File> uriToScriptMap;
+    private Map<String, File> uriToScriptMap = null;
 
     public Map<String, File> getUriToScriptMap() {
+        if (uriToScriptMap == null) {
+            this.uriToScriptMap = buildModuleUriToScriptMap(scriptDao.getScripts());
+        }
         return uriToScriptMap;
     }
 
     @Autowired
     public OntologyHelper(ScriptDAO scriptDao) {
         this.scriptDao = scriptDao;
-        this.uriToScriptMap = buildModuleUriToScriptMap(scriptDao.getScripts());
     }
 
     /**
