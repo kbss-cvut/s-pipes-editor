@@ -4,12 +4,14 @@ import og_spipes.persistence.dao.OntologyDao;
 import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.jena.graph.impl.SimpleGraphMaker;
 import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.ontology.ProfileRegistry;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.ModelMakerImpl;
+import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +25,6 @@ public class OntologyHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(OntologyHelper.class);
     private final ScriptDAO scriptDao;
-
-    private Map<String, File> uriToScriptMap = null;
-
-    public Map<String, File> getUriToScriptMap() {
-        if (uriToScriptMap == null) {
-            this.uriToScriptMap = buildModuleUriToScriptMap(scriptDao.getScripts());
-        }
-        return uriToScriptMap;
-    }
 
     @Autowired
     public OntologyHelper(ScriptDAO scriptDao) {
@@ -66,26 +59,20 @@ public class OntologyHelper {
         return documentManager.getOntology(fileUri, ontModelSpec);
     }
 
-    public Map<String, File> buildModuleUriToScriptMap(List<File> scriptFiles) {
-        Map<String, File> uriToFile = new HashMap<>();
-
-        for (File file : scriptFiles) {
-            try {
-                Model model = createOntModel(file);
-                model.listSubjects()
-                        .filterDrop(RDFNode::isAnon)
-                        .forEachRemaining(resource -> {
-                            String uri = resource.getURI();
-                            if (uri != null && !uriToFile.containsKey(uri)) {
-                                uriToFile.put(uri, file);
-                            }
-                        });
-            } catch (Exception e) {
-                LOG.warn("Failed to parse file {}: {}", file.getAbsolutePath(), e.getMessage());
+    public File findFileWhereStatementDefined(String s, PropertyImpl p, String o){
+        List<File> scripts = scriptDao.getScripts();
+        for (File file : scripts){
+            Model model = getBaseModel(this.createOntModel(file));
+            List<Statement> statements = OntologyHelper.getAllStatementsRecursively(model, s);
+            for (Statement stmt : statements) {
+                if (stmt.getSubject().getURI().equals(s) &&
+                        stmt.getPredicate().equals(p) &&
+                        stmt.getObject().asResource().getURI().equals(o)) {
+                    return file;
+                }
             }
         }
-
-        return uriToFile;
+        return null;
     }
 
     public static List<Statement> getAllStatementsRecursively(Model fromModel, String moduleURI) {
@@ -126,5 +113,11 @@ public class OntologyHelper {
         return moduleStatements;
     }
 
+    public Model getBaseModel(Model model){
+        if (model instanceof OntModel) {
+            return ((OntModel) model).getBaseModel();
+        }
+        return model;
+    }
 
 }

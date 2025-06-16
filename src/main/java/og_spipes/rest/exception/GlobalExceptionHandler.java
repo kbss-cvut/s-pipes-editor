@@ -12,14 +12,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ModuleDependencyException.class)
-    public ResponseEntity<Map<String, Object>> handleModuleDependencyException(ModuleDependencyException ex) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("error", "BAD_REQUEST");
-        errorResponse.put("module", ex.getURI());
-        errorResponse.put("script", ex.getScript());
-        if (ex.getSubscript() != null) {
-            errorResponse.put("subscript", ex.getSubscript());
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    public ResponseEntity<String> handleModuleDependencyException(ModuleDependencyException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }

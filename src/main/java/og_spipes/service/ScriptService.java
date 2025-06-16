@@ -67,20 +67,13 @@ public class ScriptService {
             throw new IllegalArgumentException("FROM MODULE: " + moduleFrom + " OR TO MODULE " + moduleTo + "CANT BE NULL");
         }
 
-        Map<String, File> moduleUriToScriptMap = ontologyHelper.getUriToScriptMap();
-
-        if (!moduleUriToScriptMap.get(from).getAbsolutePath().equals(new File(scriptPath).getAbsolutePath()) // None of two nodes belong to the open script?
-                && !moduleUriToScriptMap.get(to).getAbsolutePath().equals(new File(scriptPath).getAbsolutePath())) {
-            throw new ModuleDependencyException("Cannot modify dependency.", from, scriptPath, moduleUriToScriptMap.get(from).getAbsolutePath());
-        }
-
         if (ontModel.contains(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get())) {
-            ontModel.remove(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get()); // Remove the connection in the opposite direction if exists
+            deleteDependency(scriptPath, to, from); // Remove the connection in the opposite direction if exists
         }
         ontModel.add(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
 
         try (OutputStream os = new FileOutputStream(scriptPath);){
-            JenaUtils.writeScript(os, getBaseModel(ontModel));
+            JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
         }
     }
 
@@ -95,11 +88,9 @@ public class ScriptService {
             throw new IllegalArgumentException("FROM MODULE: " + moduleFrom + " OR TO MODULE " + moduleTo + "CANT BE NULL");
         }
 
-        Map<String, File> moduleUriToScriptMap = ontologyHelper.getUriToScriptMap();
-
-        if (!moduleUriToScriptMap.get(from).getAbsolutePath().equals(new File(scriptPath).getAbsolutePath()) // None of two nodes belong to the open script?
-                && !moduleUriToScriptMap.get(to).getAbsolutePath().equals(new File(scriptPath).getAbsolutePath())) {
-            throw new ModuleDependencyException("Cannot modify dependency.", from, scriptPath, moduleUriToScriptMap.get(from).getAbsolutePath());
+        if (!ontologyHelper.getBaseModel(ontModel).contains(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get())) { // Dependency is not defined in base model
+            File subscriptPath = ontologyHelper.findFileWhereStatementDefined(from, new PropertyImpl(Vocabulary.s_p_next), to);
+            throw new ModuleDependencyException(scriptPath, subscriptPath.getAbsolutePath());
         }
 
         ontModel.removeAll(
@@ -108,7 +99,7 @@ public class ScriptService {
                 ontModel.getResource(to)
         );
         try(OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, getBaseModel(ontModel));
+            JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
         }
     }
 
@@ -288,12 +279,4 @@ public class ScriptService {
                 .filter(x -> !x.equals("http://onto.fel.cvut.cz/ontologies/s-pipes-lib"))
                 .collect(Collectors.toList());
     }
-
-    private Model getBaseModel(Model model){
-        if (model instanceof OntModel) {
-            return ((OntModel) model).getBaseModel();
-        }
-        return model;
-    }
-
 }
