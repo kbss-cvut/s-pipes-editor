@@ -1,8 +1,15 @@
 package og_spipes.rest.exception;
 
 public class ModuleDependencyException extends RuntimeException {
+    private final String subscript;
+
     public ModuleDependencyException(String script, String subscript) {
         super(formatMessage(script, subscript));
+        this.subscript = subscript;
+    }
+
+    public String getSubscript() {
+        return subscript;
     }
 
     private static String formatMessage(String script, String subscript) {

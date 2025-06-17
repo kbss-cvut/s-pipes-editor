@@ -64,13 +64,15 @@ public class ScriptService {
         Optional<Resource> moduleTo = ontModelResources.stream().filter(x -> x.getURI().equals(to)).findAny();
 
         if(!moduleFrom.isPresent() || !moduleTo.isPresent()){
-            throw new IllegalArgumentException("FROM MODULE: " + moduleFrom + " OR TO MODULE " + moduleTo + "CANT BE NULL");
+            throw new IllegalArgumentException("\"From\" module: " + moduleFrom + " or \"to\" module " + moduleTo + "can't be null");
         }
 
-        if (ontModel.contains(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get())) {
+        Statement inversedDependency = ontModel.createStatement(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get());
+        if (ontModel.contains(inversedDependency)) {
             deleteDependency(scriptPath, to, from); // Remove the connection in the opposite direction if exists
         }
-        ontModel.add(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
+        Statement dependency = ontModel.createStatement(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
+        ontModel.add(dependency);
 
         try (OutputStream os = new FileOutputStream(scriptPath);){
             JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
@@ -85,19 +87,18 @@ public class ScriptService {
 
 
         if(!moduleFrom.isPresent() || !moduleTo.isPresent()){
-            throw new IllegalArgumentException("FROM MODULE: " + moduleFrom + " OR TO MODULE " + moduleTo + "CANT BE NULL");
+            throw new IllegalArgumentException("\"From\" module: " + moduleFrom + " or \"to\" module " + moduleTo + "can't be null");
         }
 
-        if (!ontologyHelper.getBaseModel(ontModel).contains(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get())) { // Dependency is not defined in base model
-            File subscriptPath = ontologyHelper.findFileWhereStatementDefined(from, new PropertyImpl(Vocabulary.s_p_next), to);
+        Model model = ontologyHelper.getBaseModel(ontModel);
+        Statement dependency = model.createStatement(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
+
+        if (!model.contains(dependency)) { // Dependency is not defined in base model
+            File subscriptPath = ontologyHelper.findFileWhereStatementDefined(dependency);;
             throw new ModuleDependencyException(scriptPath, subscriptPath.getAbsolutePath());
         }
 
-        ontModel.removeAll(
-                ontModel.getResource(from),
-                new PropertyImpl(Vocabulary.s_p_next),
-                ontModel.getResource(to)
-        );
+        ontModel.remove(dependency);
         try(OutputStream os = new FileOutputStream(scriptPath)) {
             JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
         }

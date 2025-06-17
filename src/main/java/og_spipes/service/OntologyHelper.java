@@ -8,10 +8,10 @@ import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.ontology.ProfileRegistry;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.ModelMakerImpl;
-import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,17 +59,12 @@ public class OntologyHelper {
         return documentManager.getOntology(fileUri, ontModelSpec);
     }
 
-    public File findFileWhereStatementDefined(String s, PropertyImpl p, String o){
+    public File findFileWhereStatementDefined(Statement statement){
         List<File> scripts = scriptDao.getScripts();
         for (File file : scripts){
             Model model = getBaseModel(this.createOntModel(file));
-            List<Statement> statements = OntologyHelper.getAllStatementsRecursively(model, s);
-            for (Statement stmt : statements) {
-                if (stmt.getSubject().getURI().equals(s) &&
-                        stmt.getPredicate().equals(p) &&
-                        stmt.getObject().asResource().getURI().equals(o)) {
-                    return file;
-                }
+            if (model.contains(statement)){
+                return file;
             }
         }
         return null;
