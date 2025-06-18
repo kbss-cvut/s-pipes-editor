@@ -14,10 +14,7 @@ import og_spipes.rest.exception.ModuleDependencyException;
 import og_spipes.service.exception.FileExistsException;
 import og_spipes.service.exception.MissingOntologyException;
 import og_spipes.service.exception.OntologyDuplicationException;
-import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.rdf.model.impl.PropertyImpl;
-import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.util.ResourceUtils;
 import org.apache.jena.vocabulary.OWL;
 import org.slf4j.Logger;
@@ -63,15 +60,18 @@ public class ScriptService {
         Optional<Resource> moduleFrom = ontModelResources.stream().filter(x -> x.getURI().equals(from)).findAny();
         Optional<Resource> moduleTo = ontModelResources.stream().filter(x -> x.getURI().equals(to)).findAny();
 
-        if(!moduleFrom.isPresent() || !moduleTo.isPresent()){
-            throw new IllegalArgumentException("\"From\" module: " + moduleFrom + " or \"to\" module " + moduleTo + "can't be null");
+        if(!moduleFrom.isPresent()){
+            throw new IllegalArgumentException("\"From\" module: " + moduleFrom + "in not present in model");
+        }
+        if(!moduleTo.isPresent()){
+            throw new IllegalArgumentException("\"To\" module: " + moduleTo + "in not present in model");
         }
 
-        Statement inversedDependency = ontModel.createStatement(moduleTo.get(), new PropertyImpl(Vocabulary.s_p_next), moduleFrom.get());
+        Statement inversedDependency = ontModel.createStatement(moduleTo.get(), ResourceFactory.createProperty(Vocabulary.s_p_next), moduleFrom.get());
         if (ontModel.contains(inversedDependency)) {
             deleteDependency(scriptPath, to, from); // Remove the connection in the opposite direction if exists
         }
-        Statement dependency = ontModel.createStatement(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
+        Statement dependency = ontModel.createStatement(moduleFrom.get(), ResourceFactory.createProperty(Vocabulary.s_p_next), moduleTo.get());
         ontModel.add(dependency);
 
         try (OutputStream os = new FileOutputStream(scriptPath);){
@@ -86,15 +86,18 @@ public class ScriptService {
         Optional<Resource> moduleTo = ontModelResources.stream().filter(x -> x.getURI().equals(to)).findAny();
 
 
-        if(!moduleFrom.isPresent() || !moduleTo.isPresent()){
-            throw new IllegalArgumentException("\"From\" module: " + moduleFrom + " or \"to\" module " + moduleTo + "can't be null");
+        if(!moduleFrom.isPresent()){
+            throw new IllegalArgumentException("\"From\" module: " + moduleFrom + "in not present in model");
+        }
+        if(!moduleTo.isPresent()){
+            throw new IllegalArgumentException("\"To\" module: " + moduleTo + "in not present in model");
         }
 
         Model model = ontologyHelper.getBaseModel(ontModel);
-        Statement dependency = model.createStatement(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
+        Statement dependency = model.createStatement(moduleFrom.get(), ResourceFactory.createProperty(Vocabulary.s_p_next), moduleTo.get());
 
         if (!model.contains(dependency)) { // Dependency is not defined in base model
-            File subscriptPath = ontologyHelper.findFileWhereStatementDefined(dependency);;
+            File subscriptPath = ontologyHelper.findFileWhereStatementDefined(dependency, new File(scriptPath));;
             throw new ModuleDependencyException(scriptPath, subscriptPath.getAbsolutePath());
         }
 
@@ -266,7 +269,7 @@ public class ScriptService {
         }
 
         Model resModel = ontologyHelper.createOntModel(f);
-        resModel.add(ResourceFactory.createResource(ontology), OWL.imports, new ResourceImpl(ontologyName));
+        resModel.add(ResourceFactory.createResource(ontology), OWL.imports, ResourceFactory.createResource(ontologyName));
         try(OutputStream os = new FileOutputStream(scriptPath)) {
             JenaUtils.writeScript(os, resModel);
         }

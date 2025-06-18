@@ -7,10 +7,7 @@ import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.ontology.ProfileRegistry;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.ModelMakerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,12 +56,27 @@ public class OntologyHelper {
         return documentManager.getOntology(fileUri, ontModelSpec);
     }
 
-    public File findFileWhereStatementDefined(Statement statement){
-        List<File> scripts = scriptDao.getScripts();
-        for (File file : scripts){
-            Model model = getBaseModel(this.createOntModel(file));
-            if (model.contains(statement)){
-                return file;
+    public File findFileWhereStatementDefined(Statement statement, File currentScript) {
+        Model currentModel = getBaseModel(this.createOntModel(currentScript));
+        if (currentModel.contains(statement)) {
+            return currentScript;
+        }
+
+        List<String> importedUris = OntologyDao.getOntologyImports(currentScript);
+
+        List<File> allScripts = scriptDao.getScripts();
+        for (File file : allScripts) {
+            if (file.equals(currentScript)) {
+                continue;
+            }
+
+            String fileUri = OntologyDao.getOntologyUri(file);
+
+            if (fileUri != null && importedUris.contains(fileUri)) {
+                Model model = getBaseModel(this.createOntModel(file));
+                if (model.contains(statement)) {
+                    return file;
+                }
             }
         }
         return null;
