@@ -56,26 +56,42 @@ public class OntologyHelper {
         return documentManager.getOntology(fileUri, ontModelSpec);
     }
 
-    public File findFileWhereStatementDefined(Statement statement, File currentScript) {
-        Model currentModel = getBaseModel(this.createOntModel(currentScript));
+    Map<File, Model> modelCache = new HashMap<>();
+
+    public File getStatementOriginScriptPath(Statement statement, File currentScript, Model currentModel) {
         if (currentModel.contains(statement)) {
             return currentScript;
+        } else {
+            return getStatementOriginScriptPath(statement, currentScript, new HashSet<>());
+        }
+    }
+
+    /* Given an OntModel it returns a path to the script in which given statement is defined, i.e. it is the path of a script that represents the given model
+     or any other model that is recursively imported in the given model using owl:imports */
+    private File getStatementOriginScriptPath(Statement statement, File currentScript, Set<File> visited) {
+        if (!visited.add(currentScript)) {
+            return null;
         }
 
         List<String> importedUris = OntologyDao.getOntologyImports(currentScript);
 
         List<File> allScripts = scriptDao.getScripts();
         for (File file : allScripts) {
-            if (file.equals(currentScript)) {
-                continue;
-            }
-
             String fileUri = OntologyDao.getOntologyUri(file);
-
             if (fileUri != null && importedUris.contains(fileUri)) {
-                Model model = getBaseModel(this.createOntModel(file));
+                Model model = modelCache.computeIfAbsent(file, f -> {
+                    Model m = ModelFactory.createDefaultModel();
+                    m.read(f.getAbsolutePath());
+                    return m;
+                });
                 if (model.contains(statement)) {
                     return file;
+                } else {
+                    // check imports recursively
+                    File nestedResult = getStatementOriginScriptPath(statement, file, visited);
+                    if (nestedResult != null) {
+                        return nestedResult;
+                    }
                 }
             }
         }

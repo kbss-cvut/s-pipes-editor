@@ -97,7 +97,7 @@ public class ScriptService {
         Statement dependency = model.createStatement(moduleFrom.get(), ResourceFactory.createProperty(Vocabulary.s_p_next), moduleTo.get());
 
         if (!model.contains(dependency)) { // Dependency is not defined in base model
-            File subscriptPath = ontologyHelper.findFileWhereStatementDefined(dependency, new File(scriptPath));;
+            File subscriptPath = ontologyHelper.getStatementOriginScriptPath(dependency, new File(scriptPath), model);
             throw new ModuleDependencyException(scriptPath, subscriptPath.getAbsolutePath());
         }
 
