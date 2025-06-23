@@ -9,6 +9,8 @@ import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.ontology.ProfileRegistry;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.ModelMakerImpl;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,46 +58,35 @@ public class OntologyHelper {
         return documentManager.getOntology(fileUri, ontModelSpec);
     }
 
-    Map<File, Model> modelCache = new HashMap<>();
-
-    public File getStatementOriginScriptPath(Statement statement, File currentScript, Model currentModel) {
-        if (currentModel.contains(statement)) {
-            return currentScript;
-        } else {
-            return getStatementOriginScriptPath(statement, currentScript, new HashSet<>());
+    public File getStatementOriginScriptPath(Statement statement, Model ontModel) {
+        if (!(ontModel instanceof OntModel)) {
+            throw new IllegalStateException("Model is not an OntModel");
         }
-    }
+        List<OntModel> subModels = ((OntModel) ontModel).listSubModels().toList();
+        List<OntModel> containingModels = subModels.stream()
+                .filter(m -> m.contains(statement))
+                .toList();
 
-    /* Given an OntModel it returns a path to the script in which given statement is defined, i.e. it is the path of a script that represents the given model
-     or any other model that is recursively imported in the given model using owl:imports */
-    private File getStatementOriginScriptPath(Statement statement, File currentScript, Set<File> visited) {
-        if (!visited.add(currentScript)) {
-            return null;
+        if (containingModels.isEmpty()) {
+            throw new IllegalStateException("Submodels do not contain the statement");
+        }
+        if (containingModels.size() > 1) {
+            throw new IllegalStateException("Statement is contained in multiple submodels");
         }
 
-        List<String> importedUris = OntologyDao.getOntologyImports(currentScript);
+        OntModel m = containingModels.get(0);
+        Resource ontologyRes = m.listSubjectsWithProperty(RDF.type, OWL.Ontology)
+                .toList().stream().findFirst()
+                .orElseThrow(() -> new IllegalStateException("OWL.Ontology resource not found in the model"));
 
-        List<File> allScripts = scriptDao.getScripts();
-        for (File file : allScripts) {
-            String fileUri = OntologyDao.getOntologyUri(file);
-            if (fileUri != null && importedUris.contains(fileUri)) {
-                Model model = modelCache.computeIfAbsent(file, f -> {
-                    Model m = ModelFactory.createDefaultModel();
-                    m.read(f.getAbsolutePath());
-                    return m;
-                });
-                if (model.contains(statement)) {
-                    return file;
-                } else {
-                    // check imports recursively
-                    File nestedResult = getStatementOriginScriptPath(statement, file, visited);
-                    if (nestedResult != null) {
-                        return nestedResult;
-                    }
-                }
-            }
+        if (m.getDocumentManager() == null || m.getDocumentManager().getFileManager() == null) {
+            throw new IllegalStateException("Document manager or file manager is null");
         }
-        return null;
+        String subscriptPath = m.getDocumentManager().getFileManager().mapURI(ontologyRes.toString());
+        if (subscriptPath == null) {
+            throw new IllegalStateException("Cannot match URI to file path: " + ontologyRes);
+        }
+        return new File(subscriptPath);
     }
 
     public static List<Statement> getAllStatementsRecursively(Model fromModel, String moduleURI) {

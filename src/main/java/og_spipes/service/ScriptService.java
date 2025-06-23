@@ -61,20 +61,18 @@ public class ScriptService {
         Optional<Resource> moduleTo = ontModelResources.stream().filter(x -> x.getURI().equals(to)).findAny();
 
         if(!moduleFrom.isPresent()){
-            throw new IllegalArgumentException("\"From\" module: " + moduleFrom + "in not present in model");
+            throw new IllegalArgumentException("\"From\" module: " + from + "is not present in model");
         }
         if(!moduleTo.isPresent()){
-            throw new IllegalArgumentException("\"To\" module: " + moduleTo + "in not present in model");
+            throw new IllegalArgumentException("\"To\" module: " + to + "is not present in model");
         }
 
-        Statement inversedDependency = ontModel.createStatement(moduleTo.get(), ResourceFactory.createProperty(Vocabulary.s_p_next), moduleFrom.get());
-        if (ontModel.contains(inversedDependency)) {
-            deleteDependency(scriptPath, to, from); // Remove the connection in the opposite direction if exists
-        }
+        removeInverseDependencyIfExists(ontModel, moduleFrom.get(), moduleTo.get(), scriptPath);
+
         Statement dependency = ontModel.createStatement(moduleFrom.get(), ResourceFactory.createProperty(Vocabulary.s_p_next), moduleTo.get());
         ontModel.add(dependency);
 
-        try (OutputStream os = new FileOutputStream(scriptPath);){
+        try (OutputStream os = new FileOutputStream(scriptPath)) {
             JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
         }
     }
@@ -87,18 +85,18 @@ public class ScriptService {
 
 
         if(!moduleFrom.isPresent()){
-            throw new IllegalArgumentException("\"From\" module: " + moduleFrom + "in not present in model");
+            throw new IllegalArgumentException("\"From\" module: " + from + "is not present in model");
         }
         if(!moduleTo.isPresent()){
-            throw new IllegalArgumentException("\"To\" module: " + moduleTo + "in not present in model");
+            throw new IllegalArgumentException("\"To\" module: " + to + "is not present in model");
         }
 
         Model model = ontologyHelper.getBaseModel(ontModel);
         Statement dependency = model.createStatement(moduleFrom.get(), ResourceFactory.createProperty(Vocabulary.s_p_next), moduleTo.get());
 
         if (!model.contains(dependency)) { // Dependency is not defined in base model
-            File subscriptPath = ontologyHelper.getStatementOriginScriptPath(dependency, new File(scriptPath), model);
-            throw new ModuleDependencyException(scriptPath, subscriptPath.getAbsolutePath());
+            String subscriptPath = (ontologyHelper.getStatementOriginScriptPath(dependency, ontModel)).getAbsolutePath();
+            throw new ModuleDependencyException(scriptPath, subscriptPath);
         }
 
         ontModel.remove(dependency);
@@ -282,5 +280,18 @@ public class ScriptService {
         return imports.stream()
                 .filter(x -> !x.equals("http://onto.fel.cvut.cz/ontologies/s-pipes-lib"))
                 .collect(Collectors.toList());
+    }
+
+    private void removeInverseDependencyIfExists(Model ontModel, Resource from, Resource to, String scriptPath) {
+        Statement inverse = ontModel.createStatement(to, ResourceFactory.createProperty(Vocabulary.s_p_next), from);
+        Model baseModel = ontologyHelper.getBaseModel(ontModel);
+
+        if (ontModel.contains(inverse)) {
+            if (!baseModel.contains(inverse)) {
+                String subscriptPath = ontologyHelper.getStatementOriginScriptPath(inverse, ontModel).getAbsolutePath();
+                throw new ModuleDependencyException(scriptPath, subscriptPath);
+            }
+            ontModel.remove(inverse);
+        }
     }
 }
