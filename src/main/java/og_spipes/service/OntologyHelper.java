@@ -2,6 +2,7 @@ package og_spipes.service;
 
 import og_spipes.persistence.dao.OntologyDao;
 import og_spipes.persistence.dao.ScriptDAO;
+import og_spipes.rest.exception.ModuleDependencyException;
 import org.apache.jena.graph.impl.SimpleGraphMaker;
 import org.apache.jena.ontology.OntDocumentManager;
 import org.apache.jena.ontology.OntModel;
@@ -58,9 +59,15 @@ public class OntologyHelper {
         return documentManager.getOntology(fileUri, ontModelSpec);
     }
 
-    public File getStatementOriginScriptPath(Statement statement, Model ontModel) {
+    public File getStatementOriginScriptPath(Statement statement, Model ontModel, String scriptPath, String from, String to) {
         if (!(ontModel instanceof OntModel)) {
-            throw new IllegalStateException("Model is not an OntModel");
+            throw new ModuleDependencyException(
+                    "Model is not an OntModel",
+                    scriptPath,
+                    null,
+                    from,
+                    to
+            );
         }
         List<OntModel> subModels = ((OntModel) ontModel).listSubModels().toList();
         List<OntModel> containingModels = subModels.stream()
@@ -68,23 +75,53 @@ public class OntologyHelper {
                 .toList();
 
         if (containingModels.isEmpty()) {
-            throw new IllegalStateException("Submodels do not contain the statement");
+            throw new ModuleDependencyException(
+                    "Submodels do not contain the statement " + statement.toString(),
+                    scriptPath,
+                    null,
+                    from,
+                    to
+            );
         }
         if (containingModels.size() > 1) {
-            throw new IllegalStateException("Statement is contained in multiple submodels");
+            throw new ModuleDependencyException(
+                    "Statement " + statement.toString() + " is contained in multiple submodels",
+                    scriptPath,
+                    null,
+                    from,
+                    to
+            );
         }
 
         OntModel m = containingModels.get(0);
         Resource ontologyRes = m.listSubjectsWithProperty(RDF.type, OWL.Ontology)
                 .toList().stream().findFirst()
-                .orElseThrow(() -> new IllegalStateException("OWL.Ontology resource not found in the model"));
+                .orElseThrow(() -> new ModuleDependencyException(
+                        "Resource of type owl:Ontology not found",
+                        scriptPath,
+                        null,
+                        from,
+                        to
+                ));
 
         if (m.getDocumentManager() == null || m.getDocumentManager().getFileManager() == null) {
-            throw new IllegalStateException("Document manager or file manager is null");
+            throw new ModuleDependencyException(
+                    "Document manager or file manager is null",
+                    scriptPath,
+                    null,
+                    from,
+                    to
+            );
         }
         String subscriptPath = m.getDocumentManager().getFileManager().mapURI(ontologyRes.toString());
         if (subscriptPath == null) {
-            throw new IllegalStateException("Cannot match URI to file path: " + ontologyRes);
+            throw new ModuleDependencyException(
+                    "Cannot match URI to file path: " + ontologyRes,
+                    scriptPath,
+                    ontologyRes.toString(),
+                    from,
+                    to
+            );
         }
         return new File(subscriptPath);
     }

@@ -15,7 +15,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleModuleDependencyException(ModuleDependencyException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("message", ex.getMessage());
-        response.put("subscript", ex.getSubscript());
+        response.put("script", ex.getScript());
+        response.put("subscript", ex.getFoundDependencySubscript());
+        response.put("dependee", ex.getDependeeModule());
+        response.put("dependant", ex.getDependantModule());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 }

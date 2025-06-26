@@ -1,28 +1,34 @@
 package og_spipes.rest.exception;
 
 public class ModuleDependencyException extends RuntimeException {
-    private final String subscript;
+    private final String script;
+    private final String foundDependencySubscript;
 
-    public ModuleDependencyException(String script, String subscript) {
-        super(formatMessage(script, subscript));
-        this.subscript = subscript;
+    private final String dependeeModule;
+    private final String dependantModule;
+
+    public ModuleDependencyException(String message, String script, String foundDependencySubscript,
+                                     String dependeeModule, String dependantModule) {
+        super(message);
+        this.script = script;
+        this.foundDependencySubscript = foundDependencySubscript;
+        this.dependeeModule = dependeeModule;
+        this.dependantModule = dependantModule;
     }
 
-    public String getSubscript() {
-        return subscript;
+    public String getScript() {
+        return script;
     }
 
-    private static String formatMessage(String script, String subscript) {
-        StringBuilder message = new StringBuilder("Error: BAD_REQUEST\n");
+    public String getFoundDependencySubscript() {
+        return foundDependencySubscript;
+    }
 
-        if (script != null) {
-            message.append("Dependency was not found in Open Script\n ");
-        }
-        if (subscript != null) {
-            message.append("But was found in Subscript: ").append(subscript)
-                    .append("\nYou should modify the subscript instead");
-        }
+    public String getDependeeModule() {
+        return dependeeModule;
+    }
 
-        return message.toString();
+    public String getDependantModule() {
+        return dependantModule;
     }
 }

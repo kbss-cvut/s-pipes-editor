@@ -61,10 +61,10 @@ public class ScriptService {
         Optional<Resource> moduleTo = ontModelResources.stream().filter(x -> x.getURI().equals(to)).findAny();
 
         if(!moduleFrom.isPresent()){
-            throw new IllegalArgumentException("\"From\" module: " + from + "is not present in model");
+            throw new ModuleDependencyException("Unable to create dependency" + "<" + from + ", " + to +">. Resource " + from + "is not present in model loaded from script " + scriptPath, scriptPath, null, to, from);
         }
         if(!moduleTo.isPresent()){
-            throw new IllegalArgumentException("\"To\" module: " + to + "is not present in model");
+            throw new ModuleDependencyException("Unable to create dependency" + "<" + from + ", " + to +">. Resource " + to + "is not present in model loaded from script " + scriptPath, scriptPath, null, to, from);
         }
 
         removeInverseDependencyIfExists(ontModel, moduleFrom.get(), moduleTo.get(), scriptPath);
@@ -85,18 +85,25 @@ public class ScriptService {
 
 
         if(!moduleFrom.isPresent()){
-            throw new IllegalArgumentException("\"From\" module: " + from + "is not present in model");
+            throw new ModuleDependencyException("Unable to delete dependency" + "<" + from + ", " + to +">. Resource " + from + "is not present in model loaded from script " + scriptPath, scriptPath, null, to, from);
         }
         if(!moduleTo.isPresent()){
-            throw new IllegalArgumentException("\"To\" module: " + to + "is not present in model");
+            throw new ModuleDependencyException("Unable to delete dependency" + "<" + from + ", " + to +">. Resource " + to + "is not present in model loaded from script " + scriptPath, scriptPath, null, to, from);
         }
 
         Model model = ontologyHelper.getBaseModel(ontModel);
         Statement dependency = model.createStatement(moduleFrom.get(), ResourceFactory.createProperty(Vocabulary.s_p_next), moduleTo.get());
 
         if (!model.contains(dependency)) { // Dependency is not defined in base model
-            String subscriptPath = (ontologyHelper.getStatementOriginScriptPath(dependency, ontModel)).getAbsolutePath();
-            throw new ModuleDependencyException(scriptPath, subscriptPath);
+            String subscriptPath = (ontologyHelper.getStatementOriginScriptPath(dependency, ontModel, scriptPath, from, to)).getAbsolutePath();
+            String message = "Dependency \n" +
+                    dependency.toString() + "\n" +
+                    "was not found in opened script \n" +
+                    scriptPath + "\n" +
+                    "but was found in subscript \n" +
+                    subscriptPath + "\n" +
+                    "Please remove the dependency from the subscript first.";
+            throw new ModuleDependencyException(message, scriptPath, subscriptPath, to, from);
         }
 
         ontModel.remove(dependency);
@@ -288,8 +295,16 @@ public class ScriptService {
 
         if (ontModel.contains(inverse)) {
             if (!baseModel.contains(inverse)) {
-                String subscriptPath = ontologyHelper.getStatementOriginScriptPath(inverse, ontModel).getAbsolutePath();
-                throw new ModuleDependencyException(scriptPath, subscriptPath);
+                String subscriptPath = ontologyHelper.getStatementOriginScriptPath(inverse, ontModel, scriptPath, from.toString(), to.toString()).getAbsolutePath();
+                String message = "Unable to remove inverse dependency. Dependency \n" +
+                        inverse.toString() + "\n" +
+                        "was not found in opened script \n" +
+                        scriptPath + "\n" +
+                        "but was found in subscript \n" +
+                        subscriptPath + "\n" +
+                        "Please remove the dependency from the subscript first.";
+
+                throw new ModuleDependencyException(message, scriptPath, subscriptPath, to.getURI(), from.getURI());
             }
             ontModel.remove(inverse);
         }
