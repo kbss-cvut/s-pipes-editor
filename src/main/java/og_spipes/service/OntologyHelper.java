@@ -2,14 +2,16 @@ package og_spipes.service;
 
 import og_spipes.persistence.dao.OntologyDao;
 import og_spipes.persistence.dao.ScriptDAO;
+import og_spipes.rest.exception.ModuleDependencyException;
 import org.apache.jena.graph.impl.SimpleGraphMaker;
 import org.apache.jena.ontology.OntDocumentManager;
+import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.ontology.ProfileRegistry;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.ModelMakerImpl;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,73 @@ public class OntologyHelper {
         return documentManager.getOntology(fileUri, ontModelSpec);
     }
 
+    public File getStatementOriginScriptPath(Statement statement, Model ontModel, String scriptPath, String from, String to) {
+        if (!(ontModel instanceof OntModel)) {
+            throw new ModuleDependencyException(
+                    "Model is not an OntModel",
+                    scriptPath,
+                    null,
+                    from,
+                    to
+            );
+        }
+        List<OntModel> subModels = ((OntModel) ontModel).listSubModels().toList();
+        List<OntModel> containingModels = subModels.stream()
+                .filter(m -> m.contains(statement))
+                .toList();
+
+        if (containingModels.isEmpty()) {
+            throw new ModuleDependencyException(
+                    "Submodels do not contain the statement " + statement.toString(),
+                    scriptPath,
+                    null,
+                    from,
+                    to
+            );
+        }
+        if (containingModels.size() > 1) {
+            throw new ModuleDependencyException(
+                    "Statement " + statement.toString() + " is contained in multiple submodels",
+                    scriptPath,
+                    null,
+                    from,
+                    to
+            );
+        }
+
+        OntModel m = containingModels.get(0);
+        Resource ontologyRes = m.listSubjectsWithProperty(RDF.type, OWL.Ontology)
+                .toList().stream().findFirst()
+                .orElseThrow(() -> new ModuleDependencyException(
+                        "Resource of type owl:Ontology not found",
+                        scriptPath,
+                        null,
+                        from,
+                        to
+                ));
+
+        if (m.getDocumentManager() == null || m.getDocumentManager().getFileManager() == null) {
+            throw new ModuleDependencyException(
+                    "Document manager or file manager is null",
+                    scriptPath,
+                    null,
+                    from,
+                    to
+            );
+        }
+        String subscriptPath = m.getDocumentManager().getFileManager().mapURI(ontologyRes.toString());
+        if (subscriptPath == null) {
+            throw new ModuleDependencyException(
+                    "Cannot match URI to file path: " + ontologyRes,
+                    scriptPath,
+                    ontologyRes.toString(),
+                    from,
+                    to
+            );
+        }
+        return new File(subscriptPath);
+    }
+
     public static List<Statement> getAllStatementsRecursively(Model fromModel, String moduleURI) {
         Queue<RDFNode> queueA = new LinkedList<>();
         Set<String> traversedNodes = new HashSet<>();
@@ -95,5 +164,11 @@ public class OntologyHelper {
         return moduleStatements;
     }
 
+    public Model getBaseModel(Model model){
+        if (model instanceof OntModel) {
+            return ((OntModel) model).getBaseModel();
+        }
+        return model;
+    }
 
 }

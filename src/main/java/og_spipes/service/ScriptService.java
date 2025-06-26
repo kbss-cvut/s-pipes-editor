@@ -10,12 +10,11 @@ import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.persistence.dao.OntologyDao;
 import og_spipes.persistence.dao.ScriptDAO;
+import og_spipes.rest.exception.ModuleDependencyException;
 import og_spipes.service.exception.FileExistsException;
 import og_spipes.service.exception.MissingOntologyException;
 import og_spipes.service.exception.OntologyDuplicationException;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.rdf.model.impl.PropertyImpl;
-import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.util.ResourceUtils;
 import org.apache.jena.vocabulary.OWL;
 import org.slf4j.Logger;
@@ -25,9 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URI;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -59,29 +56,59 @@ public class ScriptService {
 
     public void createDependency(String scriptPath, String from, String to) throws IOException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
-        List<Resource> resources = ontModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
-        Optional<Resource> moduleFrom = resources.stream().filter(x -> x.getURI().equals(from)).findAny();
-        Optional<Resource> moduleTo = resources.stream().filter(x -> x.getURI().equals(to)).findAny();
+        List<Resource> ontModelResources = ontModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
+        Optional<Resource> moduleFrom = ontModelResources.stream().filter(x -> x.getURI().equals(from)).findAny();
+        Optional<Resource> moduleTo = ontModelResources.stream().filter(x -> x.getURI().equals(to)).findAny();
 
-        if(!moduleFrom.isPresent() || !moduleTo.isPresent()){
-            throw new IllegalArgumentException("FROM MODULE: " + moduleFrom + " OR TO MODULE " + moduleTo + "CANT BE NULL");
+        if(!moduleFrom.isPresent()){
+            throw new ModuleDependencyException("Unable to create dependency" + "<" + from + ", " + to +">. Resource " + from + "is not present in model loaded from script " + scriptPath, scriptPath, null, to, from);
+        }
+        if(!moduleTo.isPresent()){
+            throw new ModuleDependencyException("Unable to create dependency" + "<" + from + ", " + to +">. Resource " + to + "is not present in model loaded from script " + scriptPath, scriptPath, null, to, from);
         }
 
-        ontModel.add(moduleFrom.get(), new PropertyImpl(Vocabulary.s_p_next), moduleTo.get());
-        try (OutputStream os = new FileOutputStream(scriptPath);){
-            JenaUtils.writeScript(os, ontModel);
+        removeInverseDependencyIfExists(ontModel, moduleFrom.get(), moduleTo.get(), scriptPath);
+
+        Statement dependency = ontModel.createStatement(moduleFrom.get(), ResourceFactory.createProperty(Vocabulary.s_p_next), moduleTo.get());
+        ontModel.add(dependency);
+
+        try (OutputStream os = new FileOutputStream(scriptPath)) {
+            JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
         }
     }
 
     public void deleteDependency(String scriptPath, String from, String to) throws IOException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
-        ontModel.removeAll(
-                ontModel.getResource(from),
-                new PropertyImpl(Vocabulary.s_p_next),
-                ontModel.getResource(to)
-        );
+        List<Resource> ontModelResources = ontModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
+        Optional<Resource> moduleFrom = ontModelResources.stream().filter(x -> x.getURI().equals(from)).findAny();
+        Optional<Resource> moduleTo = ontModelResources.stream().filter(x -> x.getURI().equals(to)).findAny();
+
+
+        if(!moduleFrom.isPresent()){
+            throw new ModuleDependencyException("Unable to delete dependency" + "<" + from + ", " + to +">. Resource " + from + "is not present in model loaded from script " + scriptPath, scriptPath, null, to, from);
+        }
+        if(!moduleTo.isPresent()){
+            throw new ModuleDependencyException("Unable to delete dependency" + "<" + from + ", " + to +">. Resource " + to + "is not present in model loaded from script " + scriptPath, scriptPath, null, to, from);
+        }
+
+        Model model = ontologyHelper.getBaseModel(ontModel);
+        Statement dependency = model.createStatement(moduleFrom.get(), ResourceFactory.createProperty(Vocabulary.s_p_next), moduleTo.get());
+
+        if (!model.contains(dependency)) { // Dependency is not defined in base model
+            String subscriptPath = (ontologyHelper.getStatementOriginScriptPath(dependency, ontModel, scriptPath, from, to)).getAbsolutePath();
+            String message = "Dependency \n" +
+                    dependency.toString() + "\n" +
+                    "was not found in opened script \n" +
+                    scriptPath + "\n" +
+                    "but was found in subscript \n" +
+                    subscriptPath + "\n" +
+                    "Please remove the dependency from the subscript first.";
+            throw new ModuleDependencyException(message, scriptPath, subscriptPath, to, from);
+        }
+
+        ontModel.remove(dependency);
         try(OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, ontModel);
+            JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
         }
     }
 
@@ -247,7 +274,7 @@ public class ScriptService {
         }
 
         Model resModel = ontologyHelper.createOntModel(f);
-        resModel.add(ResourceFactory.createResource(ontology), OWL.imports, new ResourceImpl(ontologyName));
+        resModel.add(ResourceFactory.createResource(ontology), OWL.imports, ResourceFactory.createResource(ontologyName));
         try(OutputStream os = new FileOutputStream(scriptPath)) {
             JenaUtils.writeScript(os, resModel);
         }
@@ -260,6 +287,26 @@ public class ScriptService {
         return imports.stream()
                 .filter(x -> !x.equals("http://onto.fel.cvut.cz/ontologies/s-pipes-lib"))
                 .collect(Collectors.toList());
-     }
+    }
 
+    private void removeInverseDependencyIfExists(Model ontModel, Resource from, Resource to, String scriptPath) {
+        Statement inverse = ontModel.createStatement(to, ResourceFactory.createProperty(Vocabulary.s_p_next), from);
+        Model baseModel = ontologyHelper.getBaseModel(ontModel);
+
+        if (ontModel.contains(inverse)) {
+            if (!baseModel.contains(inverse)) {
+                String subscriptPath = ontologyHelper.getStatementOriginScriptPath(inverse, ontModel, scriptPath, from.toString(), to.toString()).getAbsolutePath();
+                String message = "Unable to remove inverse dependency. Dependency \n" +
+                        inverse.toString() + "\n" +
+                        "was not found in opened script \n" +
+                        scriptPath + "\n" +
+                        "but was found in subscript \n" +
+                        subscriptPath + "\n" +
+                        "Please remove the dependency from the subscript first.";
+
+                throw new ModuleDependencyException(message, scriptPath, subscriptPath, to.getURI(), from.getURI());
+            }
+            ontModel.remove(inverse);
+        }
+    }
 }
