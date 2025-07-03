@@ -48,7 +48,7 @@ public class SPipesExecutionServiceTest {
                 "execute-greeding",
                 new HashMap<String, String>() {{
                     put("firstName","karel");
-                }}
+                }}, "serviceExecutionTest.ttl"
         );
 
         Assertions.assertEquals("body", entity);
