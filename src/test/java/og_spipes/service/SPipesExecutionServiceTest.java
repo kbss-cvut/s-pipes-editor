@@ -62,7 +62,7 @@ public class SPipesExecutionServiceTest {
                 "execute-greeting",
                 new HashMap<String, String>() {{
                     put("firstName","karel");
-                }}
+                }}, "serviceExecutionTest.ttl"
         );
 
         Assertions.assertEquals("body", entity);
