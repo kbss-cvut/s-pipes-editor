@@ -15,7 +15,7 @@
         rdfs:label         "Bind person name" ;
         sm:next            :construct-greeding ;
         sm:outputVariable  "personNamee" ;
-        sml:value          [ sp:varName  "firstName" ] .
+        sml:value [ a sp:Expression ; sp:text "?firstName" ] .
 
 :construct-greeding  a      sml:ApplyConstruct ;
         rdfs:label          "Construct greeting" ;

@@ -24,16 +24,9 @@
     a sml:BindWithConstant ;
     sm:next :bind-person-id ;
     sm:outputVariable "personName" ;
-    sml:value [
-          a sp:concat ;
-          sp:arg1 [
-                sp:varName "firstName" ;
-            ] ;
-          sp:arg2 " " ;
-          sp:arg3 [
-                sp:varName "lastName" ;
-            ] ;
-      ] ;
+    sml:value [ a sp:Expression ;
+              sp:text """concat(?firstName, " ", ?lastName)""" ;
+    ] ;
     rdfs:label "Bind person name" ;
 .
 :bind-person-id
@@ -41,15 +34,8 @@
     sm:next :construct-greeting ;
     sm:outputVariable "personId" ;
     sml:value [
-          a sp:replace ;
-          sp:arg1 [
-                a sp:lcase ;
-                sp:arg1 [
-                      sp:varName "personName" ;
-                  ] ;
-            ] ;
-          sp:arg2 " " ;
-          sp:arg3 "-" ;
+        a sp:Expression ;
+        sp:text """replace(lcase(?personName), " ", "-")""" ;
       ] ;
     rdfs:label "Bind person id" ;
 .
