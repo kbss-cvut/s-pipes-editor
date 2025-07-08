@@ -332,7 +332,7 @@ public class ScriptControllerTest {
         Assertions.assertEquals("Violation", resultDTO.getSeverityMessage());
         Assertions.assertEquals("Property needs to have at least 1 value", resultDTO.getErrorMessage());
 //        Assertions.assertEquals("file:/home/jordan/IdeaProjects/s-pipes-newgen/src/main/resources/rules/SHACL/module-requires-rdfs_label.ttl", resultDTO.getRuleURI());
-        Assertions.assertEquals("\"Every module must have rdfs:label.\"@en", resultDTO.getRuleComment());
+        Assertions.assertEquals("Every module must have rdfs:label.", resultDTO.getRuleComment());
     }
 
     //TODO test create, remove list ontologies
