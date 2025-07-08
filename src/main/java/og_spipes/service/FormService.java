@@ -448,10 +448,17 @@ public class FormService {
 
             subQuestions.add(functionQ);
 
-            for(Statement st : script.listStatements(null, new PropertyImpl("http://spinrdf.org/sp#varName"), (String) null).toList()){
+            Property constraintProp = function.getModel().createProperty("http://spinrdf.org/spin#constraint");
+            Property predicateProp = function.getModel().createProperty("http://spinrdf.org/spl#predicate");
+
+            StmtIterator constraints = function.listProperties(constraintProp);
+            while (constraints.hasNext()) {
+                Resource constraint = constraints.nextStatement().getResource();
+                Statement st = constraint.getProperty(predicateProp);
+
                 Question q = new Question();
                 initializeQuestionUri(q);
-                q.setLabel(st.getObject().toString());
+                q.setLabel(st.getResource().getLocalName());
                 q.setProperties(extractQuestionMetadata(st));
                 q.setPrecedingQuestions(Collections.singleton(functionQ));
                 subQuestions.add(q);
