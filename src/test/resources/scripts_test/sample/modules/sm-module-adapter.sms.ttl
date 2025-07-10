@@ -15,6 +15,7 @@
 @prefix spl: <http://spinrdf.org/spl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix sml: <http://topbraid.org/sparqlmotionlib#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
 
 kbss-module:apply-construct-with-chunked-values
   rdfs:subClassOf sm:kbss-adapter-module ;
@@ -56,18 +57,18 @@ kbss-module:sparql-endpoint-download-graph
 
 
 kbss-module:kbss-modules
-  spin:constraint [
-      rdf:type spl:Argument ;
-      spl:optional "true"^^xsd:boolean ;
-      spl:predicate kbss-module:has-input-graph-constraint ;
-      rdfs:comment "Condition on input graph of this module."^^xsd:string ;
-    ] ;
-  spin:constraint [
-      rdf:type spl:Argument ;
-      spl:optional "true"^^xsd:boolean ;
-      spl:predicate kbss-module:has-output-graph-constraint ;
-      rdfs:comment "Condition on output graph of this module."^^xsd:string ;
-    ] ;
+  sh:parameter [
+    sh:path kbss-module:has-input-graph-constraint ;
+    sh:datatype xsd:string ;
+    sh:description "Condition on input graph of this module."@en ;
+    sh:optional true ;
+  ] ;
+  sh:parameter [
+    sh:path kbss-module:has-output-graph-constraint ;
+    sh:datatype xsd:string ;
+    sh:description "Condition on output graph of this module."@en ;
+    sh:optional true ;
+  ] ;
 .
 kbss-module:sparql-endpoint-retrieve-graph
   rdfs:subClassOf sm:kbss-adapter-module ;
@@ -87,34 +88,33 @@ kbss-module:void
   owl:imports <http://spinrdf.org/spl> ;
   owl:imports <http://topbraid.org/sparqlmotion> ;
   owl:imports <http://topbraid.org/sparqlmotionlib-core> ;
+  owl:imports <http://www.w3.org/ns/shacl> ;
 .
 sm:Modules
-  spin:constraint [
-      rdf:type spl:Argument ;
-      spl:optional "true"^^xsd:boolean ;
-      spl:predicate kbss-module:has-debug-mode-flag ;
-      spl:valueType xsd:boolean ;
-      rdfs:comment "Indicates whether this module should be in debug mode."^^xsd:string ;
-    ] ;
-  spin:constraint [
-      rdf:type spl:Argument ;
-      spl:optional "true"^^xsd:boolean ;
-      spl:predicate kbss-module:has-input-graph-constraint ;
-      rdfs:comment "Condition on input graph of this module."^^xsd:string ;
-    ] ;
-  spin:constraint [
-      rdf:type spl:Argument ;
-      spl:optional "true"^^xsd:boolean ;
-      spl:predicate kbss-module:has-output-graph-constraint ;
-      rdfs:comment "Condition on output graph of this module."^^xsd:string ;
-    ] ;
-  spin:constraint [
-      rdf:type spl:Argument ;
-      spl:optional "true"^^xsd:boolean ;
-      spl:predicate kbss-module:has-target-module-flag ;
-      spl:valueType xsd:boolean ;
-      rdfs:comment "Indicates whether this module should be executed as target module in debug environment."^^xsd:string ;
-    ] ;
+  sh:parameter [
+    sh:path kbss-module:has-debug-mode-flag ;
+    sh:datatype xsd:boolean ;
+    sh:description "Indicates whether this module should be in debug mode."@en ;
+    sh:optional true ;
+  ] ;
+  sh:parameter [
+    sh:path kbss-module:has-input-graph-constraint ;
+    sh:datatype xsd:string ;
+    sh:description "Condition on input graph of this module."@en ;
+    sh:optional true ;
+  ] ;
+  sh:parameter [
+    sh:path kbss-module:has-output-graph-constraint ;
+    sh:datatype xsd:string ;
+    sh:description "Condition on output graph of this module."@en ;
+    sh:optional true ;
+  ] ;
+  sh:parameter [
+    sh:path kbss-module:has-target-module-flag ;
+    sh:datatype xsd:boolean ;
+    sh:description "Indicates whether this module should be executed as target module in debug environment."@en ;
+    sh:optional true ;
+  ] ;
 .
 sm:inbas-adapter-module
   rdf:type sm:Module ;
