@@ -448,13 +448,13 @@ public class FormService {
 
             subQuestions.add(functionQ);
 
-            Property constraintProp = function.getModel().createProperty("http://spinrdf.org/spin#constraint");
-            Property predicateProp = function.getModel().createProperty("http://spinrdf.org/spl#predicate");
+            Property parameterProp = function.getModel().createProperty("http://www.w3.org/ns/shacl#parameter");
+            Property pathProp = function.getModel().createProperty("http://www.w3.org/ns/shacl#path");
 
-            StmtIterator constraints = function.listProperties(constraintProp);
-            while (constraints.hasNext()) {
-                Resource constraint = constraints.nextStatement().getResource();
-                Statement st = constraint.getProperty(predicateProp);
+            StmtIterator parameters = function.listProperties(parameterProp);
+            while (parameters.hasNext()) {
+                Resource constraint = parameters.nextStatement().getResource();
+                Statement st = constraint.getProperty(pathProp);
 
                 Question q = new Question();
                 initializeQuestionUri(q);
