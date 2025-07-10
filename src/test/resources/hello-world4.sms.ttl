@@ -17,8 +17,9 @@
     sm:next :construct-welcome ;
     sm:outputVariable "personName" ;
     sml:value [
-          sp:varName "myName" ;
-      ] ;
+      a sp:Expression ;
+      sp:text "?myName"
+    ] ;
     rdfs:label "Bind person name" ;
 .
 :construct-welcome

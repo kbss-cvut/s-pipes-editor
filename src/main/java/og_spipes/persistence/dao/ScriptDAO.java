@@ -1,6 +1,7 @@
 package og_spipes.persistence.dao;
 
 import cz.cvut.kbss.jopa.Persistence;
+import cz.cvut.kbss.jopa.loaders.DefaultClasspathScanner;
 import cz.cvut.kbss.jopa.model.EntityManager;
 import cz.cvut.kbss.jopa.model.EntityManagerFactory;
 import cz.cvut.kbss.jopa.model.JOPAPersistenceProperties;
@@ -14,7 +15,6 @@ import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.service.ScriptOntologyHelper;
-import og_spipes.utils.SPipesEngineClasspathScanner;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.*;
@@ -58,7 +58,7 @@ public class ScriptDAO {
         props.put(JOPAPersistenceProperties.JPA_PERSISTENCE_PROVIDER, JOPAPersistenceProvider.class.getName());
         props.put(JOPAPersistenceProperties.DISABLE_IC_VALIDATION_ON_LOAD, "true");
         props.put(JenaOntoDriverProperties.IN_MEMORY, "true");
-        props.put(JOPAPersistenceProperties.CLASSPATH_SCANNER_CLASS, SPipesEngineClasspathScanner.class.getName());
+        props.put(JOPAPersistenceProperties.CLASSPATH_SCANNER_CLASS, DefaultClasspathScanner.class.getName());
 
 
         this.emf = Persistence.createEntityManagerFactory("og_spipesPU", props);
