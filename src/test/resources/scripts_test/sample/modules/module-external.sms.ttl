@@ -10,8 +10,6 @@
 @prefix sp: <http://spinrdf.org/sp#> .
 @prefix spin: <http://spinrdf.org/spin#> .
 @prefix spif: <http://spinrdf.org/spif#> .
-@prefix spl: <http://spinrdf.org/spl#> .
-@prefix spl: <http://spinrdf.org/spl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix turtle: <http://www.semanticweb.org/owl/owlapi/turtle#> .
 

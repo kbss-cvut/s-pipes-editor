@@ -7,5 +7,4 @@
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes>
   rdf:type owl:Ontology ;
-  owl:imports <http://spinrdf.org/spl> ;
 .
