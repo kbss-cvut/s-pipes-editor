@@ -21,7 +21,7 @@
                      rdfs:label          "Construct greeting" ;
                      sm:next             :express-greeding_Return ;
                      sml:constructQuery  [ a        sp:Construct ;
-                                           sp:text  "PREFIX : <http://vfn.cz/ontologies/s-pipes/hello-world-example-0.1/> \nCONSTRUCT {\n    ?person :is-greeted-by-message ?greetingMessage . \n}\nWHERE {\n    BIND(iri(concat(str(:), ?personName)) as ?person)\n    BIND(concat(\"Hello \", ?personName, \".\") as ?greetingMessage)\n}"
+                                           sp:text  "PREFIX : <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/> \nCONSTRUCT {\n    ?person :is-greeted-by-message ?greetingMessage . \n}\nWHERE {\n    BIND(iri(concat(str(:), ?personName)) as ?person)\n    BIND(concat(\"Hello \", ?personName, \".\") as ?greetingMessage)\n}"
                             ] ;
                      sml:replace         true .
 

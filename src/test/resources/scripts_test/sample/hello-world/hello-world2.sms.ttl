@@ -7,25 +7,9 @@
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sp:    <http://spinrdf.org/sp#> .
 
-:dummy  a           sml:BindWithConstant ;
-        rdfs:label  "Empty-bind-constant" ;
-        sm:next     :construct-greeding .
-
-:execute-greeding  a     sm:Function ;
-        rdfs:subClassOf  sm:Functions ;
-        sm:returnModule  :express-greeding_Return .
-
 <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2>
         a            owl:Ontology ;
         owl:imports  <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> .
-
-:construct-greeding  a      sml:ApplyConstruct ;
-        rdfs:label          "Construct greeting" ;
-        sm:next             :express-greeding_Return ;
-        sml:constructQuery  [ a        sp:Construct ;
-                              sp:text  "PREFIX : <http://vfn.cz/ontologies/s-pipes/hello-world-example-0.2/> \nCONSTRUCT {\n    ?person :is-greeted-by-message ?greetingMessage . \n}\nWHERE {\n    BIND(iri(concat(str(:), ?personName)) as ?person)\n    BIND(concat(\"Hello \", ?personName, \".\") as ?greetingMessage)\n}"
-                            ] ;
-        sml:replace         true .
 
 :bind-firstname  a         sml:BindWithConstant ;
         rdfs:label         "Bind person name" ;
@@ -33,6 +17,22 @@
         sm:outputVariable  "personName" ;
         sml:value [ a sp:Expression ; sp:text "?firstName" ] .
 
+:construct-greeding  a      sml:ApplyConstruct ;
+        rdfs:label          "Construct greeting" ;
+        sm:next             :express-greeding_Return ;
+        sml:constructQuery  [ a        sp:Construct ;
+                              sp:text  "PREFIX : <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/> \nCONSTRUCT {\n    ?person :is-greeted-by-message ?greetingMessage . \n}\nWHERE {\n    BIND(iri(concat(str(:), ?personName)) as ?person)\n    BIND(concat(\"Hello \", ?personName, \".\") as ?greetingMessage)\n}"
+                            ] ;
+        sml:replace         true .
+
 :express-greeding_Return
         a                  sml:ReturnRDF ;
         sml:serialization  sml:JSONLD .
+
+:execute-greeding  a     sm:Function ;
+        rdfs:subClassOf  sm:Functions ;
+        sm:returnModule  :express-greeding_Return .
+
+:dummy  a           sml:BindWithConstant ;
+        rdfs:label  "Empty-bind-constant" ;
+        sm:next     :construct-greeding .
