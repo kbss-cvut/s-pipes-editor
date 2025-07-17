@@ -23,6 +23,7 @@
         <ch.qos.logback.version>1.5.13</ch.qos.logback.version>
         <com.github.galigator.openllet.version>2.6.4</com.github.galigator.openllet.version>
         <com.github.ledsoft.jopa-spring-transactions.version>0.4.0</com.github.ledsoft.jopa-spring-transactions.version>
+        <org.apache.jena.version>5.2.0</org.apache.jena.version>
 
         <org.springframework.version>6.2.5</org.springframework.version>
         <org.springframework.boot.version>3.4.2</org.springframework.boot.version>
@@ -104,10 +105,6 @@
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
                     <artifactId>log4j-slf4j2-impl</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.jena</groupId>
-                    <artifactId>apache-jena</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -235,21 +232,14 @@
         <dependency>
             <groupId>org.topbraid</groupId>
             <artifactId>shacl</artifactId>
-            <version>1.3.0</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.topbraid/spin -->
-        <dependency>
-            <groupId>org.topbraid</groupId>
-            <artifactId>spin</artifactId>
-            <version>2.0.0</version>
+            <version>1.4.4</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.topbraid/spin -->
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
-            <version>3.17.0</version>
+            <version>${org.apache.jena.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
@@ -348,45 +338,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.14.0</version>
-                <configuration>
-                    <complianceLevel>${jdk.version}</complianceLevel>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                    <aspectLibraries>
-                        <aspectLibrary>
-                            <groupId>cz.cvut.kbss.jopa</groupId>
-                            <artifactId>jopa-impl</artifactId>
-                        </aspectLibrary>
-                    </aspectLibraries>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjtools</artifactId>
-                        <version>1.9.21</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjrt</artifactId>
-                        <version>1.9.21</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>compile</goal>
-                            <!-- use this goal to weave all your main classes -->
-                            <goal>test-compile</goal>
-                            <!-- use this goal to weave all your test classes -->
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
 
             <plugin>

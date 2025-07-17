@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.topbraid.spin.system.SPINModuleRegistry;
 
 import java.io.*;
 import java.net.URI;
@@ -122,7 +121,6 @@ public class FormService {
         private final Logger LOG = LoggerFactory.getLogger(OwnTransformer.class);
 
         public OwnTransformer() {
-            SPINModuleRegistry.get().init();
         }
 
         @Override

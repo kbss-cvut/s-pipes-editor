@@ -11,7 +11,7 @@
   a sh:NodeShape ;
   sh:targetClass sm:Modules ; #- this is not working in console :/
 #  sh:targetClass sml:ApplyConstruct, sml:BindBySelect, sml:BindWithConstant, sml:ExportToRDFFile, sml:Merge, sml:PerformUpdate, sml:ReturnRDF ;
-  rdfs:comment "Every modul must have rdfs:label."@en ;
+  rdfs:comment "Every module must have rdfs:label." ;
   sh:property [
       sh:path rdfs:label ;
       sh:minCount 1 ;

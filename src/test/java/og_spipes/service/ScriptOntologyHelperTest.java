@@ -3,10 +3,8 @@ package og_spipes.service;
 import com.google.common.collect.Sets;
 import og_spipes.config.Constants;
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.apache.jena.sys.JenaSystem;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.FileSystemUtils;
@@ -25,6 +23,11 @@ class ScriptOntologyHelperTest {
 
     @Value(Constants.SCRIPTPATH_SPEL)
     private String[] scriptPaths;
+
+    @BeforeAll
+    public static void initJena() {
+        JenaSystem.init();
+    }
 
     @BeforeEach
     public void init() throws Exception {

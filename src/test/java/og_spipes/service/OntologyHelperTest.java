@@ -3,7 +3,9 @@ package og_spipes.service;
 import og_spipes.persistence.dao.OntologyDao;
 import og_spipes.persistence.dao.ScriptDAO;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.sys.JenaSystem;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,6 +25,11 @@ public class OntologyHelperTest {
 
     @InjectMocks
     private OntologyHelper ontologyHelper;
+
+    @BeforeAll
+    public static void initJena() {
+        JenaSystem.init();
+    }
 
     @Test
     public void getOntologyUri() {
