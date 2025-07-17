@@ -1,0 +1,41 @@
+@prefix :      <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/> .
+@prefix sml:   <http://topbraid.org/sparqlmotionlib#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix sm:    <http://topbraid.org/sparqlmotion#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sp:    <http://spinrdf.org/sp#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix form-fss-gen-0.1: <http://vfn.cz/ontologies/fss-form-generation-0.123/> .
+
+<http://onto.fel.cvut.cz/ontologies/s-pipes/test-script-0.1>
+        a            owl:Ontology ;
+        owl:imports  <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> .
+
+:test_module1  a         sm:Modules , sml:BindWithConstant ;
+        rdfs:label         "Test module 1" ;
+        sm:next            :test_module2 ;
+        sm:outputVariable  "personNamee" ;
+        sml:value [ a sp:Expression ; sp:text "?firstName" ] .
+
+:test_module2  a      sm:Modules , sml:ApplyConstruct ;
+        rdfs:label          "Test module 2" ;
+        sm:next             :test_module3-greeding_Return ;
+        sml:constructQuery  [ a        sp:Construct ;
+                              sp:text  "PREFIX : <http://vfn.cz/ontologies/s-pipes/test-script-0.1/> \nCONSTRUCT {\n    ?person :is-greeted-by-message ?greetingMessage . \n}\nWHERE {\n    BIND(iri(concat(str(:), ?personName)) as ?person)\n    BIND(concat(\"Hello \", ?personName, \".\") as ?greetingMessage)\n}"
+                            ] ;
+        sml:replace         true .
+
+:test_module3
+        a                  sm:Modules , sml:ReturnRDF ;
+        rdfs:label         "Test module 3" ;
+        sml:serialization  sml:JSONLD .
+
+:test_module4  a     sm:Function ;
+        rdfs:subClassOf  sm:Functions ;
+        sm:returnModule  :test_module3 .
+
+:test_module a sm:Module ;
+    rdfs:label "Test Module" ;
+.
