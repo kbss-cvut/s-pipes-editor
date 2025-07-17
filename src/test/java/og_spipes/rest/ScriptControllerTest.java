@@ -330,9 +330,9 @@ public class ScriptControllerTest {
         SHACLValidationResultDTO resultDTO = res.get(0);
         Assertions.assertEquals("http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.6/construct-greeding", resultDTO.getModuleURI());
         Assertions.assertEquals("Violation", resultDTO.getSeverityMessage());
-        Assertions.assertEquals("Property needs to have at least 1 values, but found 0", resultDTO.getErrorMessage());
+        Assertions.assertEquals("Property needs to have at least 1 value", resultDTO.getErrorMessage());
 //        Assertions.assertEquals("file:/home/jordan/IdeaProjects/s-pipes-newgen/src/main/resources/rules/SHACL/module-requires-rdfs_label.ttl", resultDTO.getRuleURI());
-        Assertions.assertEquals("Every modul must have rdfs:label.@en", resultDTO.getRuleComment());
+        Assertions.assertEquals("Every module must have rdfs:label.", resultDTO.getRuleComment());
     }
 
     //TODO test create, remove list ontologies

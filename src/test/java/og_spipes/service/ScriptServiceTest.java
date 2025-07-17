@@ -13,7 +13,9 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
+import org.apache.jena.sys.JenaSystem;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,11 @@ public class ScriptServiceTest {
 
     @Value(Constants.SCRIPTPATH_SPEL)
     private String[] scriptPaths;
+
+    @BeforeAll
+    public static void initJena() {
+        JenaSystem.init();
+    }
 
     @BeforeEach
     public void init() throws Exception {

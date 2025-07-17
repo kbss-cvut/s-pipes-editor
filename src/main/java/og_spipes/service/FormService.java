@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.topbraid.spin.system.SPINModuleRegistry;
 
 import java.io.*;
 import java.net.URI;
@@ -122,7 +121,6 @@ public class FormService {
         private final Logger LOG = LoggerFactory.getLogger(OwnTransformer.class);
 
         public OwnTransformer() {
-            SPINModuleRegistry.get().init();
         }
 
         @Override
@@ -360,7 +358,7 @@ public class FormService {
             } else {
                 Model m = inputScript;
                 m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(moduleType));
-                m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(cz.cvut.sforms.Vocabulary.s_c_Modules_A));
+                m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(cz.cvut.sforms.Vocabulary.s_c_Modules));
                 findRegularQ(form).forEach((q) -> {
                     LOG.info("QUESTION_NEW: " + q.toString());
                     RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
@@ -627,10 +625,10 @@ public class FormService {
         private boolean isSupportedAnon(Question q) {
             if (q.getProperties().containsKey(cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type)) {
                 Set<String> types = q.getProperties().get(cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type);
-                return types.contains(cz.cvut.sforms.Vocabulary.s_c_Ask) ||
-                        types.contains(cz.cvut.sforms.Vocabulary.s_c_Construct) ||
-                        types.contains(cz.cvut.sforms.Vocabulary.s_c_Describe) ||
-                        types.contains(cz.cvut.sforms.Vocabulary.s_c_Select);
+                return types.contains(cz.cvut.sforms.Vocabulary.s_c_sp_Ask) ||
+                        types.contains(cz.cvut.sforms.Vocabulary.s_c_sp_Construct) ||
+                        types.contains(cz.cvut.sforms.Vocabulary.s_c_sp_Describe) ||
+                        types.contains(cz.cvut.sforms.Vocabulary.s_c_sp_Select);
             }
             return false;
         }

@@ -13,12 +13,12 @@
 package og_spipes.persistence;
 
 import cz.cvut.kbss.jopa.Persistence;
+import cz.cvut.kbss.jopa.loaders.DefaultClasspathScanner;
 import cz.cvut.kbss.jopa.model.EntityManagerFactory;
 import cz.cvut.kbss.jopa.model.JOPAPersistenceProperties;
 import cz.cvut.kbss.jopa.model.JOPAPersistenceProvider;
 import cz.cvut.kbss.ontodriver.config.OntoDriverProperties;
 import cz.cvut.kbss.ontodriver.rdf4j.Rdf4jDataSource;
-import og_spipes.utils.SPipesEngineClasspathScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +68,7 @@ public class PersistenceFactory {
         // Persistence provider name
         props.put(JOPAPersistenceProperties.JPA_PERSISTENCE_PROVIDER, JOPAPersistenceProvider.class.getName());
 
-        props.put(JOPAPersistenceProperties.CLASSPATH_SCANNER_CLASS, SPipesEngineClasspathScanner.class.getName());
+        props.put(JOPAPersistenceProperties.CLASSPATH_SCANNER_CLASS, DefaultClasspathScanner.class.getName());
         this.emf = Persistence.createEntityManagerFactory("og_spipesPU", props);
     }
 
