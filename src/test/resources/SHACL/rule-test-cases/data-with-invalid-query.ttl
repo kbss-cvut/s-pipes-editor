@@ -23,7 +23,8 @@
   sm:next :construct-greeding ;
   sm:outputVariable "personName" ;
   sml:value [
-      sp:varName "firstName"^^xsd:string ;
+      a sp:Expression ;
+      sp:text "?firstName" ;
     ] ;
 .
 
@@ -31,9 +32,9 @@
   rdf:type sml:ApplyConstruct ;
   sm:next :express-greeding_Return ;
   sml:constructQuery [
-      rdf:type sp:Construct ;
+      a sp:Expression ;
     ] ;
-  sml:replace "true"^^xsd:boolean ;
+  sml:replace "true" ;
 .
 
 :express-greeding_Return

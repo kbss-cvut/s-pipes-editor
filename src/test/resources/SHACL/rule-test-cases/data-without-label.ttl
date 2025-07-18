@@ -23,7 +23,8 @@
   sm:next :construct-greeding ;
   sm:outputVariable "personName" ;
   sml:value [
-      sp:varName "firstName"^^xsd:string ;
+      a sp:Expression ;
+      sp:text "?firstName" ;
     ] ;
   rdfs:label "bind-firstname" ;
 .
@@ -32,17 +33,17 @@
   rdf:type sml:ApplyConstruct ;
   sm:next :express-greeding_Return ;
   sml:constructQuery [
-      rdf:type sp:Construct ;
+      a sp:Expression ;
       sp:text """PREFIX : <http://vfn.cz/ontologies/s-pipes/hello-world-example-0.1/>
 CONSTRUCT {
     ?person :is-greeted-by-message ?greetingMessage .
 }
 WHERE {
-    BIND(concat(str(:), ?personName) as ?person)
-    BIND(concat("Hello ", ?personName, ".") as ?greetingMessage)
-}"""^^xsd:string ;
+    BIND(concat(str(:), ?personName) AS ?person)
+    BIND(concat("Hello ", ?personName, ".") AS ?greetingMessage)
+}""" ;
     ] ;
-  sml:replace "true"^^xsd:boolean ;
+  sml:replace true ;
 .
 
 :express-greeding_Return

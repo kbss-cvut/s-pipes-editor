@@ -23,7 +23,8 @@
   sm:next :construct-greeding ;dz
   sm:outputVariable "personName" ;
   sml:value [
-      sp:varName "firstName"^^xsd:string ;
-    ] ;
+        a sp:Expression ;
+        sp:text "?firstName" ;
+  ] ;
   rdfs:label "Bind person name" ;
 .
