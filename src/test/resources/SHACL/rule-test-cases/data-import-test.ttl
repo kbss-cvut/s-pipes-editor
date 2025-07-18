@@ -40,7 +40,7 @@
   rdf:type sml:ApplyConstruct ;
   sm:next :express-greeting_Return ;
   sml:constructQuery [
-      a sp:Expression ;
+      a sp:Construct ;
       sp:text """PREFIX : <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.4/>
 CONSTRUCT {
     ?person :is-greeted-by-message ?greetingMessage .

@@ -12,8 +12,7 @@
     a owl:Ontology ;
     owl:imports <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> ;
 .
-:bind-person-name
-  rdf:type sml:BindWithConstant ;
+:bind-person-name  a         sml:BindWithConstant
   sm:next :construct-welcome ;
   sm:outputVariable "personName" ;
   sml:value [
@@ -23,8 +22,7 @@
   rdfs:label "Bind person name" ;
 .
 
-:construct-welcome
-  rdf:type sml:ApplyConstruct ;
+:construct-welcome  a      sml:ApplyConstruct ;
   sm:next :welcome_Return ;
   sml:constructQuery [
     a sp:Expression ;

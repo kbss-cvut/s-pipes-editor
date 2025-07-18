@@ -32,9 +32,9 @@
   rdf:type sml:ApplyConstruct ;
   sm:next :express-greeting_Return ;
   sml:constructQuery [
-      a sp:Expression ;
+        a sp:Construct ;
     ] ;
-  sml:replace "true" ;
+  sml:replace true ;
 .
 
 :express-greeting_Return
