@@ -41,11 +41,11 @@ public class SPipesExecutionServiceTest {
     public void serviceExecution() throws SPipesEngineException {
         MockClient mock = MockClient.register();
 
-        mock.expect(HttpMethod.GET, "http://localhost:1111/service?firstName=karel&_pConfigURL=pConfigURL&id=execute-greeding")
+        mock.expect(HttpMethod.GET, "http://localhost:1111/service?firstName=karel&_pConfigURL=pConfigURL&id=execute-greeting")
                 .thenReturn("body");
 
         String entity = service.serviceExecution(
-                "execute-greeding",
+                "execute-greeting",
                 new HashMap<String, String>() {{
                     put("firstName","karel");
                 }}

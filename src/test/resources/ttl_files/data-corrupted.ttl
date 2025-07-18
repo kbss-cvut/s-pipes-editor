@@ -20,7 +20,7 @@
 
 :bind-firstname
   rdf:type sml:BindWithConstant ;
-  sm:next :construct-greeding ;dz
+  sm:next :construct-greeting ;dz
   sm:outputVariable "personName" ;
   sml:value [
         a sp:Expression ;

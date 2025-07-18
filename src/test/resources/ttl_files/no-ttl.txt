@@ -20,7 +20,7 @@
 
 :bind-firstname
   rdf:type sml:BindWithConstant ;
-  sm:next :construct-greeding ;
+  sm:next :construct-greeting ;
   sm:outputVariable "personName" ;
   sml:value [
       a sp:Expression ;
@@ -29,9 +29,9 @@
   rdfs:label "Bind person name" ;
 .
 
-:construct-greeding
+:construct-greeting
   rdf:type sml:ApplyConstruct ;
-  sm:next :express-greeding_Return ;
+  sm:next :express-greeting_Return ;
   sml:constructQuery [
       a sp:Expression ;
       sp:text """PREFIX : <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/>
@@ -47,14 +47,14 @@ WHERE {
   rdfs:label "Construct greeting" ;
 .
 
-:express-greeding_Return
+:express-greeting_Return
   rdf:type sml:ReturnRDF ;
   sml:serialization sml:JSONLD ;
-  rdfs:label "Return greeding statement" ;
+  rdfs:label "Return greeting statement" ;
 .
 
-:execute-greeding
+:execute-greeting
   rdf:type sm:Function ;
-  sm:returnModule :express-greeding_Return ;
+  sm:returnModule :express-greeting_Return ;
   rdfs:subClassOf sm:Functions ;
 .

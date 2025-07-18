@@ -151,7 +151,7 @@
               {
                 "@id": "_:b0",
                 "@type": "http://onto.fel.cvut.cz/ontologies/documentation/answer",
-                "http://onto.fel.cvut.cz/ontologies/documentation/has_data_value": "<http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname>\n        a       <http://topbraid.org/sparqlmotionlib#BindWithConstant> ;\n        <http://www.w3.org/2000/01/rdf-schema#label>\n                \"Bind person name\" ;\n        <http://topbraid.org/sparqlmotion#next>\n                <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/construct-greeding> ;\n        <http://topbraid.org/sparqlmotion#outputVariable>\n                \"personNamee\" ;\n        <http://topbraid.org/sparqlmotionlib#value>\n                []  .\n",
+                "http://onto.fel.cvut.cz/ontologies/documentation/has_data_value": "<http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname>\n        a       <http://topbraid.org/sparqlmotionlib#BindWithConstant> ;\n        <http://www.w3.org/2000/01/rdf-schema#label>\n                \"Bind person name\" ;\n        <http://topbraid.org/sparqlmotion#next>\n                <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/construct-greeting> ;\n        <http://topbraid.org/sparqlmotion#outputVariable>\n                \"personNamee\" ;\n        <http://topbraid.org/sparqlmotionlib#value>\n                []  .\n",
                 "http://onto.fel.cvut.cz/ontologies/form/has-answer-hash": "f56bad1ee973cf7768770d75d91bce728ebc5b5d"
               }
             ],

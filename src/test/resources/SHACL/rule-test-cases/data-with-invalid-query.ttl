@@ -20,7 +20,7 @@
 
 :bind-firstname
   rdf:type sml:BindWithConstant ;
-  sm:next :construct-greeding ;
+  sm:next :construct-greeting ;
   sm:outputVariable "personName" ;
   sml:value [
       a sp:Expression ;
@@ -28,23 +28,23 @@
     ] ;
 .
 
-:construct-greeding
+:construct-greeting
   rdf:type sml:ApplyConstruct ;
-  sm:next :express-greeding_Return ;
+  sm:next :express-greeting_Return ;
   sml:constructQuery [
       a sp:Expression ;
     ] ;
   sml:replace "true" ;
 .
 
-:express-greeding_Return
+:express-greeting_Return
   rdf:type sml:ReturnRDF ;
   sml:serialization sml:JSONLD ;
-  rdfs:label "Return greeding statement" ;
+  rdfs:label "Return greeting statement" ;
 .
 
-:execute-greeding
+:execute-greeting
   rdf:type sm:Function ;
-  sm:returnModule :express-greeding_Return ;
+  sm:returnModule :express-greeting_Return ;
   rdfs:subClassOf sm:Functions ;
 .

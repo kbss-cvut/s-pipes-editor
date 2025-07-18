@@ -55,7 +55,7 @@ public class FormServiceTest {
     public void functionToForm() {
         Question question = formService.generateFunctionForm(
                 scriptPaths + "/hello-world.sms.ttl",
-                "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/execute-greeding"
+                "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/execute-greeting"
         );
 
         Assertions.assertEquals(1, question.getSubQuestions().size());

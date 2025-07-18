@@ -77,7 +77,7 @@ public class FunctionControllerTest {
     @DisplayName("List script functions")
     public void testGetScriptModuleTypes() throws Exception {
         List<FunctionDTO> functionDTOS = new ArrayList<>();
-        functionDTOS.add(new FunctionDTO("functionUri", "execute-greeding", new HashSet<>()));
+        functionDTOS.add(new FunctionDTO("functionUri", "execute-greeting", new HashSet<>()));
         when(functionService.moduleFunctions(any())).thenReturn(functionDTOS);
 
         MvcResult mvcResult = this.mockMvc.perform(post("/function/script")
@@ -100,21 +100,21 @@ public class FunctionControllerTest {
         List<FunctionDTO> obj = mapper.readValue(listNode.toString(), new TypeReference<List<FunctionDTO>>(){});
 
         Assertions.assertEquals(1, obj.size());
-        Assertions.assertEquals("execute-greeding", obj.get(0).getFunctionLocalName());
+        Assertions.assertEquals("execute-greeting", obj.get(0).getFunctionLocalName());
     }
 
     @Test
     public void testGenerateFunctionForm() throws Exception {
         when(formService.generateFunctionForm(
                 scriptPaths + "/hello-world.sms.ttl",
-                "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeding_Return")
+                "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeting_Return")
         ).thenReturn(new Question());
         this.mockMvc.perform(post("/function/form")
                 .content(
                         "{" +
                                 "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/execution-function-dto\"," +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\": \"" + scriptPaths + "/hello-world.sms.ttl\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeding_Return\"" +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeting_Return\"" +
                         "}"
                 )
                 .contentType(MediaType.APPLICATION_JSON))
@@ -129,7 +129,7 @@ public class FunctionControllerTest {
                 .content(
                         "{" +
                                 "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/execution-function-dto\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/execute-greeding\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/execute-greeting\"," +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-parameter\": \"param=p1\"" +
                         "}"
                 )
@@ -147,7 +147,7 @@ public class FunctionControllerTest {
                         "{" +
                                 "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/execution-module-dto\"," +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\": \""+script+"\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeding_Return\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeting_Return\"," +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-input-parameter\": \"\"," +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes-view/has-parameter\": \"\"" +
                         "}"

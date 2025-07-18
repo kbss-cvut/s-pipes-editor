@@ -38,7 +38,7 @@
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "firstName" .
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043854967/_pId> <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value>
-    "execute-greeding";
+    "execute-greeting";
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "_pId" .
 
 <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-845999858-399429203>
@@ -112,7 +112,7 @@
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "firstName" .
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855034/_pId> <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value>
-    "execute-greeding";
+    "execute-greeting";
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "_pId" .
 
 <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-1304810422-399429203>
@@ -121,7 +121,7 @@
   <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.059Z-module-1619043854875003-1304810422-399429203-input.ttl>;
   <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input-binding> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.077Z-module-1619043854875003-1304810422-399429203-input-binding.ttl>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-output-model-triple-count> "1"^^<http://www.w3.org/2001/XMLSchema#long>;
-  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-id> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/construct-greeding>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-id> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/construct-greeting>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date> "2021-04-22T00:24:15.063+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date-unix>
     "1619043855063"^^<http://www.w3.org/2001/XMLSchema#long>;
@@ -141,7 +141,7 @@
   a <http://www.w3.org/2002/07/owl#Thing> .
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855100/_pId> <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value>
-    "execute-greeding";
+    "execute-greeting";
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "_pId" .
 
 <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.077Z-module-1619043854875003-1304810422-399429203-input-binding.ttl>
@@ -181,7 +181,7 @@
   <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.125Z-module-1619043854875003-2097466294-399429203-input.ttl>;
   <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-input-binding> <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.141Z-module-1619043854875003-2097466294-399429203-input-binding.ttl>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-output-model-triple-count> "1"^^<http://www.w3.org/2001/XMLSchema#long>;
-  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-id> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/express-greeding_Return>;
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-id> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/express-greeting_Return>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date> "2021-04-22T00:24:15.127+02:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-finish-date-unix>
     "1619043855127"^^<http://www.w3.org/2001/XMLSchema#long>;
@@ -200,7 +200,7 @@
   a <http://www.w3.org/2002/07/owl#Thing> .
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043855162/_pId> <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_value>
-    "execute-greeding";
+    "execute-greeting";
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has_bound_variable> "_pId" .
 
 <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.141Z-module-1619043854875003-2097466294-399429203-input-binding.ttl>
