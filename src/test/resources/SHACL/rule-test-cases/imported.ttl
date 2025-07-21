@@ -17,23 +17,22 @@
 
 <http://ontologies.org/imported> a owl:Ontology .
 
-sml:BindWithConstant a sm:Module ;
-  rdf:type sm:Module ;
+sml:BindWithConstant
+  a sm:Module ;
   sh:parameter [
     sh:path sm:outputVariable ;
     sh:datatype xsd:string ;
     sh:defaultValue "text" ;
     sh:description "The name of the variable that will hold the constant. Default: text." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path sml:value ;
     sh:description "The constant value (either a resource or a literal)." ;
-    sh:optional true ;
   ] ;
   rdfs:comment "Binds a variable with a given RDF node." ;
   rdfs:label "Bind with constant" ;
   rdfs:subClassOf sml:ControlFlowModules ;
+  sm:icon          "bath" .
 .
 
 #http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate

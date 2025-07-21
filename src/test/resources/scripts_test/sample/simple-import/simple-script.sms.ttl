@@ -9,16 +9,18 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes/test-script-0.1>
-        a            owl:Ontology ;
+        a owl:Ontology ;
         owl:imports  <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> .
 
-:test_module1  a         sm:Modules , sml:BindWithConstant ;
+:test_module1
+        a sm:Modules , sml:BindWithConstant ;
         rdfs:label         "Test module 1" ;
         sm:next            :test_module2 ;
         sm:outputVariable  "personNamee" ;
         sml:value [ a sp:Expression ; sp:text "?firstName" ] .
 
-:test_module2  a      sm:Modules , sml:ApplyConstruct ;
+:test_module2
+        a sm:Modules , sml:ApplyConstruct ;
         rdfs:label          "Test module 2" ;
         sm:next             :test_module3-greeting_Return ;
         sml:constructQuery  [ a        sp:Construct ;
@@ -27,14 +29,16 @@
         sml:replace         true .
 
 :test_module3
-        a                  sm:Modules , sml:ReturnRDF ;
+        a sm:Modules , sml:ReturnRDF ;
         rdfs:label         "Test module 3" ;
         sml:serialization  sml:JSONLD .
 
-:test_module4  a     sm:Function ;
+:test_module4
+        a sm:Function ;
         rdfs:subClassOf  sm:Functions ;
         sm:returnModule  :test_module3 .
 
-:test_module a sm:Module ;
-    rdfs:label "Test Module" ;
+:test_module
+        a sm:Module ;
+        rdfs:label "Test Module" ;
 .

@@ -18,38 +18,34 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 
 <http://onto.fel.cvut.cz/ontologies/lib/module>
-  rdf:type owl:Ontology ;
+  a owl:Ontology ;
   owl:imports <http://www.w3.org/ns/shacl> ;
 .
 km-param:has-resource-uri
-  rdf:type rdf:Property ;
+  a rdf:Property ;
   rdfs:label "has resource uri" ;
 .
 kbss-module:apply-construct-with-chunked-values
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
       sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/apply-construct-with-chunked-values/chunk-size> ;
       sh:datatype xsd:integer ;
       sh:description "Chunk size" ;
-      sh:optional true ;
     ] ;
   sh:parameter [
       sh:path kbss-module:has-max-iteration-count ;
       sh:datatype xsd:integer ;
       sh:description "Maximal number of iterations of the whole rule set. The actual number of iterations can be smaller, if no new inferences are generated any more. Cases: a) iterationCount = 0 means none of the rules will be executed,  b) iterationCount = 1 means the whole rule set is executed only once, c) iterationCount > 1 means the whole rule set is executed at most 'iterationCount' times. In each iteration, queries are evaluated on the model merged from the default model and the result of previous iteration. Within each iteration, all queries are evaluated on the same model." ;
-      sh:optional true ;
     ] ;
   sh:parameter [
       sh:path kbss-module:is-parse-text ;
       sh:datatype xsd:boolean ;
       sh:description "If set to true, the queries are parsed rather from textual representation than shacl-representation." ;
-      sh:optional true ;
     ] ;
   sh:parameter [
       sh:path sml:replace ;
       sh:datatype xsd:boolean ;
       sh:description "If set to true, the output triples will only contain the constructed triples. If no values or false are specified, the output will be the union of the input triples and the constructed triples." ;
-      sh:optional true ;
     ] ;
   sh:parameter [
       sh:path sml:selectQuery ;
@@ -66,36 +62,31 @@ kbss-module:apply-construct-with-chunked-values
   rdfs:label "Apply construct with chunked values" ;
 .
 kbss-module:apply-construct-with-chunked-values-and-scrollable-cursor
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
       sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/apply-construct-with-chunked-values-and-scrollable-cursor/chunk-size> ;
       sh:datatype xsd:integer ;
       sh:description "Chunk size" ;
-      sh:optional true ;
     ] ;
   sh:parameter [
       sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/apply-construct-with-chunked-values-and-scrollable-cursor/page-size> ;
       sh:datatype xsd:integer ;
       sh:description "Page size for the scrollable cursor" ;
-      sh:optional true ;
     ] ;
   sh:parameter [
       sh:path kbss-module:has-max-iteration-count ;
       sh:datatype xsd:integer ;
       sh:description "Maximal number of iterations of the whole rule set. The actual number of iterations can be smaller, if no new inferences are generated any more. Cases: a) iterationCount = 0 means none of the rules will be executed,  b) iterationCount = 1 means the whole rule set is executed only once, c) iterationCount > 1 means the whole rule set is executed at most 'iterationCount' times. In each iteration, queries are evaluated on the model merged from the default model and the result of previous iteration. Within each iteration, all queries are evaluated on the same model." ;
-      sh:optional true ;
     ] ;
   sh:parameter [
       sh:path kbss-module:is-parse-text ;
       sh:datatype xsd:boolean ;
       sh:description "If set to true, the queries are parsed rather from textual representation than shacl-representation." ;
-      sh:optional true ;
     ] ;
   sh:parameter [
       sh:path sml:replace ;
       sh:datatype xsd:boolean ;
       sh:description "If set to true, the output triples will only contain the constructed triples. If no values or false are specified, the output will be the union of the input triples and the constructed triples." ;
-      sh:optional true ;
     ] ;
   sh:parameter [
       sh:path sml:selectQuery ;
@@ -112,7 +103,7 @@ kbss-module:apply-construct-with-chunked-values-and-scrollable-cursor
   rdfs:label "Apply construct with chunked values and scrollable cursor" ;
 .
 kbss-module:improve-spo-with-marginals
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/improve-spo-with-marginals/marginals-defs-file-url> ;
     sh:datatype xsd:string ;
@@ -129,36 +120,31 @@ kbss-module:improve-spo-with-marginals
     sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/improve-spo-with-marginals/marginal-constraint> ;
     sh:datatype xsd:string ;
     sh:description "Marginal constraint" ;
-    sh:optional true ;
   ] ;
   rdfs:comment "Constructs improved spo-summary descriptor with knowledge of provided marginals of weakly described resources. This module expects as an input graph computed spo-summary patterns (or possibly whole spo-summary descriptor) compliant with data provided in ?data-service-url. Within the input graph it identifies 'breakable patterns', i.e. spo-summary patterns that can be improved with knowledge of marginals computed in ?marginals-defs-file-url. The output of the module is a spo-summary descriptor that contains original spo-summary patterns whenever possible and new spo-summary patterns that were created with additional knowledge of marginals." ;
   rdfs:label "Improve spo summary with marginals" ;
 .
 kbss-module:apply-construct-with-scrollable-cursor
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/apply-construct-with-scrollable-cursor/page-size> ;
     sh:datatype xsd:integer ;
     sh:description "Page size" ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path kbss-module:has-max-iteration-count ;
     sh:datatype xsd:integer ;
     sh:description "Maximal number of iterations of the whole rule set. The actual number of iterations can be smaller, if no new inferences are generated any more. Cases: a) iterationCount = 0 means none of the rules will be executed,  b) iterationCount = 1 means the whole rule set is executed only once, c) iterationCount > 1 means the whole rule set is executed at most 'iterationCount' times. In each iteration, queries are evaluated on the model merged from the default model and the result of previous iteration. Within each iteration, all queries are evaluated on the same model." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path kbss-module:is-parse-text ;
     sh:datatype xsd:boolean ;
     sh:description "If set to true, the queries are parsed rather from textual representation than shacl-representation." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path sml:replace ;
     sh:datatype xsd:boolean ;
     sh:description "If set to true, the output triples will only contain the constructed triples. If no values or false are specified, the output will be the union of the input triples and the constructed triples." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path sml:constructQuery ;
@@ -169,7 +155,7 @@ kbss-module:apply-construct-with-scrollable-cursor
   rdfs:label "Apply construct with scrollable cursor" ;
 .
 kbss-module:bind-rdf-content-hash
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path sm:outputVariable ;
     sh:datatype xsd:string ;
@@ -180,21 +166,20 @@ kbss-module:bind-rdf-content-hash
   rdfs:label "Bind rdf content hash" ;
 .
 kbss-module:cli
-  rdf:type sm:Module ;
+  a sm:Module ;
   rdfs:label "Command-line" ;
 .
 kbss-module:construct-form-metadata
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path sml:replace ;
     sh:datatype xsd:boolean ;
     sh:description "Replace context flag" ;
-    sh:optional true ;
   ] ;
   rdfs:label "Construct form metadata" ;
 .
 kbss-module:deploy
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path km-rdf4j:p-rdf4j-context-iri ;
     sh:datatype xsd:string ;
@@ -217,49 +202,48 @@ kbss-module:deploy
     sh:path km-rdf4j:p-is-replace ;
     sh:datatype xsd:boolean ;
     sh:description "Replace context flag" ;
-    sh:optional true ;
   ] ;
   rdfs:label "Deploy" ;
 .
 kbss-module:form-generator
-  rdf:type sm:Module ;
+  a sm:Module ;
   rdfs:label "Form generator" ;
 .
 kbss-module:generic-kbss-modules
-  rdf:type rdfs:Class ;
+  a rdfs:Class ;
   rdfs:label "Generic KBSS modules" ;
   rdfs:subClassOf kbss-module:kbss-modules ;
 .
 kbss-module:has-debug-mode-flag
-  rdf:type rdf:Property ;
+  a rdf:Property ;
   rdfs:label "has debug mode flag" ;
   rdfs:subPropertyOf spin:query ;
 .
 kbss-module:has-input-graph-constraint
-  rdf:type rdf:Property ;
+  a rdf:Property ;
   rdfs:label "has input graph constraint" ;
   rdfs:comment "Specifies constraint on merged input graph of the module. The constraint can be specified by ASK query which should return true if constraint is violated. If first line of the query is SPARQL comment, this comment is used to give user human readable description (e.g. within the log of s-pipes execution).";
   rdfs:subPropertyOf spin:query ;
 .
 kbss-module:has-max-iteration-count
-  rdf:type rdf:Property ;
+  a rdf:Property ;
   rdfs:comment "Specifies what is maximum number of iterations of certain algorithm." ;
   rdfs:label "maximum number of iterations" ;
   rdfs:range xsd:integer ;
 .
 kbss-module:has-output-graph-constraint
-  rdf:type rdf:Property ;
+  a rdf:Property ;
   rdfs:label "has output graph constraint" ;
   rdfs:comment "Specifies constraint on returned output graph of the module. The constraint can be specified by ASK query which should return true if constraint is violated. If first line of the query is SPARQL comment, this comment is used to give user human readable description (e.g. within the log of s-pipes execution).";
   rdfs:subPropertyOf spin:query ;
 .
 kbss-module:has-target-module-flag
-  rdf:type rdf:Property ;
+  a rdf:Property ;
   rdfs:label "has target module flag" ;
   rdfs:subPropertyOf spin:query ;
 .
 kbss-module:import-e5x
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path km-param:has-resource-uri ;
     sh:datatype xsd:string ;
@@ -270,39 +254,39 @@ kbss-module:import-e5x
   rdfs:label "Import E5X file" ;
 .
 kbss-module:inbas-modules
-  rdf:type rdfs:Class ;
+  a rdfs:Class ;
   rdfs:label "INBAS modules" ;
   rdfs:subClassOf kbss-module:kbss-modules ;
 .
 kbss-module:is-parse-text
-  rdf:type rdf:Property ;
+  a rdf:Property ;
   rdfs:comment "Specifies whether a module shall use some parameter values from its RDF representation or from its textual value." ;
   rdfs:label "parse text" ;
   rdfs:range xsd:boolean ;
 .
 kbss-module:kbss-modules
-  rdf:type rdfs:Class ;
+  a rdfs:Class ;
   rdfs:label "KBSS modules" ;
   rdfs:subClassOf sm:Modules ;
 .
 km-rdf4j:p-is-replace
-  rdf:type rdf:Property ;
+  a rdf:Property ;
   rdfs:label "Is replace" ;
 .
 km-rdf4j:p-rdf4j-context-iri
-  rdf:type rdf:Property ;
+  a rdf:Property ;
   rdfs:label "Rdf4j context IRI" ;
 .
 km-rdf4j:p-rdf4j-repository-name
-  rdf:type rdf:Property ;
+  a rdf:Property ;
   rdfs:label "Rdf4j repository name" ;
 .
 km-rdf4j:p-rdf4j-server-url
-  rdf:type rdf:Property ;
+  a rdf:Property ;
   rdfs:label "Rdf4j server URL" ;
 .
 kbss-module:sparql-endpoint-retrieve-graph
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/sparql-endpoint-retrieve-graph/endpoint-url> ;
     sh:datatype xsd:string ;
@@ -313,19 +297,17 @@ kbss-module:sparql-endpoint-retrieve-graph
     sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/sparql-endpoint-retrieve-graph/named-graph-id> ;
     sh:datatype xsd:string ;
     sh:description "Named graph id" ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/sparql-endpoint-retrieve-graph/page-size> ;
     sh:datatype xsd:integer ;
     sh:description "Page size" ;
-    sh:optional true ;
   ] ;
   rdfs:label "SpEP retrieve graph" ;
   rdfs:comment "Retrieves graph from sparql endpoint specified by ?endpointUrl and optionally ?namedGraphId. If ?namedGraphId is not specified it retrieves the default graph." ;
 .
 kbss-module:sparql-endpoint-download-graph
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/sparql-endpoint-download-graph/endpoint-url> ;
     sh:datatype xsd:string ;
@@ -336,52 +318,46 @@ kbss-module:sparql-endpoint-download-graph
     sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/sparql-endpoint-download-graph/named-graph-id> ;
     sh:datatype xsd:string ;
     sh:description "Named graph id" ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/sparql-endpoint-download-graph/page-size> ;
     sh:datatype xsd:integer ;
     sh:description "Page size" ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path <http://onto.fel.cvut.cz/ontologies/lib/module/sparql-endpoint-download-graph/output-resource-variable> ;
     sh:datatype xsd:integer ;
     sh:description "Output resource variable" ;
-    sh:optional true ;
   ] ;
   rdfs:label "SpEP download graph" ;
   rdfs:comment "Downloads graph from sparql endpoint specified by 'endpointUrl' and optionally 'namedGraphId' and saves it in ntriples format into a new file whose path is returned through variable defined by outputResourceVariable. If namedGraphId is not specified it downloads the default graph." ;
 .
 kbss-module:external-schemex
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path sml:sourceFilePath ;
     sh:datatype xsd:string ;
     sh:description "Source file in nt format." ;
-    sh:optional true ;
   ] ;
   rdfs:label "Compute schemex using external script" ;
   rdfs:comment "Compute schemex using external script for a specified sourceFilePath." ;
 .
 kbss-module:temporal-v1
-  rdf:type sm:Module ;
+  a sm:Module ;
   rdfs:label "Temporal v1" ;
   rdfs:comment "Module annotates input triples using NLP analysis of time using library SUTime." ;
 .
 kbss-module:tarql
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path sml:replace ;
     sh:datatype xsd:boolean ;
     sh:description "If set to true, the output triples will only contain the constructed triples. If no values or false are specified, the output will be the union of the input triples and the constructed triples." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path sml:sourceFilePath ;
     sh:datatype xsd:string ;
     sh:description "Source CSV file." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path sml:constructQuery ;
@@ -392,6 +368,6 @@ kbss-module:tarql
   rdfs:label "TARQL" ;
 .
 kbss-module:void
-  rdf:type sm:Module ;
+  a sm:Module ;
   rdfs:label "VOID" ;
 .

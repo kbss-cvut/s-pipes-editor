@@ -15,12 +15,11 @@
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 
 sml:ApplyConstruct
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path sml:replace ;
     sh:datatype xsd:boolean ;
     sh:description "If set to true, the output triples will only contain the constructed triples. If no values or false are specified, the output will be the union of the input triples and the constructed triples." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path sml:constructQuery ;
@@ -32,7 +31,7 @@ sml:ApplyConstruct
   rdfs:subClassOf sml:RDFProcessingModules ;
 .
 sml:BindBySelect
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path sml:selectQuery ;
     sh:minCount 1 ;
@@ -44,34 +43,30 @@ sml:BindBySelect
   rdfs:subClassOf sml:ControlFlowModules ;
 .
 sml:BindWithConstant
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path sm:outputVariable ;
     sh:datatype xsd:string ;
     sh:defaultValue "text" ;
     sh:description "The name of the variable that will hold the constant. Default: text." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path sml:value ;
     sh:description "The constant value (either a resource or a literal)." ;
-    sh:optional true ;
   ] ;
   rdfs:comment "Binds a variable with a given RDF node." ;
   rdfs:label "Bind with constant" ;
   rdfs:subClassOf sml:ControlFlowModules ;
 .
 sml:ExportToRDFFile
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path sml:targetFilePath ;
     sh:description "The path of the file to create. The path can be relative to the current script's folder (e.g., myFolder/test.rdf) or absolute to the workspace root /myProject/myFolder/test.rdf. Can be left blank if the base URI already has a representation in the workspace. In that case, the primary file in the workspace will be overwritten." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path sml:baseURI ;
     sh:description "The base URI under which the resulting file will be registered in the workspace." ;
-    sh:optional true ;
   ] ;
   rdfs:comment """Creates a new RDF file at the specified path inside the workspace and with the specified base URI. The serialization is derived from the file name according to TopBraid's conventions, e.g. files ending with .ttl will be written in Turtle format.
 
@@ -80,13 +75,13 @@ Note that if an existing file is overwritten (with matching base URI), and the g
   rdfs:subClassOf sml:ExportToLocalModules ;
 .
 sml:Merge
-  rdf:type sm:Module ;
+  a sm:Module ;
   rdfs:comment "This module type can be used to merge the variables and RDF triples from multiple input modules. The same is done by any other SPARQLMotion script that has multiple input modules. So while the sml:Merge module basically does not do anything at all, it can be useful to create a clean structure in your script, particularly if you have a case when you want to merge multiple graphs and then have multiple outgoing sm:next links from the merged graph." ;
   rdfs:label "Merge" ;
   rdfs:subClassOf sml:ControlFlowModules ;
 .
 sml:PerformUpdate
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path sml:updateQuery ;
     sh:minCount 1 ;
@@ -104,25 +99,23 @@ Note for EVN/RDM users: updates on graphs under teamwork control (e.g. urn:x-evn
   rdfs:subClassOf sml:RDFProcessingModules ;
 .
 sml:ReturnRDF
-  rdf:type sm:Module ;
+  a sm:Module ;
   sh:parameter [
     sh:path sml:serialization ;
     sh:description "The serialization format – must be sml:JSONLD, sml:RDFXML or sml:Turtle." ;
     sh:defaultValue sml:RDFXML ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path sml:baseURI ;
     sh:datatype xsd:string ;
     sh:description "The base URI of the graph to serialize." ;
-    sh:optional true ;
   ] ;
   rdfs:comment "Represents the exit point of a function that returns RDF. The function can be referenced externally (e.g. via web service) by its URI or local name. RDF triples will be serialized into Turtle, JSON-LD or RDF/XML." ;
   rdfs:label "Return RDF" ;
   rdfs:subClassOf sml:ExportToRemoteModules ;
 .
 <http://topbraid.org/sparqlmotionlib-core>
-  rdf:type owl:Ontology ;
+  a owl:Ontology ;
   rdfs:comment "The library of SPARQLMotion core modules that are available in any SPARQLMotion-compliant engine, including the TopBraid platform and the TopBraid API." ;
   owl:imports <http://spinrdf.org/spif> ;
   owl:imports <http://spinrdf.org/spr> ;

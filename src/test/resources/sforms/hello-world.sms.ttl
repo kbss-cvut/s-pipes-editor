@@ -8,28 +8,31 @@
 @prefix sp:    <http://spinrdf.org/sp#> .
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1>
-        a            owl:Ontology ;
-        owl:imports  <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> .
+    a            owl:Ontology ;
+    owl:imports  <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> .
 
-:bind-firstname  a         sml:BindWithConstant ;
-                 rdfs:label         "Bind person name karel" ;
-                 sm:next            :construct-greeting ;
-                 sm:outputVariable  "personNamee" ;
-                 sml:value [ a sp:Expression ; sp:text "?firstName" ] .
+:bind-firstname
+    a sml:BindWithConstant ;
+    rdfs:label         "Bind person name karel" ;
+    sm:next            :construct-greeting ;
+    sm:outputVariable  "personNamee" ;
+    sml:value [ a sp:Expression ; sp:text "?firstName" ] .
 
-:construct-greeting  a      sml:ApplyConstruct ;
-                     rdfs:label          "Construct greeting" ;
-                     sm:next             :express-greeting_Return ;
-                     sml:constructQuery  [ a        sp:Construct ;
-                                           sp:text  "PREFIX : <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/> \nCONSTRUCT {\n    ?person :is-greeted-by-message ?greetingMessage . \n}\nWHERE {\n    BIND(iri(concat(str(:), ?personName)) as ?person)\n    BIND(concat(\"Hello \", ?personName, \".\") as ?greetingMessage)\n}"
-                            ] ;
-                     sml:replace         true .
+:construct-greeting
+    a sml:ApplyConstruct ;
+    rdfs:label          "Construct greeting" ;
+    sm:next             :express-greeting_Return ;
+    sml:constructQuery  [ a        sp:Construct ;
+                       sp:text  "PREFIX : <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/> \nCONSTRUCT {\n    ?person :is-greeted-by-message ?greetingMessage . \n}\nWHERE {\n    BIND(iri(concat(str(:), ?personName)) as ?person)\n    BIND(concat(\"Hello \", ?personName, \".\") as ?greetingMessage)\n}"
+        ] ;
+    sml:replace         true .
 
 :express-greeting_Return
-        a                  sml:ReturnRDF ;
-        rdfs:label         "Return greeting statement" ;
-        sml:serialization  sml:JSONLD .
+    a sml:ReturnRDF ;
+    rdfs:label         "Return greeting statement" ;
+    sml:serialization  sml:JSONLD .
 
-:execute-greeting  a     sm:Function ;
-                   rdfs:subClassOf  sm:Functions ;
-                   sm:returnModule  :express-greeting_Return .
+:execute-greeting
+    a sm:Function ;
+    rdfs:subClassOf  sm:Functions ;
+    sm:returnModule  :express-greeting_Return .

@@ -42,7 +42,6 @@ kbss-spif:create-sparql-service-url
     sh:path kbss-spif:arg2 ;
     sh:datatype xsd:string ;
     sh:description "URI of named graph (e.g. http://example.org/my-ontology)." ;
-    sh:optional true ;
   ] ;
 .
 arg:namedGraphUri

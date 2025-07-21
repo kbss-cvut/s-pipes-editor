@@ -26,7 +26,7 @@
 #  owl:imports <http://imported.ttl> .
 
 :bind-firstname
-  rdf:type sml:BindWithConstant ;
+  a sml:BindWithConstant ;
   sm:next :construct-greeting ;
   sm:outputVariable "personName" ;
   sml:value [
@@ -37,7 +37,7 @@
 .
 
 :construct-greeting
-  rdf:type sml:ApplyConstruct ;
+  a sml:ApplyConstruct ;
   sm:next :express-greeting_Return ;
   sml:constructQuery [
       a sp:Construct ;
@@ -55,13 +55,13 @@ WHERE {
 .
 
 :express-greeting_Return
-  rdf:type sml:ReturnRDF ;
+  a sml:ReturnRDF ;
   sml:serialization sml:JSONLD ;
   rdfs:label "Return greeting statement" ;
 .
 
 :execute-greeting
-  rdf:type sm:Function ;
+  a sm:Function ;
   sm:returnModule :express-greeting_Return ;
   rdfs:subClassOf sm:Functions ;
 .

@@ -57,13 +57,11 @@ kbss-module:kbss-modules
     sh:path kbss-module:has-input-graph-constraint ;
     sh:datatype xsd:string ;
     sh:description "Condition on input graph of this module." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path kbss-module:has-output-graph-constraint ;
     sh:datatype xsd:string ;
     sh:description "Condition on output graph of this module." ;
-    sh:optional true ;
   ] ;
 .
 kbss-module:sparql-endpoint-retrieve-graph
@@ -79,7 +77,7 @@ kbss-module:void
   rdfs:subClassOf sm:kbss-adapter-module ;
 .
 <http://onto.fel.cvut.cz/ontologies/lib/sm-module-adapter>
-  rdf:type owl:Ontology ;
+  a owl:Ontology ;
   owl:imports <http://onto.fel.cvut.cz/ontologies/lib/module> ;
   owl:imports <http://www.w3.org/ns/shacl> ;
 .
@@ -88,34 +86,30 @@ sm:Modules
     sh:path kbss-module:has-debug-mode-flag ;
     sh:datatype xsd:boolean ;
     sh:description "Indicates whether this module should be in debug mode." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path kbss-module:has-input-graph-constraint ;
     sh:datatype xsd:string ;
     sh:description "Condition on input graph of this module." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path kbss-module:has-output-graph-constraint ;
     sh:datatype xsd:string ;
     sh:description "Condition on output graph of this module." ;
-    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path kbss-module:has-target-module-flag ;
     sh:datatype xsd:boolean ;
     sh:description "Indicates whether this module should be executed as target module in debug environment." ;
-    sh:optional true ;
   ] ;
 .
 sm:inbas-adapter-module
-  rdf:type sm:Module ;
+  a sm:Module ;
   rdfs:label "INBAS adapter module" ;
   rdfs:subClassOf kbss-module:inbas-modules ;
 .
 sm:kbss-adapter-module
-  rdf:type sm:Module ;
+  a sm:Module ;
   rdfs:label "KBSS adapter module" ;
   rdfs:subClassOf kbss-module:generic-kbss-modules ;
 .

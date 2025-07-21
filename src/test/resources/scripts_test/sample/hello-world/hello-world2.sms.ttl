@@ -11,13 +11,15 @@
         a            owl:Ontology ;
         owl:imports  <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> .
 
-:bind-firstname  a         sml:BindWithConstant ;
+:bind-firstname
+        a sml:BindWithConstant ;
         rdfs:label         "Bind person name" ;
         sm:next            :construct-greeting ;
         sm:outputVariable  "personName" ;
         sml:value [ a sp:Expression ; sp:text "?firstName" ] .
 
-:construct-greeting  a      sml:ApplyConstruct ;
+:construct-greeting
+        a sml:ApplyConstruct ;
         rdfs:label          "Construct greeting" ;
         sm:next             :express-greeting_Return ;
         sml:constructQuery  [ a        sp:Construct ;
@@ -26,13 +28,15 @@
         sml:replace         true .
 
 :express-greeting_Return
-        a                  sml:ReturnRDF ;
+        a sml:ReturnRDF ;
         sml:serialization  sml:JSONLD .
 
-:execute-greeting  a     sm:Function ;
+:execute-greeting
+        a sm:Function ;
         rdfs:subClassOf  sm:Functions ;
         sm:returnModule  :express-greeting_Return .
 
-:dummy  a           sml:BindWithConstant ;
+:dummy
+        a sml:BindWithConstant ;
         rdfs:label  "Empty-bind-constant" ;
         sm:next     :construct-greeting .
