@@ -57,11 +57,13 @@ kbss-module:kbss-modules
     sh:path kbss-module:has-input-graph-constraint ;
     sh:datatype xsd:string ;
     sh:description "Condition on input graph of this module." ;
+    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path kbss-module:has-output-graph-constraint ;
     sh:datatype xsd:string ;
     sh:description "Condition on output graph of this module." ;
+    sh:optional true ;
   ] ;
 .
 kbss-module:sparql-endpoint-retrieve-graph
@@ -86,21 +88,25 @@ sm:Modules
     sh:path kbss-module:has-debug-mode-flag ;
     sh:datatype xsd:boolean ;
     sh:description "Indicates whether this module should be in debug mode." ;
+    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path kbss-module:has-input-graph-constraint ;
     sh:datatype xsd:string ;
     sh:description "Condition on input graph of this module." ;
+    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path kbss-module:has-output-graph-constraint ;
     sh:datatype xsd:string ;
     sh:description "Condition on output graph of this module." ;
+    sh:optional true ;
   ] ;
   sh:parameter [
     sh:path kbss-module:has-target-module-flag ;
     sh:datatype xsd:boolean ;
     sh:description "Indicates whether this module should be executed as target module in debug environment." ;
+    sh:optional true ;
   ] ;
 .
 sm:inbas-adapter-module
