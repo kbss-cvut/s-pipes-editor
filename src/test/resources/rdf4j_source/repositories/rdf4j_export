@@ -14,7 +14,7 @@
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-finish-date-unix>
     "1619043855186"^^<http://www.w3.org/2001/XMLSchema#long>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-duration> "281"^^<http://www.w3.org/2001/XMLSchema#long>;
-  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-script> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043854967> a <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has_binding> <http://onto.fel.cvut.cz/ontologies/s-pipes/query_solution_1619043854967/repositoryName>,
@@ -58,7 +58,7 @@
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-input-model-triple-count> "0"^^<http://www.w3.org/2001/XMLSchema#long>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type> <http://topbraid.org/sparqlmotionlib#BindWithConstant>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-duration> "4"^^<http://www.w3.org/2001/XMLSchema#long>;
-  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-script> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
 
 <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003-1312806988-399429203>
   a <http://www.w3.org/2002/07/owl#Thing>, <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation>;
@@ -77,7 +77,7 @@
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-input-model-triple-count> "0"^^<http://www.w3.org/2001/XMLSchema#long>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type> <http://topbraid.org/sparqlmotionlib#BindWithConstant>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-duration> "3"^^<http://www.w3.org/2001/XMLSchema#long>;
-  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-script> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
 
 <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_14.926Z-module-1619043854875003-845999858-399429203-input.ttl>
   a <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/source-dataset-snapshot> .
@@ -132,7 +132,7 @@
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-input-model-triple-count> "0"^^<http://www.w3.org/2001/XMLSchema#long>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type> <http://topbraid.org/sparqlmotionlib#ApplyConstruct>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-duration> "4"^^<http://www.w3.org/2001/XMLSchema#long>;
-  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-script> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
 
 <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_14.994Z-module-1619043854875003-1312806988-399429203-input.ttl>
   a <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/source-dataset-snapshot> .
@@ -191,7 +191,7 @@
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-input-model-triple-count> "1"^^<http://www.w3.org/2001/XMLSchema#long>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type> <http://topbraid.org/sparqlmotionlib#ReturnRDF>;
   <http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-execution-duration> "2"^^<http://www.w3.org/2001/XMLSchema#long>;
-  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
+  <http://onto.fel.cvut.cz/ontologies/s-pipes/has-script> <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2> .
 
 <file:/home/jordan/apache-tomcat-9.0.45/temp/2021-04-21T22_23_58.900Z-s-pipes-log-5181096301762785817/pipeline-execution-1619043854875003/2021-04-21T22_24_15.059Z-module-1619043854875003-1304810422-399429203-input.ttl>
   a <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/source-dataset-snapshot> .
