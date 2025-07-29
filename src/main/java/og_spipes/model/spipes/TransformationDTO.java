@@ -12,7 +12,7 @@ import java.util.Set;
 public class TransformationDTO extends Transformation {
 
 //    //TODO ask why this attribute is not possible to map??? Also I lose properties field
-//    @OWLDataProperty(iri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name")
+//    @OWLDataProperty(iri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-script")
 //    private String pipelineName;
 //
 //    @OWLDataProperty(iri = "http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-duration")
