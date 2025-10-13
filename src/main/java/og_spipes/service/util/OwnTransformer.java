@@ -9,7 +9,6 @@ import cz.cvut.spipes.transform.AnonNodeTransformer;
 import cz.cvut.spipes.transform.SPipesUtil;
 import cz.cvut.spipes.transform.Transformer;
 import cz.cvut.spipes.util.JenaUtils;
-import og_spipes.service.FormService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.*;
@@ -23,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,7 +33,7 @@ import static cz.cvut.spipes.transform.SPipesUtil.isSPipesTerm;
  */
 public class OwnTransformer implements Transformer {
 
-    private final Logger LOG = LoggerFactory.getLogger(OwnTransformer.class);
+    private final Logger log = LoggerFactory.getLogger(OwnTransformer.class);
 
     public OwnTransformer() {
     }
@@ -76,7 +76,7 @@ public class OwnTransformer implements Transformer {
 
         Map<OriginPair<URI, URI>, Statement> origin2st = getOrigin2StatementMap(module);
 
-        LOG.info("Creating new form.");
+        log.info("Creating new form.");
         for (Map.Entry<OriginPair<URI, URI>, Statement> e : origin2st.entrySet()) {
             OriginPair<URI, URI> key = e.getKey();
             Statement st = e.getValue();
@@ -166,7 +166,7 @@ public class OwnTransformer implements Transformer {
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         JenaUtils.writeScript(os, ModelFactory.createDefaultModel().add(module.listProperties()));
-        String ttlStr = new String(os.toByteArray());
+        String ttlStr = os.toString(StandardCharsets.UTF_8);
         ttlA.setTextValue(ttlStr);
         ttlA.setHash(DigestUtils.sha1Hex(ttlStr));
 
@@ -205,7 +205,7 @@ public class OwnTransformer implements Transformer {
 
         Map<String, Model> changed = new HashMap<>();
 
-        LOG.info("origin: " + form.getOrigin().toString());
+        log.info("origin: " + form.getOrigin().toString());
         Resource module = inputScript.getResource(form.getOrigin().toString());
 
         Question uriQ = findUriQ(form);
@@ -223,7 +223,7 @@ public class OwnTransformer implements Transformer {
         if (module.listProperties().hasNext()) {
             Map<OriginPair<URI, URI>, Statement> questionStatements = getOrigin2StatementMap(module); // Created answer origin is different from the actual one
             findRegularQ(form).forEach((q) -> {
-                LOG.info("QUESTION: " + q.toString());
+                log.info("QUESTION: " + q.toString());
                 OriginPair<URI, URI> originPair = new OriginPair<>(q.getOrigin(), getAnswer(q).map(Answer::getOrigin).orElse(null));
                 Statement s = questionStatements.get(originPair);
 
@@ -235,12 +235,12 @@ public class OwnTransformer implements Transformer {
                     }
                     final Model changingModel = changed.get(uri);
 
-                    LOG.info("STATEMENT: " + s);
+                    log.info("STATEMENT: " + s);
                     RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
                     if (answerNode != null) {
                         if (s.getObject().isAnon()) {
                             Statement an = s.getObject().asResource().listProperties().next();
-                            LOG.info("ANON STATEMENT: " + an);
+                            log.info("ANON STATEMENT: " + an);
                             changingModel.remove(an);
                             changingModel.add(an.getSubject(), an.getPredicate(), answerNode);
                         } else {
@@ -276,7 +276,7 @@ public class OwnTransformer implements Transformer {
             m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(moduleType));
             m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(cz.cvut.sforms.Vocabulary.s_c_Modules));
             findRegularQ(form).forEach((q) -> {
-                LOG.info("QUESTION_NEW: " + q.toString());
+                log.info("QUESTION_NEW: " + q.toString());
                 RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
                 handleFormUpdate(answerNode, m, q, newUri);
             });
@@ -306,9 +306,9 @@ public class OwnTransformer implements Transformer {
      * @param newUri
      */
     private void handleFormUpdate(RDFNode answerNode, Model m, Question q, URI newUri) {
-        LOG.info("answerNode: " + answerNode);
+        log.info("answerNode: " + answerNode);
         if (answerNode != null) {
-            LOG.info("answerNode: " + answerNode.toString());
+            log.info("answerNode: " + answerNode.toString());
             if (q.getLabel().equals("http://topbraid.org/sparqlmotionlib#value")) {
                 Resource subject = m.createResource(newUri.toString());
                 Property predicate = m.createProperty("http://topbraid.org/sparqlmotionlib#value");
