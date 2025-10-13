@@ -1,6 +1,7 @@
 package og_spipes.service.util;
 
 import cz.cvut.sforms.SFormsVocabularyJena;
+import cz.cvut.sforms.Vocabulary;
 import cz.cvut.sforms.model.Answer;
 import cz.cvut.sforms.model.PrefixDefinition;
 import cz.cvut.sforms.model.Question;
@@ -28,18 +29,13 @@ import java.util.stream.Collectors;
 
 import static cz.cvut.spipes.transform.SPipesUtil.isSPipesTerm;
 
-/**
- * Base concept taken from original project; however the original one contains major bugs
- */
 public class TransformerImpl implements Transformer {
 
-    private final Logger log = LoggerFactory.getLogger(TransformerImpl.class);
-
-    public TransformerImpl() {
-    }
+    private static final Logger log = LoggerFactory.getLogger(TransformerImpl.class);
 
     @Override
     public Question script2Form(Resource module, Resource moduleType) {
+
         if (!URI.create(module.getURI()).isAbsolute()) {
             throw new IllegalArgumentException("Module uri '" + module.getURI() + "' is not absolute.");
         }
@@ -92,10 +88,12 @@ public class TransformerImpl implements Transformer {
             if (st.getObject().isAnon() && SPipesUtil.getSPinCommandType(st.getObject().asResource()) != null) {
                 subQ.setLayoutClass(Collections.singleton("sparql"));
                 subQ.getProperties().put(
-                        cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type,
+                        Vocabulary.s_p_has_answer_value_type,
                         Collections.singleton(SPipesUtil.getSPinCommandType(st.getObject().asResource()).getResource().getURI())
                 );
-                subQ.setDeclaredPrefix(p.getModel().getNsPrefixMap().entrySet().stream().map(prefix -> new PrefixDefinition(prefix.getKey(), prefix.getValue())).collect(Collectors.toSet()));
+                subQ.setDeclaredPrefix(p.getModel().getNsPrefixMap().entrySet().stream().map(
+                        prefix -> new PrefixDefinition(prefix.getKey(), prefix.getValue())).collect(Collectors.toSet())
+                );
             }
 
             Answer a = getAnswer(st.getObject());
@@ -188,18 +186,6 @@ public class TransformerImpl implements Transformer {
         return formRootQ;
     }
 
-    /**
-     * Update Module in script based on Question from the SForms.
-     * <p>
-     * **NOTE**
-     * Solution requires more complex test for every SPipes Module type and structure of Question. However, both
-     * objects are very large so it requires good evaluation method.
-     *
-     * @param inputScript Model of loaded script
-     * @param form        Question from SFroms
-     * @param moduleType  Module type from SPipes
-     * @return
-     */
     @Override
     public Map<String, Model> form2Script(Model inputScript, Question form, String moduleType) {
 
@@ -222,7 +208,7 @@ public class TransformerImpl implements Transformer {
 
         if (module.listProperties().hasNext()) {
             Map<OriginPair<URI, URI>, Statement> questionStatements = getOrigin2StatementMap(module); // Created answer origin is different from the actual one
-            findRegularQ(form).forEach((q) -> {
+            findRegularQ(form).forEach(q -> {
                 log.info("QUESTION: " + q.toString());
                 OriginPair<URI, URI> originPair = new OriginPair<>(q.getOrigin(), getAnswer(q).map(Answer::getOrigin).orElse(null));
                 Statement s = questionStatements.get(originPair);
@@ -275,7 +261,7 @@ public class TransformerImpl implements Transformer {
             Model m = inputScript;
             m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(moduleType));
             m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(cz.cvut.sforms.Vocabulary.s_c_Modules));
-            findRegularQ(form).forEach((q) -> {
+            findRegularQ(form).forEach(q -> {
                 log.info("QUESTION_NEW: " + q.toString());
                 RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
                 handleFormUpdate(answerNode, m, q, newUri);
@@ -383,7 +369,7 @@ public class TransformerImpl implements Transformer {
         Optional<Question> uriQ =
                 FormUtils.flatten(root).stream()
                         .filter(q -> q.getOrigin() != null)
-                        .filter((q) -> RDFS.Resource.getURI().equals(q.getOrigin().toString())).findFirst();
+                        .filter(q -> RDFS.Resource.getURI().equals(q.getOrigin().toString())).findFirst();
         if (uriQ.isPresent())
             return uriQ.get();
         throw new IllegalArgumentException("Root question has no subquestion that maps to URI");
@@ -391,9 +377,9 @@ public class TransformerImpl implements Transformer {
 
     private Set<Question> findRegularQ(Question root) {
         return FormUtils.flatten(root).stream()
-                .filter((q) -> q.getSubQuestions() == null || q.getSubQuestions().isEmpty())
+                .filter(q -> q.getSubQuestions() == null || q.getSubQuestions().isEmpty())
                 .filter(q -> q.getOrigin() != null)
-                .filter((q) -> !RDFS.Resource.getURI().equals(q.getOrigin().toString()))
+                .filter(q -> !RDFS.Resource.getURI().equals(q.getOrigin().toString()))
                 .collect(Collectors.toSet());
     }
 
@@ -499,9 +485,9 @@ public class TransformerImpl implements Transformer {
     private Map<String, Set<String>> extractQuestionMetadata(Statement st) {
         Map<String, Set<String>> p = new HashMap<>();
         if (st.getPredicate().hasProperty(RDFS.range))
-            p.put(cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type, Collections.singleton(st.getPredicate().getProperty(RDFS.range).getObject().asResource().getURI()));
+            p.put(Vocabulary.s_p_has_answer_value_type, Collections.singleton(st.getPredicate().getProperty(RDFS.range).getObject().asResource().getURI()));
         Model m = extractModel(st);
-        p.put(cz.cvut.sforms.Vocabulary.s_p_has_origin_context, Collections.singleton(m.listStatements(null, RDF.type, OWL.Ontology).next().getSubject().getURI()));
+        p.put(Vocabulary.s_p_has_origin_context, Collections.singleton(m.listStatements(null, RDF.type, OWL.Ontology).next().getSubject().getURI()));
         return p;
     }
 
@@ -539,12 +525,12 @@ public class TransformerImpl implements Transformer {
 
     //does not work
     private boolean isSupportedAnon(Question q) {
-        if (q.getProperties().containsKey(cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type)) {
-            Set<String> types = q.getProperties().get(cz.cvut.sforms.Vocabulary.s_p_has_answer_value_type);
-            return types.contains(cz.cvut.sforms.Vocabulary.s_c_sp_Ask) ||
-                    types.contains(cz.cvut.sforms.Vocabulary.s_c_sp_Construct) ||
-                    types.contains(cz.cvut.sforms.Vocabulary.s_c_sp_Describe) ||
-                    types.contains(cz.cvut.sforms.Vocabulary.s_c_sp_Select);
+        if (q.getProperties().containsKey(Vocabulary.s_p_has_answer_value_type)) {
+            Set<String> types = q.getProperties().get(Vocabulary.s_p_has_answer_value_type);
+            return types.contains(Vocabulary.s_c_sp_Ask) ||
+                    types.contains(Vocabulary.s_c_sp_Construct) ||
+                    types.contains(Vocabulary.s_c_sp_Describe) ||
+                    types.contains(Vocabulary.s_c_sp_Select);
         }
         return false;
     }
@@ -567,5 +553,4 @@ public class TransformerImpl implements Transformer {
             return Optional.of(m);
         return Optional.empty();
     }
-
 }
