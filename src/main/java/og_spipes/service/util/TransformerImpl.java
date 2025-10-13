@@ -31,11 +31,11 @@ import static cz.cvut.spipes.transform.SPipesUtil.isSPipesTerm;
 /**
  * Base concept taken from original project; however the original one contains major bugs
  */
-public class OwnTransformer implements Transformer {
+public class TransformerImpl implements Transformer {
 
-    private final Logger log = LoggerFactory.getLogger(OwnTransformer.class);
+    private final Logger log = LoggerFactory.getLogger(TransformerImpl.class);
 
-    public OwnTransformer() {
+    public TransformerImpl() {
     }
 
     @Override

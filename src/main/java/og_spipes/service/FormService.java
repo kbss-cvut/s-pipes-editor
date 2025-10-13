@@ -5,7 +5,7 @@ import cz.cvut.spipes.transform.Transformer;
 import cz.cvut.spipes.util.JenaUtils;
 import og_spipes.model.Vocabulary;
 import og_spipes.persistence.dao.OntologyDao;
-import og_spipes.service.util.OwnTransformer;
+import og_spipes.service.util.TransformerImpl;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.vocabulary.RDF;
@@ -27,7 +27,7 @@ public class FormService {
 
 //    private final Transformer transformer = new TransformerImpl();
 
-    private final Transformer ownTransformer = new OwnTransformer();
+    private final Transformer ownTransformer = new TransformerImpl();
 
     @Autowired
     public FormService(OntologyHelper helper) {
