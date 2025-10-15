@@ -260,7 +260,7 @@ public class TransformerImpl implements Transformer {
         } else {
             Model m = inputScript;
             m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(moduleType));
-            m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(cz.cvut.sforms.Vocabulary.s_c_Modules));
+            m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(Vocabulary.s_c_Modules));
             findRegularQ(form).forEach(q -> {
                 log.info("QUESTION_NEW: " + q.toString());
                 RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
