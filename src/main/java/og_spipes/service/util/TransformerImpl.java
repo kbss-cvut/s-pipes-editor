@@ -260,7 +260,7 @@ public class TransformerImpl implements Transformer {
         } else {
             Model m = inputScript;
             m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(moduleType));
-            m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(cz.cvut.sforms.Vocabulary.s_c_Modules));
+            m.add(m.getResource(newUri.toString()), RDF.type, m.getResource(Vocabulary.s_c_Modules));
             findRegularQ(form).forEach(q -> {
                 log.info("QUESTION_NEW: " + q.toString());
                 RDFNode answerNode = getAnswerNode(getAnswer(q).orElse(null));
@@ -460,7 +460,7 @@ public class TransformerImpl implements Transformer {
     }
 
     private void initializeQuestionUri(Question q) {
-        q.setUri(URI.create(SFormsVocabularyJena.s_c_question + "-" + UUID.randomUUID().toString()));
+        q.setUri(URI.create(SFormsVocabularyJena.s_c_question + "-" + UUID.randomUUID()));
     }
 
     private Question createQuestion(Resource resource) {
@@ -511,9 +511,8 @@ public class TransformerImpl implements Transformer {
 
         @Override
         public boolean equals(Object o) {
-            if (!(o instanceof OriginPair))
+            if (!(o instanceof OriginPair p))
                 return false;
-            OriginPair p = (OriginPair) o;
             return Objects.equals(q, p.q) && Objects.equals(a, p.a);
         }
 
