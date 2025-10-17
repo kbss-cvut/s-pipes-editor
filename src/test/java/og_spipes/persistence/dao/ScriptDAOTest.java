@@ -26,7 +26,7 @@ public class ScriptDAOTest {
 
     private final ScriptDAO scriptDao = new ScriptDAO(new File("src/test/resources/scripts_test/sample/").getAbsolutePath().split(","));
     Model defaultModel = ModelFactory.createDefaultModel().read(
-            new File("src/test/resources/scripts_test/sample/simple-import/script.ttl").getAbsolutePath()
+            new File("src/test/resources/scripts_test/sample/simple-import/simple-script.sms.ttl").getAbsolutePath()
     );
 
     @Test
@@ -53,35 +53,35 @@ public class ScriptDAOTest {
     public void getModulesTypes(){
         List<ModuleType> moduleTypes = scriptDao.getModuleTypes(defaultModel);
 
-        Assertions.assertEquals(77, moduleTypes.size());
+        Assertions.assertEquals(1, moduleTypes.size());
     }
 
     @Test
     public void getModules() {
         List<Module> modules = scriptDao.getModules(defaultModel);
 
-        Assertions.assertEquals(18, modules.size());
+        Assertions.assertEquals(3, modules.size());
     }
 
     @Test
     public void getScripts() {
         List<File> files = scriptDao.getScripts();
 
-        Assertions.assertEquals(20, files.size());
+        Assertions.assertEquals(16, files.size());
     }
 
     @Test
     public void getFunctionStatements() {
         StmtIterator iterator = scriptDao.getFunctionStatements(defaultModel);
 
-        Assertions.assertEquals(3, iterator.toList().size());
+        Assertions.assertEquals(1, iterator.toList().size());
     }
 
     @Test
     public void moduleFunctions() {
         List<FunctionDTO> functionDTOS = scriptDao.moduleFunctions(defaultModel);
 
-        Assertions.assertEquals(3, functionDTOS.size());
+        Assertions.assertEquals(1, functionDTOS.size());
     }
 
     @Test

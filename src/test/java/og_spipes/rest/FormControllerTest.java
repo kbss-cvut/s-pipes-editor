@@ -56,7 +56,7 @@ public class FormControllerTest {
                         "{" +
                             "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/question-dto\"," +
                             "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-type-uri\": \"http://topbraid.org/sparqlmotionlib#ApplyConstruct\"," +
-                            "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/construct-greeding\"," +
+                            "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/construct-greeting\"," +
                             "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\": \"" + tmpScripts +"\"" +
                         "}"
                 )

@@ -350,7 +350,14 @@ public class TransformerImpl implements Transformer {
 
         subQuestions.add(functionQ);
 
-        for (Statement st : script.listStatements(null, new PropertyImpl("http://spinrdf.org/sp#varName"), (String) null).toList()) {
+        Property parameterProp = function.getModel().createProperty("http://www.w3.org/ns/shacl#parameter");
+        Property pathProp = function.getModel().createProperty("http://www.w3.org/ns/shacl#path");
+
+        StmtIterator parameters = function.listProperties(parameterProp);
+        while (parameters.hasNext()) {
+            Resource constraint = parameters.nextStatement().getResource();
+            Statement st = constraint.getProperty(pathProp);
+
             Question q = new Question();
             initializeQuestionUri(q);
             q.setLabel(st.getObject().toString());

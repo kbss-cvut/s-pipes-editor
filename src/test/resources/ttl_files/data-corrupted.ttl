@@ -14,16 +14,17 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1>
-  rdf:type owl:Ontology ;
+  a owl:Ontology ;
   owl:imports <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> ;
 .
 
 :bind-firstname
-  rdf:type sml:BindWithConstant ;
-  sm:next :construct-greeding ;dz
+  a sml:BindWithConstant ;
+  sm:next :construct-greeting ;dz
   sm:outputVariable "personName" ;
   sml:value [
-      sp:varName "firstName"^^xsd:string ;
-    ] ;
+        a sp:Expression ;
+        sp:text "?firstName" ;
+  ] ;
   rdfs:label "Bind person name" ;
 .

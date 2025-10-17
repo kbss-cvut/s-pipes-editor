@@ -6,33 +6,39 @@
 @prefix sm:    <http://topbraid.org/sparqlmotion#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sp:    <http://spinrdf.org/sp#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
 
-<http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1>
-        a            owl:Ontology ;
+<http://onto.fel.cvut.cz/ontologies/s-pipes/test-script-0.1>
+        a owl:Ontology ;
         owl:imports  <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> .
 
-:bind-firstname
-        a sml:BindWithConstant ;
-        rdfs:label         "Bind person name" ;
-        sm:next            :construct-greeting ;
+:test_module1
+        a sm:Modules , sml:BindWithConstant ;
+        rdfs:label         "Test module 1" ;
+        sm:next            :test_module2 ;
         sm:outputVariable  "personNamee" ;
         sml:value [ a sp:Expression ; sp:text "?firstName" ] .
 
-:construct-greeting
-        a sml:ApplyConstruct ;
-        rdfs:label          "Construct greeting" ;
-        sm:next             :express-greeting_Return ;
+:test_module2
+        a sm:Modules , sml:ApplyConstruct ;
+        rdfs:label          "Test module 2" ;
+        sm:next             :test_module3-greeting_Return ;
         sml:constructQuery  [ a        sp:Construct ;
                               sp:text  "PREFIX : <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/> \nCONSTRUCT {\n    ?person :is-greeted-by-message ?greetingMessage . \n}\nWHERE {\n    BIND(iri(concat(str(:), ?personName)) as ?person)\n    BIND(concat(\"Hello \", ?personName, \".\") as ?greetingMessage)\n}"
                             ] ;
         sml:replace         true .
 
-:express-greeting_Return
-        a sml:ReturnRDF ;
-        rdfs:label         "Return greeting statement" ;
+:test_module3
+        a sm:Modules , sml:ReturnRDF ;
+        rdfs:label         "Test module 3" ;
         sml:serialization  sml:JSONLD .
 
-:execute-greeting
+:test_module4
         a sm:Function ;
         rdfs:subClassOf  sm:Functions ;
-        sm:returnModule  :express-greeting_Return .
+        sm:returnModule  :test_module3 .
+
+:test_module
+        a sm:Module ;
+        rdfs:label "Test Module" ;
+.

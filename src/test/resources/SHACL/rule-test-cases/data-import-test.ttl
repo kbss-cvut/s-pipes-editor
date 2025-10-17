@@ -26,42 +26,43 @@
 #  owl:imports <http://imported.ttl> .
 
 :bind-firstname
-  rdf:type sml:BindWithConstant ;
-  sm:next :construct-greeding ;
+  a sml:BindWithConstant ;
+  sm:next :construct-greeting ;
   sm:outputVariable "personName" ;
   sml:value [
-      sp:varName "firstName"^^xsd:string ;
+      a sp:Expression ;
+      sp:text "?firstName" ;
     ] ;
   rdfs:label "Bind person name" ;
 .
 
-:construct-greeding
-  rdf:type sml:ApplyConstruct ;
-  sm:next :express-greeding_Return ;
+:construct-greeting
+  a sml:ApplyConstruct ;
+  sm:next :express-greeting_Return ;
   sml:constructQuery [
-      rdf:type sp:Construct ;
-      sp:text """PREFIX : <http://vfn.cz/ontologies/s-pipes/hello-world-example-0.1/>
+      a sp:Construct ;
+      sp:text """PREFIX : <http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.4/>
 CONSTRUCT {
     ?person :is-greeted-by-message ?greetingMessage .
 }
 WHERE {
-    BIND(concat(str(:), ?personName) as ?person)
-    BIND(concat("Hello ", ?personName, ".") as ?greetingMessage)
-}"""^^xsd:string ;
+    BIND(concat(str(:), ?personName) AS ?person)
+    BIND(concat("Hello ", ?personName, ".") AS ?greetingMessage)
+}""" ;
     ] ;
-  sml:replace "true"^^xsd:boolean ;
-  rdfs:label "Construct greeting"^^xsd:string ;
+  sml:replace true ;
+  rdfs:label "Construct greeting" ;
 .
 
-:express-greeding_Return
-  rdf:type sml:ReturnRDF ;
+:express-greeting_Return
+  a sml:ReturnRDF ;
   sml:serialization sml:JSONLD ;
-  rdfs:label "Return greeding statement" ;
+  rdfs:label "Return greeting statement" ;
 .
 
-:execute-greeding
-  rdf:type sm:Function ;
-  sm:returnModule :express-greeding_Return ;
+:execute-greeting
+  a sm:Function ;
+  sm:returnModule :express-greeting_Return ;
   rdfs:subClassOf sm:Functions ;
 .
 
@@ -71,6 +72,6 @@ ex:File
 
 ex:Alice
   a ex:Person ;
-  rdfs:label "Return greeding statement" .
+  rdfs:label "Return greeting statement" .
 
 #RULES FOR NAMING COULD BE ANOTHER NODES

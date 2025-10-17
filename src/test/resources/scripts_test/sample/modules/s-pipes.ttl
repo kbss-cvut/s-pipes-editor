@@ -6,6 +6,5 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes>
-  rdf:type owl:Ontology ;
-  owl:imports <http://spinrdf.org/spl> ;
+  a owl:Ontology ;
 .

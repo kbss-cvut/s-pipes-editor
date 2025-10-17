@@ -216,7 +216,7 @@ public class ScriptControllerTest {
                         "{\n" +
                                 "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/dependency-dto\",\n" +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \"" + tmpScripts + "\",\n" +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeding_Return\",\n" +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeting_Return\",\n" +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-target-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname\"\n" +
                         "}"
                 )
@@ -269,7 +269,7 @@ public class ScriptControllerTest {
                                 "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/dependency-dto\",\n" +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \"" + tmpScripts + "\",\n" +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname\",\n" +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-target-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/construct-greeding\"\n" +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-target-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/construct-greeting\"\n" +
                         "}"
                 )
                 .contentType(MediaType.APPLICATION_JSON)
@@ -328,7 +328,7 @@ public class ScriptControllerTest {
 
         Assertions.assertEquals(1, res.size());
         SHACLValidationResultDTO resultDTO = res.get(0);
-        Assertions.assertEquals("http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.6/construct-greeding", resultDTO.getModuleURI());
+        Assertions.assertEquals("http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.6/construct-greeting", resultDTO.getModuleURI());
         Assertions.assertEquals("Violation", resultDTO.getSeverityMessage());
         Assertions.assertEquals("Property needs to have at least 1 value", resultDTO.getErrorMessage());
 //        Assertions.assertEquals("file:/home/jordan/IdeaProjects/s-pipes-newgen/src/main/resources/rules/SHACL/module-requires-rdfs_label.ttl", resultDTO.getRuleURI());

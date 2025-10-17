@@ -20,23 +20,25 @@
 sk-rel:construct-broader
         sm:next  :skosify_Return .
 
-:skosify  a              sm:Function ;
+:skosify
+        a sm:Function ;
         rdfs:subClassOf  sm:Functions ;
         sm:returnModule  :skosify_Return .
 
 sk-meta:construct-labels
         sm:next  :skosify_Return .
 
-:skosify_Return  a         sml:ReturnRDF ;
+:skosify_Return
+        a sml:ReturnRDF ;
         rdfs:label         "Return skosified" ;
         sml:serialization  sml:JSONLD .
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1>
-        a            owl:Ontology ;
+        a owl:Ontology ;
         owl:imports  :relations , :metadata , <http://onto.fel.cvut.cz/ontologies/s-pipes-lib> .
 
 :construct-example-data
-        a                   sml:ApplyConstruct ;
+        a sml:ApplyConstruct ;
         rdfs:label          "Construct example data" ;
         sm:next             sk-id:identify-concepts ;
         sml:constructQuery  [ a        sp:Construct ;

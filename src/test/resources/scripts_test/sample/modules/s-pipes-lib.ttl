@@ -6,7 +6,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <http://onto.fel.cvut.cz/ontologies/s-pipes-lib>
-  rdf:type owl:Ontology ;
+  a owl:Ontology ;
   owl:imports <http://onto.fel.cvut.cz/ontologies/s-pipes> ;
   owl:imports <http://onto.fel.cvut.cz/ontologies/lib/module> ;
   owl:imports <http://onto.fel.cvut.cz/ontologies/lib/module-external> ;
