@@ -14,10 +14,7 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -217,12 +214,12 @@ public class ScriptServiceTest {
         Assertions.assertEquals(0, statements.size());
     }
 
-//    @AfterEach
-//    public void after() {
-//        for(String scriptPath : scriptPaths){
-//            FileSystemUtils.
-//            Recursively(new File(scriptPath));
-//        }
-//    }
+    @AfterEach
+    public void after() {
+        for(String scriptPath : scriptPaths){
+            FileSystemUtils.
+            deleteRecursively(new File(scriptPath));
+        }
+    }
 
 }
