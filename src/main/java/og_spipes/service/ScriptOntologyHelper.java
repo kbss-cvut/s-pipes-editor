@@ -41,15 +41,14 @@ public class ScriptOntologyHelper {
 
             String baseURI = OntologyDao.getOntologyUri(ff);
             if(!baseURI.isBlank()){
-                String importName = baseURI + "/";
-                List<String> okModules = modules.stream().map(URI::toString)
-                        .filter(x -> !x.replace(importName, "").contains("/"))
-                        .collect(Collectors.toList());
+                List<URI> okModules = modules.stream()
+                        .filter(x -> x.toString().matches(baseURI + "[/#]" + "[^/#]+"))
+                        .toList();
 
                 Set<String> subjects = OntologyDao.getSubjects(ff);
-                for(String module : okModules){
-                    if(subjects.stream().anyMatch(x -> x.equals(module))){
-                        res.put(URI.create(module), ff);
+                for(URI module : okModules){
+                    if(subjects.stream().anyMatch(m -> m.equals(module.toString()))){
+                        res.put(module, ff);
                     }
                 }
             }
