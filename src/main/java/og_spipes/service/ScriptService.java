@@ -112,13 +112,34 @@ public class ScriptService {
         }
     }
 
-    public void deleteModule(String scriptPath, String module) throws IOException {
-        Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
-        List<Statement> fromStatements = OntologyHelper.getAllStatementsRecursively(ontModel, module);
-        ontModel.remove(fromStatements);
-        ontModel.removeAll(null, null, ontModel.getResource(module));
-        try(OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
+    public void deleteModule(String moduleURI) throws IOException {
+        for (File file : scriptDao.getScripts()) {
+            Model model = ModelFactory.createDefaultModel().read(file.getAbsolutePath(), langTurtle);
+            boolean changed = false;
+
+            // Delete all statements where the subject is the module or is connected to the module
+            List<Statement> toRemove = OntologyHelper.getAllStatementsRecursively(model, moduleURI);
+            if (!toRemove.isEmpty()) {
+                model.remove(toRemove);
+                changed = true;
+            }
+
+            // Delete all statements where the object is the module
+            Resource moduleRes = model.getResource(moduleURI);
+            StmtIterator stmtIter = model.listStatements(null, null, moduleRes);
+            List<Statement> objectStatements = stmtIter.toList();
+            if (!objectStatements.isEmpty()) {
+                model.remove(objectStatements);
+                changed = true;
+            }
+
+            if (changed) {
+                try (OutputStream os = new FileOutputStream(file)) {
+                    JenaUtils.writeScript(os, model);
+                }
+            }
+
+            model.close();
         }
     }
 
@@ -127,7 +148,7 @@ public class ScriptService {
         List<Statement> fromStatements = OntologyHelper.getAllStatementsRecursively(ontModel, module);
         ontModel.remove(fromStatements);
         try(OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
+            JenaUtils.writeScript(os, ontModel);;
         }
     }
 
@@ -261,7 +282,7 @@ public class ScriptService {
         ontModel.removeAll(ontModel.getResource(ontology), OWL.imports, null);
         ontModel.removeAll(null, OWL.imports, ontModel.getResource(ontology));
         try(OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
+            JenaUtils.writeScript(os, ontModel);
         }
     }
 
