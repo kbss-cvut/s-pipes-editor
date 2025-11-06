@@ -80,7 +80,7 @@ class ScriptOntologyHelperTest {
     }
 
     @Test
-    public void testModuleFile() {
+    public void testGetModule2FileMappingBasedOnPrefix() {
         ScriptOntologyHelper scriptOntologyHelper = new ScriptOntologyHelper(scriptPaths);
         HashSet<URI> uris = Sets.newHashSet(
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"),
@@ -91,7 +91,7 @@ class ScriptOntologyHelperTest {
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/bind-prefered-label-property")
         );
 
-        Map<URI, File> res = scriptOntologyHelper.moduleFile(uris);
+        Map<URI, File> res = scriptOntologyHelper.getModule2FileMappingBasedOnPrefix(uris);
 
         Map<URI, File> expectedRes = new HashMap<>();
         expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"), new File("/tmp/og_spipes/skosify/metadata.ttl"));
