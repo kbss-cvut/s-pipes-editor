@@ -141,7 +141,7 @@ public class OntologyDao {
 
         @Override
         public void quad(Quad quad) {
-            if(quad.getSubject().isURI() && quad.getSubject()!=null)
+            if(quad.getSubject()!=null && quad.getSubject().isURI())
                 subjects.add(quad.getSubject().getURI());
 
             for(StatementSelector s : selectors){
@@ -152,7 +152,7 @@ public class OntologyDao {
 
         @Override
         public void triple(Triple triple) {
-            if(triple.getSubject().isURI() && triple.getSubject()!=null)
+            if(triple.getSubject()!=null && triple.getSubject().isURI())
                 subjects.add(triple.getSubject().getURI());
 
             for(StatementSelector s : selectors){
