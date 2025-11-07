@@ -33,8 +33,7 @@ import java.util.stream.Collectors;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class RulesTest {
 
-    @Value(Constants.SCRIPTPATH_SPEL)
-    private String[] scriptPaths;
+    private final String[] scriptPaths = new String[]{"/tmp/og_spipes"};
 
     @TempDir
     static Path tempDir;

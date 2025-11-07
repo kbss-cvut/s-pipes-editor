@@ -27,8 +27,7 @@ import java.util.Set;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ScriptOntologyHelperTest {
 
-    @Value(Constants.SCRIPTPATH_SPEL)
-    private String[] scriptPaths;
+    private final String[] scriptPaths = new String[]{"/tmp/og_spipes"};
 
     @TempDir
     static Path tempDir;

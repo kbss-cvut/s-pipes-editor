@@ -45,8 +45,7 @@ public class ScriptServiceTest {
     @Autowired
     private ScriptService scriptService;
 
-    @Value(Constants.SCRIPTPATH_SPEL)
-    private String[] scriptPaths;
+    private final String scriptPath = "/tmp/og_spipes";
 
     @TempDir
     static Path tempDir;
@@ -63,14 +62,12 @@ public class ScriptServiceTest {
 
     @BeforeEach
     public void init() throws Exception {
-        for(String scriptPath : scriptPaths){
-            File scriptsHomeTmp = new File(scriptPath);
-            if(scriptsHomeTmp.exists()){
-                FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-                Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
-            }
-            FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
+        File scriptsHomeTmp = new File(scriptPath);
+        if(scriptsHomeTmp.exists()){
+            FileSystemUtils.deleteRecursively(scriptsHomeTmp);
+            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
         }
+        FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
     }
 
     @Test
@@ -229,10 +226,8 @@ public class ScriptServiceTest {
 
     @AfterEach
     public void after() {
-        for(String scriptPath : scriptPaths){
-            FileSystemUtils.
-            deleteRecursively(new File(scriptPath));
-        }
+        FileSystemUtils.
+        deleteRecursively(new File(scriptPath));
     }
 
 }
