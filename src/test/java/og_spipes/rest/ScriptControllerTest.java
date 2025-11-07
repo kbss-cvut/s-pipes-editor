@@ -14,17 +14,22 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ScriptControllerTest {
 
     @Value(Constants.SCRIPTPATH_SPEL)
@@ -46,6 +52,14 @@ public class ScriptControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @TempDir
+    static Path tempDir;
+
+    @DynamicPropertySource
+    static void registerProps(DynamicPropertyRegistry registry) {
+        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
+    }
 
     private final ObjectMapper mapper = new ObjectMapper();
 

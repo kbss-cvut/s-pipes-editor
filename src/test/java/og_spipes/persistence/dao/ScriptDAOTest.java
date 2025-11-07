@@ -4,30 +4,56 @@ import cz.cvut.kbss.jopa.model.JOPAPersistenceProperties;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
+import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.StmtIterator;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
-public class ScriptDAOTest {
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+class ScriptDAOTest {
 
-    private final ScriptDAO scriptDao = new ScriptDAO(new File("src/test/resources/scripts_test/sample/").getAbsolutePath().split(","));
-    Model defaultModel = ModelFactory.createDefaultModel().read(
-            new File("src/test/resources/scripts_test/sample/simple-import/simple-script.sms.ttl").getAbsolutePath()
-    );
+    private static ScriptDAO scriptDao;
+    private static Model defaultModel;
+
+    @TempDir
+    static Path tempDir;
+
+    @DynamicPropertySource
+    static void registerProps(DynamicPropertyRegistry registry) {
+        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories/").toUri().toString());
+    }
+
+    @BeforeAll
+    static void beforeAll() throws IOException {
+        Path scriptsDir = tempDir.resolve("scripts");
+        File scriptsHome = scriptsDir.toFile();
+        scriptsHome.mkdirs();
+
+        FileUtils.copyDirectory(
+                new File("src/test/resources/scripts_test/sample/"),
+                scriptsHome
+        );
+
+        scriptDao = new ScriptDAO(new String[]{scriptsHome.getAbsolutePath()});
+
+        defaultModel = ModelFactory.createDefaultModel().read(
+                new File("src/test/resources/scripts_test/sample/simple-import/simple-script.sms.ttl").getAbsolutePath()
+        );
+    }
 
     @Test
     @DisplayName("Correct init of entity manager factory")

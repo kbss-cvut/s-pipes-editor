@@ -67,21 +67,5 @@ public class BasePersistenceFactory {
         if (emf.isOpen()) {
             emf.close();
         }
-
-        if (isLocalPath(repositoryUrl)) {
-            File repoDir = new File(repositoryUrl);
-            if (repoDir.exists()) {
-                FileSystemUtils.deleteRecursively(repoDir);
-            }
-        }
-    }
-
-    private boolean isLocalPath(String path) {
-        try {
-            URI uri = new URI(path);
-            return uri.getScheme() == null || uri.getScheme().equals("file");
-        } catch (URISyntaxException e) {
-            return true;
-        }
     }
 }

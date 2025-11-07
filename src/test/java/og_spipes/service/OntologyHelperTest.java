@@ -7,17 +7,23 @@ import org.apache.jena.sys.JenaSystem;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class OntologyHelperTest {
 
     @Mock
@@ -25,6 +31,14 @@ public class OntologyHelperTest {
 
     @InjectMocks
     private OntologyHelper ontologyHelper;
+
+    @TempDir
+    static Path tempDir;
+
+    @DynamicPropertySource
+    static void registerProps(DynamicPropertyRegistry registry) {
+        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
+    }
 
     @BeforeAll
     public static void initJena() {

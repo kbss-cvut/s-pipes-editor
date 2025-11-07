@@ -11,11 +11,15 @@ import org.eclipse.rdf4j.repository.sail.SailRepository;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.sail.nativerdf.NativeStore;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.FileSystemUtils;
@@ -23,17 +27,17 @@ import org.springframework.util.FileSystemUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(properties = {
-        "rdf4j.repositoryUrl=/tmp/og_spipes_sesame/repositories/view-controller/"
-})
+@SpringBootTest
 @AutoConfigureMockMvc
-public class ViewControllerTest {
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+class ViewControllerTest {
 
     @Value(Constants.SCRIPTPATH_SPEL)
     private String scriptPaths;
@@ -43,9 +47,17 @@ public class ViewControllerTest {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    @TempDir
+    static Path tempDir;
+
+    @DynamicPropertySource
+    static void registerProps(DynamicPropertyRegistry registry) {
+        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
+    }
+
     @BeforeAll
     public static void beforeAll() throws IOException {
-        File dataDir = new File("/tmp/og_spipes_sesame/repositories/view-controller/s-pipes-hello-world");
+        File dataDir = tempDir.resolve("repositories/view-controller/s-pipes-hello-world").toFile();
         Repository sesameRepo = new SailRepository(new NativeStore(dataDir));
         sesameRepo.init();
         RepositoryConnection conn = sesameRepo.getConnection();
@@ -121,10 +133,4 @@ public class ViewControllerTest {
         FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
-    @AfterAll
-    public static void afterAll(){
-        FileSystemUtils.deleteRecursively(new File("/tmp/og_spipes_sesame/repositories/view-controller/"));
-    }
-
 }
-

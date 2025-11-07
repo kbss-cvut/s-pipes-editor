@@ -8,8 +8,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.util.FileSystemUtils;
 import org.topbraid.shacl.vocabulary.SH;
 
@@ -20,15 +24,25 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class RulesTest {
 
     @Value(Constants.SCRIPTPATH_SPEL)
     private String[] scriptPaths;
+
+    @TempDir
+    static Path tempDir;
+
+    @DynamicPropertySource
+    static void registerProps(DynamicPropertyRegistry registry) {
+        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
+    }
 
     @BeforeEach
     public void init() throws Exception {
@@ -37,7 +51,7 @@ public class RulesTest {
             if(scriptsHomeTmp.exists()){
                 FileSystemUtils.deleteRecursively(scriptsHomeTmp);
             }
-            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
+            Files.createDirectories(Paths.get(scriptsHomeTmp.toURI()));
         }
     }
 
