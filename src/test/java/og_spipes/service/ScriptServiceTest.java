@@ -152,7 +152,7 @@ public class ScriptServiceTest {
 
         scriptService.deleteModuleOnly(
                 "/tmp/og_spipes/skosify/metadata.ttl",
-                moduleUri
+                moduleUri, false
         );
 
         Model resModule = ModelFactory.createDefaultModel().read("/tmp/og_spipes/skosify/metadata.ttl", langTurtle);

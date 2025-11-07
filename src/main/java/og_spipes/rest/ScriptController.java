@@ -137,9 +137,8 @@ public class ScriptController {
     @PostMapping(path = "/modules/delete")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteModule(@RequestBody ModuleDTO dto) throws IOException {
-        String scriptPath = dto.getAbsolutePath();
         String moduleUri = dto.getModuleUri();
-        scriptService.deleteModule(scriptPath, moduleUri);
+        scriptService.deleteModule(moduleUri);
     }
 
     @PostMapping(path = "/modules/dependencies/delete")
