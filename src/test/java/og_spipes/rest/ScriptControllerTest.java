@@ -12,19 +12,25 @@ import og_spipes.model.spipes.ScriptOntologyDTO;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ScriptControllerTest {
 
     @Value(Constants.SCRIPTPATH_SPEL)
@@ -46,6 +53,14 @@ public class ScriptControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @TempDir
+    static Path tempDir;
+
+    @DynamicPropertySource
+    static void registerProps(DynamicPropertyRegistry registry) {
+        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
+    }
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -216,8 +231,8 @@ public class ScriptControllerTest {
                         "{\n" +
                                 "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/dependency-dto\",\n" +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \"" + tmpScripts + "\",\n" +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeting_Return\",\n" +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-target-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname\"\n" +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname\",\n" +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-target-module-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeting_Return\"\n" +
                         "}"
                 )
                 .contentType(MediaType.APPLICATION_JSON))
@@ -226,10 +241,14 @@ public class ScriptControllerTest {
 
         Model modelProject = ModelFactory.createDefaultModel().read("src/test/resources/scripts_test/sample/hello-world/hello-world.sms.ttl");
         Model afterModel = ModelFactory.createDefaultModel().read(tmpScripts);
-        long beforeExecutionCount = modelProject.listSubjectsWithProperty(new PropertyImpl(Vocabulary.s_p_next)).toList().stream()
-                .map(x -> x.getProperty(new PropertyImpl(Vocabulary.s_p_next))).count();
-        long afterExecutionCount = afterModel.listSubjectsWithProperty(new PropertyImpl(Vocabulary.s_p_next)).toList().stream()
-                .map(x -> x.getProperty(new PropertyImpl(Vocabulary.s_p_next))).count();
+        long beforeExecutionCount = modelProject
+                .listStatements(null, new PropertyImpl(Vocabulary.s_p_next), (RDFNode) null)
+                .toList()
+                .size();
+        long afterExecutionCount = afterModel
+                .listStatements(null, new PropertyImpl(Vocabulary.s_p_next), (RDFNode) null)
+                .toList()
+                .size();
         Assertions.assertEquals(2, beforeExecutionCount, "Before execution count is 2 of next property");
         Assertions.assertEquals(3, afterExecutionCount, "After execution count is 3 of next property");
     }

@@ -1,7 +1,6 @@
 package og_spipes.service;
 
 import og_spipes.config.Constants;
-import og_spipes.model.dto.ScriptFunctionArgument;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.service.exception.FileExistsException;
@@ -14,19 +13,21 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.sys.JenaSystem;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +36,7 @@ import java.util.List;
 import static org.apache.jena.util.FileUtils.langTurtle;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ScriptServiceTest {
 
     @Autowired
@@ -43,8 +45,15 @@ public class ScriptServiceTest {
     @Autowired
     private ScriptService scriptService;
 
-    @Value(Constants.SCRIPTPATH_SPEL)
-    private String[] scriptPaths;
+    private final String scriptPath = "/tmp/og_spipes";
+
+    @TempDir
+    static Path tempDir;
+
+    @DynamicPropertySource
+    static void registerProps(DynamicPropertyRegistry registry) {
+        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
+    }
 
     @BeforeAll
     public static void initJena() {
@@ -53,14 +62,12 @@ public class ScriptServiceTest {
 
     @BeforeEach
     public void init() throws Exception {
-        for(String scriptPath : scriptPaths){
-            File scriptsHomeTmp = new File(scriptPath);
-            if(scriptsHomeTmp.exists()){
-                FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-                Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
-            }
-            FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
+        File scriptsHomeTmp = new File(scriptPath);
+        if(scriptsHomeTmp.exists()){
+            FileSystemUtils.deleteRecursively(scriptsHomeTmp);
+            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
         }
+        FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
     }
 
     @Test
@@ -217,12 +224,10 @@ public class ScriptServiceTest {
         Assertions.assertEquals(0, statements.size());
     }
 
-//    @AfterEach
-//    public void after() {
-//        for(String scriptPath : scriptPaths){
-//            FileSystemUtils.
-//            Recursively(new File(scriptPath));
-//        }
-//    }
+    @AfterEach
+    public void after() {
+        FileSystemUtils.
+        deleteRecursively(new File(scriptPath));
+    }
 
 }
