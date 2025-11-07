@@ -22,9 +22,18 @@ public class ScriptOntologyHelper {
     }
 
     /**
-     * basic implementation without optimalization
+     * Maps SPipes module URIs to their corresponding ontology files using prefix-based matching and checking
+     * that the module URI is found as a subject within that file.
+     * <p>
+     * A module is mapped to a file if its URI follows the pattern {@code <ontologyURI>/<moduleName>},
+     * where {@code <ontologyURI>} is declared as {@code a owl:Ontology} in the file,
+     * and the module URI is found as a subject within that file.
+     * </p>
+     *
+     * @param modules the set of module URIs to resolve
+     * @return a map where keys are module URIs and values are the files containing those modules
      */
-    public Map<URI, File> moduleFile(Set<URI> modules){
+    public Map<URI, File> getModule2FileMappingBasedOnPrefix(Set<URI> modules){
         Map<URI, File> res = new HashMap<>();
 
         List<File> files = ScriptDAO.getScripts(scriptPath);
@@ -32,15 +41,14 @@ public class ScriptOntologyHelper {
 
             String baseURI = OntologyDao.getOntologyUri(ff);
             if(!baseURI.isBlank()){
-                String importName = baseURI + "/";
-                List<String> okModules = modules.stream().map(URI::toString)
-                        .filter(x -> !x.replace(importName, "").contains("/"))
-                        .collect(Collectors.toList());
+                List<URI> okModules = modules.stream()
+                        .filter(x -> x.toString().matches(baseURI + "[/#]" + "[^/#]+"))
+                        .toList();
 
                 Set<String> subjects = OntologyDao.getSubjects(ff);
-                for(String module : okModules){
-                    if(subjects.stream().anyMatch(x -> x.equals(module))){
-                        res.put(URI.create(module), ff);
+                for(URI module : okModules){
+                    if(subjects.stream().anyMatch(m -> m.equals(module.toString()))){
+                        res.put(module, ff);
                     }
                 }
             }

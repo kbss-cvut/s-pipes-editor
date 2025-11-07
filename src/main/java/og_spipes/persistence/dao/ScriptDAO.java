@@ -90,7 +90,7 @@ public class ScriptDAO {
 
         ScriptOntologyHelper groupsHelper = new ScriptOntologyHelper(scriptPaths);
         Set<URI> collect = modules.stream().map(AbstractEntitySP::getUri).collect(Collectors.toSet());
-        Map<URI, File> uriFileMap = groupsHelper.moduleFile(collect);
+        Map<URI, File> uriFileMap = groupsHelper.getModule2FileMappingBasedOnPrefix(collect);
 
         LOG.info("Modules count: " + modules.size());
         for(Module module : modules){
