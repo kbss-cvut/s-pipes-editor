@@ -1,40 +1,25 @@
 package og_spipes.service;
 
+import og_spipes.testutil.AbstractSpringTest;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Path;
 
-@SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-class RepositoryContextJsonLoaderTest {
+class RepositoryContextJsonLoaderTest extends AbstractSpringTest {
 
     @Autowired
     private RepositoryContextJsonLoader repositoryContextJsonLoader;
 
     @Autowired
     private Repository sesameRepo;
-
-    @TempDir
-    static Path tempDir;
-
-    @DynamicPropertySource
-    static void registerProps(DynamicPropertyRegistry registry) {
-        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
-    }
 
     @Test
     public void test() throws JSONException, IOException {

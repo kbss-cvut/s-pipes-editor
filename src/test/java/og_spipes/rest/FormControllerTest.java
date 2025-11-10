@@ -1,58 +1,33 @@
 package og_spipes.rest;
 
 import og_spipes.config.Constants;
+import og_spipes.testutil.AbstractControllerTest;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.io.TempDir;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.apache.commons.io.FileUtils.readFileToString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@TestPropertySource(locations="classpath:application.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class FormControllerTest {
+public class FormControllerTest extends AbstractControllerTest {
 
     @Value(Constants.SCRIPTPATH_SPEL)
-    private String scriptPaths;
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @TempDir
-    static Path tempDir;
-
-    @DynamicPropertySource
-    static void registerProps(DynamicPropertyRegistry registry) {
-        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
-    }
+    private String scriptPath;
 
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(scriptPaths);
+        File scriptsHomeTmp = new File(scriptPath);
         if(scriptsHomeTmp.exists()){
             FileSystemUtils.deleteRecursively(scriptsHomeTmp);
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
@@ -63,7 +38,7 @@ public class FormControllerTest {
     @Test
     @DisplayName("Get parsed s-form")
     public void testGetScriptModuleTypes() throws Exception {
-        String tmpScripts = scriptPaths + "/hello-world/hello-world.sms.ttl";
+        String tmpScripts = scriptPath + "/hello-world/hello-world.sms.ttl";
 
         this.mockMvc.perform(post("/scripts/forms")
                 .content(
@@ -84,7 +59,7 @@ public class FormControllerTest {
     @Test
     @DisplayName("Update hello-world.sms.ttl :bind-firstname label to 'Bind person name karel'.")
     public void testEditForm() throws Exception {
-        String tmpScripts = scriptPaths + "/hello-world/hello-world.sms.ttl";
+        String tmpScripts = scriptPath + "/hello-world/hello-world.sms.ttl";
         String jsonSForms = readFileToString(new File("src/test/resources/sforms/sforms_update.json"), "UTF-8");
         jsonSForms = jsonSForms.replace("SCRIPT_PATH", tmpScripts);
 
@@ -103,7 +78,7 @@ public class FormControllerTest {
     @Test
     @DisplayName("Log path with with dummy content.")
     public void testLogPath() throws Exception {
-        String tmpScripts = scriptPaths + "/hello-world/hello-world.sms.ttl";
+        String tmpScripts = scriptPath + "/hello-world/hello-world.sms.ttl";
 
         this.mockMvc.perform(post("/scripts/load-log")
                 .content(
@@ -118,11 +93,6 @@ public class FormControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"));
 
-    }
-
-    @AfterEach
-    public void after() {
-        FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
 }
