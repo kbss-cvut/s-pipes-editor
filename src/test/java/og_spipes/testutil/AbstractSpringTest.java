@@ -18,6 +18,9 @@ public abstract class AbstractSpringTest {
     @DynamicPropertySource
     static void registerProps(DynamicPropertyRegistry registry) {
         registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories/").toUri().toString());
+        registry.add("scriptPaths", () ->
+                tempDir.resolve("scripts").toAbsolutePath().toString().replace("\\", "/")
+        );
     }
 
 }

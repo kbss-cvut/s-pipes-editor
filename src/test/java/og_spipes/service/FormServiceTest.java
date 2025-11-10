@@ -4,17 +4,13 @@ import cz.cvut.sforms.model.Question;
 import og_spipes.config.Constants;
 import og_spipes.testutil.AbstractSpringTest;
 import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 
 //TODO more robust tests
@@ -29,10 +25,6 @@ public class FormServiceTest extends AbstractSpringTest {
     @BeforeEach
     public void init() throws Exception {
         File scriptsHomeTmp = new File(scriptPaths);
-        if(scriptsHomeTmp.exists()){
-            FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
-        }
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/hello-world"), scriptsHomeTmp);
     }
 
@@ -58,11 +50,6 @@ public class FormServiceTest extends AbstractSpringTest {
         );
 
         Assertions.assertEquals(1, question.getSubQuestions().size());
-    }
-
-    @AfterEach
-    public void after() {
-        FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
 }

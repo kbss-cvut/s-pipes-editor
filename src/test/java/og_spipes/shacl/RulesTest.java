@@ -1,14 +1,14 @@
 package og_spipes.shacl;
 
+import og_spipes.config.Constants;
 import og_spipes.model.dto.SHACLValidationResultDTO;
 import og_spipes.service.SHACLExecutorService;
 import og_spipes.testutil.AbstractSpringTest;
 import org.apache.jena.rdf.model.Resource;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.FileSystemUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.topbraid.shacl.vocabulary.SH;
 
 import java.io.BufferedReader;
@@ -24,17 +24,13 @@ import java.util.stream.Collectors;
 
 public class RulesTest extends AbstractSpringTest {
 
-    private final String[] scriptPaths = new String[]{"/tmp/og_spipes"};
+    @Value(Constants.SCRIPTPATH_SPEL)
+    private String[] scriptPaths;
 
     @BeforeEach
     public void init() throws Exception {
-        for(String scriptPath : scriptPaths){
-            File scriptsHomeTmp = new File(scriptPath);
-            if(scriptsHomeTmp.exists()){
-                FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-            }
-            Files.createDirectories(Paths.get(scriptsHomeTmp.toURI()));
-        }
+        File scriptsHomeTmp = new File(scriptPaths[0]);
+        Files.createDirectories(Paths.get(scriptsHomeTmp.toURI()));
     }
 
     @Test
@@ -85,13 +81,6 @@ public class RulesTest extends AbstractSpringTest {
 
         Outcome(Resource url) {
             this.url = url;
-        }
-    }
-
-    @AfterEach
-    public void after() {
-        for(String scriptPath : scriptPaths){
-            FileSystemUtils.deleteRecursively(new File(scriptPath));
         }
     }
 
