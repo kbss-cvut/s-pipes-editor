@@ -19,9 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.FileSystemUtils;
@@ -39,22 +38,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-
 @WebMvcTest(controllers = FunctionController.class)
-@TestPropertySource(locations="classpath:application.properties")
 public class FunctionControllerTest {
 
     @Value(Constants.SCRIPTPATH_SPEL)
     private String scriptPaths;
 
-    @MockBean
+    @MockitoBean
     private FunctionService functionService;
 
-    @MockBean
+    @MockitoBean
     private SPipesExecutionService executionService;
 
-    @MockBean
+    @MockitoBean
     private FormService formService;
 
     @Autowired

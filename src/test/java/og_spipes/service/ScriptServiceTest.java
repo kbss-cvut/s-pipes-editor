@@ -1,11 +1,11 @@
 package og_spipes.service;
 
-import og_spipes.config.Constants;
 import og_spipes.model.spipes.Module;
 import og_spipes.model.spipes.ModuleType;
 import og_spipes.service.exception.FileExistsException;
 import og_spipes.service.exception.MissingOntologyException;
 import og_spipes.service.exception.OntologyDuplicationException;
+import og_spipes.testutil.AbstractSpringTest;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -14,20 +14,13 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.sys.JenaSystem;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,9 +28,7 @@ import java.util.List;
 
 import static org.apache.jena.util.FileUtils.langTurtle;
 
-@SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ScriptServiceTest {
+public class ScriptServiceTest extends AbstractSpringTest {
 
     @Autowired
     private OntologyHelper ontologyHelper;
@@ -46,14 +37,6 @@ public class ScriptServiceTest {
     private ScriptService scriptService;
 
     private final String scriptPath = "/tmp/og_spipes";
-
-    @TempDir
-    static Path tempDir;
-
-    @DynamicPropertySource
-    static void registerProps(DynamicPropertyRegistry registry) {
-        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
-    }
 
     @BeforeAll
     public static void initJena() {

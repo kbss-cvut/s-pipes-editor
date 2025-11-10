@@ -3,32 +3,17 @@ package og_spipes.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import og_spipes.model.filetree.SubTree;
+import og_spipes.testutil.AbstractSpringTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class FileTreeServiceTest {
+public class FileTreeServiceTest extends AbstractSpringTest {
 
     private final FileTreeService fileTreeService = new FileTreeService();
-
-    @TempDir
-    static Path tempDir;
-
-    @DynamicPropertySource
-    static void registerProps(DynamicPropertyRegistry registry) {
-        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
-    }
 
     @Test
     public void getTtlFileTree() throws JsonProcessingException {

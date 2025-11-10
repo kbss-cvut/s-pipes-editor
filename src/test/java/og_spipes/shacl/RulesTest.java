@@ -1,19 +1,13 @@
 package og_spipes.shacl;
 
-import og_spipes.config.Constants;
 import og_spipes.model.dto.SHACLValidationResultDTO;
 import og_spipes.service.SHACLExecutorService;
+import og_spipes.testutil.AbstractSpringTest;
 import org.apache.jena.rdf.model.Resource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.util.FileSystemUtils;
 import org.topbraid.shacl.vocabulary.SH;
 
@@ -24,24 +18,13 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class RulesTest {
+public class RulesTest extends AbstractSpringTest {
 
     private final String[] scriptPaths = new String[]{"/tmp/og_spipes"};
-
-    @TempDir
-    static Path tempDir;
-
-    @DynamicPropertySource
-    static void registerProps(DynamicPropertyRegistry registry) {
-        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
-    }
 
     @BeforeEach
     public void init() throws Exception {
