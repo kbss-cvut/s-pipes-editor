@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.cvut.sforms.model.Question;
-import og_spipes.config.Constants;
 import og_spipes.config.RestConfig;
 import og_spipes.model.spipes.FunctionDTO;
 import og_spipes.service.FormService;
@@ -12,22 +11,18 @@ import og_spipes.service.FunctionService;
 import og_spipes.service.SPipesExecutionService;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -41,8 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = FunctionController.class)
 public class FunctionControllerTest {
 
-    @Value(Constants.SCRIPTPATH_SPEL)
-    private String scriptPaths;
+    private String scriptPath;
 
     @MockitoBean
     private FunctionService functionService;
@@ -58,14 +52,16 @@ public class FunctionControllerTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
+    @TempDir
+    File tempDir;
+
     @BeforeEach
-    public void init() throws Exception {
-        File scriptsHomeTmp = new File(scriptPaths);
-        if(scriptsHomeTmp.exists()){
-            FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
-        }
-        FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/hello-world"), scriptsHomeTmp);
+    void init() throws Exception {
+        scriptPath = tempDir.toPath().toAbsolutePath().toString().replace("\\", "/");
+        FileUtils.copyDirectory(
+                new File("src/test/resources/scripts_test/sample/hello-world"),
+                tempDir
+        );
         RestConfig.configureObjectMapper(mapper);
     }
 
@@ -80,7 +76,7 @@ public class FunctionControllerTest {
                 .content(
                         "{" +
                                 "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \"" + scriptPaths + "/hello-world.sms.ttl\"" +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \"" + scriptPath + "/hello-world.sms.ttl\"" +
                                 "}"
                 )
                 .contentType(MediaType.APPLICATION_JSON))
@@ -102,14 +98,14 @@ public class FunctionControllerTest {
     @Test
     public void testGenerateFunctionForm() throws Exception {
         when(formService.generateFunctionForm(
-                scriptPaths + "/hello-world.sms.ttl",
+                scriptPath + "/hello-world.sms.ttl",
                 "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeting_Return")
         ).thenReturn(new Question());
         this.mockMvc.perform(post("/function/form")
                 .content(
                         "{" +
                                 "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/execution-function-dto\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\": \"" + scriptPaths + "/hello-world.sms.ttl\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\": \"" + scriptPath + "/hello-world.sms.ttl\"," +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-function-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/express-greeting_Return\"" +
                         "}"
                 )
@@ -137,7 +133,7 @@ public class FunctionControllerTest {
     @Test
     @DisplayName("SPipes module execution test")
     public void testExecutionModule() throws Exception {
-        String script = scriptPaths + "/hello-world.sms.ttl";
+        String script = scriptPath + "/hello-world.sms.ttl";
         this.mockMvc.perform(post("/function/module/execute")
                 .content(
                         "{" +
@@ -151,11 +147,6 @@ public class FunctionControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
-    }
-
-    @AfterEach
-    public void after() {
-        FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
 }

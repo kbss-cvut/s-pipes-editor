@@ -15,12 +15,9 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -29,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ViewControllerTest extends AbstractControllerTest {
 
     @Value(Constants.SCRIPTPATH_SPEL)
-    private String scriptPaths;
+    private String scriptPath;
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -48,18 +45,14 @@ class ViewControllerTest extends AbstractControllerTest {
 
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(scriptPaths);
-        if (scriptsHomeTmp.exists()) {
-            FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
-        }
+        File scriptsHomeTmp = new File(scriptPath);
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
     }
 
     @Test
     @DisplayName("Get graph view")
     public void testViewOfScript() throws Exception {
-        File scriptPath = new File(scriptPaths + "/hello-world/hello-world2.sms.ttl");
+        File scriptPath = new File(this.scriptPath + "/hello-world/hello-world2.sms.ttl");
         MvcResult mvcResult = this.mockMvc.perform(post("/views/new")
                 .content(
                         "{" +
@@ -83,7 +76,7 @@ class ViewControllerTest extends AbstractControllerTest {
     @Test
     @DisplayName("Get graph view with execution")
     public void testViewOfScriptWithExecution() throws Exception {
-        File scriptPath = new File(scriptPaths + "/hello-world/hello-world2.sms.ttl");
+        File scriptPath = new File(this.scriptPath + "/hello-world/hello-world2.sms.ttl");
         String transformationId = "http://onto.fel.cvut.cz/ontologies/dataset-descriptor/transformation/1619043854875003";
         MvcResult mvcResult = this.mockMvc.perform(post("/views/new")
                 .content(
@@ -104,11 +97,6 @@ class ViewControllerTest extends AbstractControllerTest {
         View view = mapper.readValue(content, View.class);
 
         Assertions.assertNotNull(view);
-    }
-
-    @AfterEach
-    public void after() {
-        FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
 }

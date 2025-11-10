@@ -23,11 +23,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class FormControllerTest extends AbstractControllerTest {
 
     @Value(Constants.SCRIPTPATH_SPEL)
-    private String scriptPaths;
+    private String scriptPath;
 
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(scriptPaths);
+        File scriptsHomeTmp = new File(scriptPath);
         if(scriptsHomeTmp.exists()){
             FileSystemUtils.deleteRecursively(scriptsHomeTmp);
             Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
@@ -38,7 +38,7 @@ public class FormControllerTest extends AbstractControllerTest {
     @Test
     @DisplayName("Get parsed s-form")
     public void testGetScriptModuleTypes() throws Exception {
-        String tmpScripts = scriptPaths + "/hello-world/hello-world.sms.ttl";
+        String tmpScripts = scriptPath + "/hello-world/hello-world.sms.ttl";
 
         this.mockMvc.perform(post("/scripts/forms")
                 .content(
@@ -59,7 +59,7 @@ public class FormControllerTest extends AbstractControllerTest {
     @Test
     @DisplayName("Update hello-world.sms.ttl :bind-firstname label to 'Bind person name karel'.")
     public void testEditForm() throws Exception {
-        String tmpScripts = scriptPaths + "/hello-world/hello-world.sms.ttl";
+        String tmpScripts = scriptPath + "/hello-world/hello-world.sms.ttl";
         String jsonSForms = readFileToString(new File("src/test/resources/sforms/sforms_update.json"), "UTF-8");
         jsonSForms = jsonSForms.replace("SCRIPT_PATH", tmpScripts);
 
@@ -78,7 +78,7 @@ public class FormControllerTest extends AbstractControllerTest {
     @Test
     @DisplayName("Log path with with dummy content.")
     public void testLogPath() throws Exception {
-        String tmpScripts = scriptPaths + "/hello-world/hello-world.sms.ttl";
+        String tmpScripts = scriptPath + "/hello-world/hello-world.sms.ttl";
 
         this.mockMvc.perform(post("/scripts/load-log")
                 .content(
@@ -93,11 +93,6 @@ public class FormControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"));
 
-    }
-
-    @AfterEach
-    public void after() {
-        FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
 }

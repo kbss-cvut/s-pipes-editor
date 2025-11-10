@@ -1,16 +1,16 @@
 package og_spipes.service;
 
 import com.google.common.collect.Sets;
+import og_spipes.config.Constants;
 import og_spipes.testutil.AbstractSpringTest;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.sys.JenaSystem;
 import org.junit.jupiter.api.*;
-import org.springframework.util.FileSystemUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -18,7 +18,8 @@ import java.util.Set;
 
 class ScriptOntologyHelperTest extends AbstractSpringTest {
 
-    private final String[] scriptPaths = new String[]{"/tmp/og_spipes"};
+    @Value(Constants.SCRIPTPATH_SPEL)
+    private String[] scriptPaths;
 
     @BeforeAll
     public static void initJena() {
@@ -29,16 +30,13 @@ class ScriptOntologyHelperTest extends AbstractSpringTest {
     public void init() throws Exception {
         for(String scriptPath : scriptPaths){
             File scriptsHomeTmp = new File(scriptPath);
-            if(scriptsHomeTmp.exists()){
-                FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-                Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
-            }
             FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
         }
     }
 
     @Test
     public void testModulesFileAssignment() {
+        Path scriptsDir = tempDir.resolve("scripts").resolve("skosify");
         ScriptOntologyHelper scriptOntologyHelper = new ScriptOntologyHelper(scriptPaths);
         HashSet<URI> uris = Sets.newHashSet(
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"),
@@ -50,7 +48,7 @@ class ScriptOntologyHelperTest extends AbstractSpringTest {
         );
 
         Map<URI, Set<String>> res = scriptOntologyHelper.resolveFileGroups(
-                new File("/tmp/og_spipes/skosify/skosify.sms.ttl"),
+                scriptsDir.resolve("skosify.sms.ttl").toFile(),
                 uris
         );
 
@@ -64,6 +62,7 @@ class ScriptOntologyHelperTest extends AbstractSpringTest {
 
     @Test
     public void testGetModule2FileMappingBasedOnPrefix() {
+        Path scriptsDir = tempDir.resolve("scripts").resolve("skosify");
         ScriptOntologyHelper scriptOntologyHelper = new ScriptOntologyHelper(scriptPaths);
         HashSet<URI> uris = Sets.newHashSet(
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"),
@@ -77,21 +76,14 @@ class ScriptOntologyHelperTest extends AbstractSpringTest {
         Map<URI, File> res = scriptOntologyHelper.getModule2FileMappingBasedOnPrefix(uris);
 
         Map<URI, File> expectedRes = new HashMap<>();
-        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"), new File("/tmp/og_spipes/skosify/metadata.ttl"));
-        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/construct-example-data"), new File("/tmp/og_spipes/skosify/skosify.sms.ttl"));
-        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/skosify_Return"), new File("/tmp/og_spipes/skosify/skosify.sms.ttl"));
-        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"), new File("/tmp/og_spipes/skosify/relations.ttl"));
-        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels"), new File("/tmp/og_spipes/skosify/metadata.ttl"));
-        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/identification/identify-concepts"), new File("/tmp/og_spipes/skosify/identification.ttl"));
+        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"), scriptsDir.resolve("metadata.ttl").toFile());
+        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/construct-example-data"), scriptsDir.resolve("skosify.sms.ttl").toFile());
+        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/skosify_Return"), scriptsDir.resolve("skosify.sms.ttl").toFile());
+        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations/construct-broader"), scriptsDir.resolve("relations.ttl").toFile());
+        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels"), scriptsDir.resolve("metadata.ttl").toFile());
+        expectedRes.put(URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/identification/identify-concepts"), scriptsDir.resolve("identification.ttl").toFile());
 
         expectedRes.keySet().forEach(uri -> Assertions.assertEquals(expectedRes.get(uri), res.get(uri)));
-    }
-
-    @AfterEach
-    public void after() {
-        for(String scriptPath : scriptPaths){
-            FileSystemUtils.deleteRecursively(new File(scriptPath));
-        }
     }
 
 }
