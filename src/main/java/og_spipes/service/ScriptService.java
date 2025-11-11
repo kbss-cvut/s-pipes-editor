@@ -56,6 +56,8 @@ public class ScriptService {
 
     public void createDependency(String scriptPath, String from, String to) throws IOException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
+        Model backupModel = ModelFactory.createDefaultModel();
+        backupModel.add(ontologyHelper.getBaseModel(ontModel));
         List<Resource> ontModelResources = ontModel.listSubjects().toList().stream().filter(Objects::nonNull).filter(x -> x.getURI() != null).collect(Collectors.toList());
         Optional<Resource> moduleFrom = ontModelResources.stream().filter(x -> x.getURI().equals(from)).findAny();
         Optional<Resource> moduleTo = ontModelResources.stream().filter(x -> x.getURI().equals(to)).findAny();
@@ -74,6 +76,13 @@ public class ScriptService {
 
         try (OutputStream os = new FileOutputStream(scriptPath)) {
             JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
+        }
+        catch (IllegalStateException e) {
+            //restore backup
+            try(OutputStream os = new FileOutputStream(scriptPath)) {
+                JenaUtils.writeScript(os, backupModel);
+            }
+            throw new ModuleDependencyException("Unable to create dependency" + "<" + from + ", " + to +">. Since it will create cycle in the pipeline " + scriptPath, scriptPath, null, to, from);
         }
     }
 
