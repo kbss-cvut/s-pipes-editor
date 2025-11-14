@@ -85,7 +85,7 @@ public class SPipesExecutionService {
             JenaUtils.writeScript(Path.of(configLocation), model);
             LOG.info("Debug config created");
         } catch (IOException e) {
-            LOG.error(e.getMessage());
+            LOG.warn(e.getMessage());
         }
 
     }

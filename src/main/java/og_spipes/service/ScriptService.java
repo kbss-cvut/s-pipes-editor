@@ -181,6 +181,7 @@ public class ScriptService {
                 });
                 if(changed.get()){
                     JenaUtils.writeScript(file.toPath(), resModel);
+                    resModel.close();
                 }
             }
         }
