@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -80,9 +81,8 @@ public class SPipesExecutionService {
         OntModel model2 = documentManager.getOntology(moduleScript, OntModelSpec.OWL_MEM);
         model.add(model2);
 
-        File file = new File(configLocation);
-        try (OutputStream os = new FileOutputStream(file)){
-            JenaUtils.writeScript(os, model);
+        try {
+            JenaUtils.writeScript(Path.of(configLocation), model);
             LOG.info("Debug config created");
         } catch (IOException e) {
             LOG.warn(e.getMessage());

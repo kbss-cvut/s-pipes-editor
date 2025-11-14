@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -72,8 +73,11 @@ public class ScriptService {
         Statement dependency = ontModel.createStatement(moduleFrom.get(), ResourceFactory.createProperty(Vocabulary.s_p_next), moduleTo.get());
         ontModel.add(dependency);
 
-        try (OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
+        try {
+            JenaUtils.writeScript(Path.of(scriptPath), ontologyHelper.getBaseModel(ontModel));
+        }
+        catch (IllegalStateException e) {
+            throw new ModuleDependencyException("Unable to create dependency" + "<" + from + ", " + to +">. Since it will create cycle in the pipeline " + scriptPath, scriptPath, null, to, from);
         }
     }
 
@@ -107,9 +111,7 @@ public class ScriptService {
         }
 
         ontModel.remove(dependency);
-        try(OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
-        }
+        JenaUtils.writeScript(Path.of(scriptPath), ontologyHelper.getBaseModel(ontModel));
     }
 
     public void deleteModule(String scriptPath, String module) throws IOException {
@@ -117,18 +119,14 @@ public class ScriptService {
         List<Statement> fromStatements = OntologyHelper.getAllStatementsRecursively(ontModel, module);
         ontModel.remove(fromStatements);
         ontModel.removeAll(null, null, ontModel.getResource(module));
-        try(OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
-        }
+        JenaUtils.writeScript(Path.of(scriptPath), ontologyHelper.getBaseModel(ontModel));
     }
 
     public void deleteModuleOnly(String scriptPath, String module) throws IOException {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
         List<Statement> fromStatements = OntologyHelper.getAllStatementsRecursively(ontModel, module);
         ontModel.remove(fromStatements);
-        try(OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
-        }
+        JenaUtils.writeScript(Path.of(scriptPath), ontologyHelper.getBaseModel(ontModel));
     }
 
     public void moveModule(String scriptFrom, String scriptTo, String moduleURI, boolean renameBaseOntology) throws IOException {
@@ -153,10 +151,8 @@ public class ScriptService {
                 }
             });
         }
-        try(OutputStream os = new FileOutputStream(toFile)) {
-            JenaUtils.writeScript(os, toModel);
-            toModel.close();
-        }
+        JenaUtils.writeScript(Path.of(scriptTo), toModel);
+        toModel.close();
 
         deleteModuleOnly(scriptFrom, moduleURI);
 
@@ -184,10 +180,8 @@ public class ScriptService {
                     }
                 });
                 if(changed.get()){
-                    try(OutputStream os = new FileOutputStream(file)) {
-                        JenaUtils.writeScript(os, resModel);
-                        resModel.close();
-                    }
+                    JenaUtils.writeScript(file.toPath(), resModel);
+                    resModel.close();
                 }
             }
         }
@@ -260,9 +254,7 @@ public class ScriptService {
         Model ontModel = ontologyHelper.createOntModel(new File(scriptPath));
         ontModel.removeAll(ontModel.getResource(ontology), OWL.imports, null);
         ontModel.removeAll(null, OWL.imports, ontModel.getResource(ontology));
-        try(OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, ontologyHelper.getBaseModel(ontModel));
-        }
+        JenaUtils.writeScript(Path.of(scriptPath), ontologyHelper.getBaseModel(ontModel));
     }
 
     public void addScriptOntology(String scriptPath, String ontologyName) throws MissingOntologyException, IOException {
@@ -275,9 +267,7 @@ public class ScriptService {
 
         Model resModel = ontologyHelper.createOntModel(f);
         resModel.add(ResourceFactory.createResource(ontology), OWL.imports, ResourceFactory.createResource(ontologyName));
-        try(OutputStream os = new FileOutputStream(scriptPath)) {
-            JenaUtils.writeScript(os, resModel);
-        }
+        JenaUtils.writeScript(Path.of(scriptPath), resModel);
     }
 
     public List<String> getScriptImportedOntologies(String scriptPath) {

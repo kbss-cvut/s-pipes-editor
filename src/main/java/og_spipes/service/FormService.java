@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.*;
 
 @Service
@@ -59,10 +60,8 @@ public class FormService {
         Model ontModel = helper.createOntModel(new File(scriptPath));
         Map<String, Model> modelMap = ownTransformer.form2Script(ontModel, rootQuestion, moduleType);
         modelMap.forEach((file, model) -> {
-            try (OutputStream os = new FileOutputStream(scriptPath)){
-                JenaUtils.writeScript(os, getBaseModel(model));
-            } catch (FileNotFoundException e) {
-                LOG.error(e.getMessage());
+            try {
+                JenaUtils.writeScript(Path.of(scriptPath), getBaseModel(model));
             } catch (IOException e) {
                 LOG.error(e.getMessage());
             }
