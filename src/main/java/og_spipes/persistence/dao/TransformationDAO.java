@@ -41,7 +41,7 @@ public class TransformationDAO extends BaseDAO<TransformationDTO> {
         String execUri = "http://onto.fel.cvut.cz/ontologies/dataset-descriptor/pipeline-execution/" + executionId;
         String sparql = "SELECT DISTINCT ?pipelineName WHERE { " +
                 "<" + execUri + "> <http://onto.fel.cvut.cz/ontologies/dataset-descriptor/has-part> ?moduleExec . " +
-                "?moduleExec <http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name> ?pipelineName . " +
+                "?moduleExec <http://onto.fel.cvut.cz/ontologies/s-pipes/has-script> ?pipelineName . " +
                 "}";
         Query query = em.createNativeQuery(sparql);
         return query.getSingleResult().toString();

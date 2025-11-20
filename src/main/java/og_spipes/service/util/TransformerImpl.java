@@ -360,7 +360,7 @@ public class TransformerImpl implements Transformer {
 
             Question q = new Question();
             initializeQuestionUri(q);
-            q.setLabel(st.getObject().toString());
+            q.setLabel(st.getResource().getLocalName());
             q.setProperties(extractQuestionMetadata(st));
             q.setPrecedingQuestions(Collections.singleton(functionQ));
             subQuestions.add(q);

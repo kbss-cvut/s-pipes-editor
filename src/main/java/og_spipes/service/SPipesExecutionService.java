@@ -54,7 +54,8 @@ public class SPipesExecutionService {
 
     public String serviceExecution (
             String functionId,
-            Map<String, String> params
+            Map<String, String> params,
+            String scriptPath
     ) throws SPipesEngineException {
         String serviceUrl = engineUrl + "/service";
         params.put("_pId", functionId);
@@ -124,10 +125,10 @@ public class SPipesExecutionService {
      */
     public List<ExecutionDTO> getAllExecution() {
         return transformationDAO.getAllExecutionTransformation().stream()
-                .filter(x -> x.getProperties().containsKey("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name"))
+                .filter(x -> x.getProperties().containsKey("http://onto.fel.cvut.cz/ontologies/s-pipes/has-script"))
                 .map(x -> {
                     Map<String, Set<Object>> properties = x.getProperties();
-                    String pipelineURI = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-name").stream().findFirst().orElse("").toString();
+                    String pipelineURI = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-script").stream().findFirst().orElse("").toString();
                     String name = pipelineURI.substring(pipelineURI.lastIndexOf("/")+1);
                     String duration = properties.get("http://onto.fel.cvut.cz/ontologies/s-pipes/has-pipeline-execution-duration").stream().findFirst().orElse("").toString();
                     Date startDate = x.getStart_date();
