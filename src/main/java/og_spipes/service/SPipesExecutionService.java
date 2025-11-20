@@ -60,7 +60,6 @@ public class SPipesExecutionService {
         String serviceUrl = engineUrl + "/service";
         params.put("_pId", functionId);
         params.put("_pConfigURL", pConfigURL);
-        params.put("_pScriptPath", scriptPath);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUrl);
         for (Map.Entry<String, String> pair : params.entrySet()) {
@@ -99,7 +98,6 @@ public class SPipesExecutionService {
         params.put("_pId", moduleId);
         createDebugConfig(configLocation, moduleScript);
         params.put("_pConfigURL", configLocation);
-        params.put("_pScriptPath", moduleScript);
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serviceUrl);
         for (Map.Entry<String, String> pair : params.entrySet()) {
