@@ -12,11 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import org.springframework.util.FileSystemUtils;
 
-import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +26,8 @@ public class BasePersistenceFactory {
     private EntityManagerFactory emf;
 
     public BasePersistenceFactory(
-            @Value("${rdf4j.repositoryUrl}") String repositoryUrl,
-            @Value("${rdf4j.repositoryName}") String repositoryName,
+            @Qualifier("rdf4jRepositoryUrl") String repositoryUrl,
+            @Qualifier("rdf4jRepositoryName") String repositoryName,
             @Value("${rdf4j.driver}") String driver
     ) {
         this.repositoryUrl = repositoryUrl;

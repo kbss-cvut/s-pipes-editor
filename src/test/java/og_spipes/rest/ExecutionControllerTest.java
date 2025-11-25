@@ -1,20 +1,18 @@
 package og_spipes.rest;
 
 import com.google.common.collect.Sets;
-import og_spipes.config.Constants;
 import og_spipes.service.ModuleExecutionInfo;
 import og_spipes.service.ViewService;
-import og_spipes.testutil.AbstractControllerTest;
-import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.File;
 import java.util.HashSet;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -23,19 +21,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class ExecutionControllerTest extends AbstractControllerTest {
-
-    @Value(Constants.SCRIPTPATH_SPEL)
-    private String scriptPath;
+@SpringBootTest
+@AutoConfigureMockMvc
+class ExecutionControllerTest {
 
     @Mock
     private ViewService viewService;
 
-    @BeforeEach
-    void init() throws Exception {
-        File scriptsHomeTmp = new File(scriptPath);
-        FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/hello-world"), scriptsHomeTmp);
-    }
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
     @DisplayName("List history of execution")
