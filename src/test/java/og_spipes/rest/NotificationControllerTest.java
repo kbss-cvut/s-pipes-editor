@@ -1,35 +1,22 @@
 package og_spipes.rest;
 
 import og_spipes.config.Constants;
+import og_spipes.testutil.AbstractSpringTest;
 import org.apache.commons.io.FileUtils;
+import org.awaitility.Awaitility;
 import org.java_websocket.enums.ReadyState;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.util.FileSystemUtils;
-
 import java.io.File;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.Duration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
-@TestPropertySource(locations="classpath:application.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class NotificationControllerTest {
+public class NotificationControllerTest extends AbstractSpringTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(NotificationControllerTest.class);
 
@@ -39,7 +26,7 @@ public class NotificationControllerTest {
     private String URL;
 
     @Value(Constants.SCRIPTPATH_SPEL)
-    private String scriptPaths;
+    private String scriptPath;
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
@@ -47,22 +34,9 @@ public class NotificationControllerTest {
     @Value("${spring.mvc.servlet.path}")
     private String servletPath;
 
-    @TempDir
-    static Path tempDir;
-
-    @DynamicPropertySource
-    static void registerProps(DynamicPropertyRegistry registry) {
-        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
-    }
-
-
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(scriptPaths);
-        if(scriptsHomeTmp.exists()){
-            FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
-        }
+        File scriptsHomeTmp = new File(scriptPath);
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
         URL = "ws://localhost:" + port + contextPath  + servletPath + "notifications";
     }
@@ -76,7 +50,7 @@ public class NotificationControllerTest {
             Thread.sleep(500);
         }
 
-        File file = new File(scriptPaths + "/sample-script.ttl");
+        File file = new File(scriptPath + "/sample-script.ttl");
         myWebSocketClient.send(file.toURI().getPath());
         Thread.sleep(1000);
 
@@ -86,15 +60,11 @@ public class NotificationControllerTest {
         Thread.sleep(2000);
 
         file.delete();
-        Thread.sleep(2000);
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(5))
+                .until(() -> myWebSocketClient.getOnMessageCounter().get() > 1);
 
-        Assertions.assertTrue(myWebSocketClient.getOnMessageCounter().get() > 1);
         myWebSocketClient.close();
-    }
-
-    @AfterEach
-    public void after() {
-        FileSystemUtils.deleteRecursively(new File(scriptPaths));
     }
 
 }

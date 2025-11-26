@@ -7,19 +7,14 @@ import og_spipes.model.spipes.TransformationDTO;
 import og_spipes.persistence.dao.ScriptDAO;
 import og_spipes.persistence.dao.TransformationDAO;
 import og_spipes.service.exception.SPipesEngineException;
+import og_spipes.testutil.AbstractSpringTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,9 +22,7 @@ import java.util.stream.Stream;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class SPipesExecutionServiceTest {
+public class SPipesExecutionServiceTest extends AbstractSpringTest {
 
     private final ScriptDAO scriptDAO = Mockito.mock(ScriptDAO.class);
 
@@ -42,14 +35,6 @@ public class SPipesExecutionServiceTest {
             transformationDAO,
             scriptDAO
     );
-
-    @TempDir
-    static Path tempDir;
-
-    @DynamicPropertySource
-    static void registerProps(DynamicPropertyRegistry registry) {
-        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
-    }
 
     @Test
     public void serviceExecution() throws SPipesEngineException {

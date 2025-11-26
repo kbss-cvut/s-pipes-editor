@@ -6,6 +6,7 @@ import og_spipes.model.spipes.ModuleType;
 import og_spipes.service.exception.FileExistsException;
 import og_spipes.service.exception.MissingOntologyException;
 import og_spipes.service.exception.OntologyDuplicationException;
+import og_spipes.testutil.AbstractSpringTest;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -14,30 +15,20 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.sys.JenaSystem;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.apache.jena.util.FileUtils.langTurtle;
 
-@SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ScriptServiceTest {
+public class ScriptServiceTest extends AbstractSpringTest {
 
     @Autowired
     private OntologyHelper ontologyHelper;
@@ -45,15 +36,10 @@ public class ScriptServiceTest {
     @Autowired
     private ScriptService scriptService;
 
-    private final String scriptPath = "/tmp/og_spipes";
+    @Value(Constants.SCRIPTPATH_SPEL)
+    private String scriptPath;
 
-    @TempDir
-    static Path tempDir;
-
-    @DynamicPropertySource
-    static void registerProps(DynamicPropertyRegistry registry) {
-        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
-    }
+    private Path scriptsRoot;
 
     @BeforeAll
     public static void initJena() {
@@ -63,62 +49,53 @@ public class ScriptServiceTest {
     @BeforeEach
     public void init() throws Exception {
         File scriptsHomeTmp = new File(scriptPath);
-        if(scriptsHomeTmp.exists()){
-            FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
-        }
+        scriptsRoot = scriptsHomeTmp.toPath();
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/"), scriptsHomeTmp);
     }
 
     @Test
     public void getModuleTypes() {
-        List<ModuleType> moduleTypes = scriptService.getModuleTypes("/tmp/og_spipes/hello-world/hello-world.sms.ttl");
-
+        Path file = scriptsRoot.resolve("hello-world").resolve("hello-world.sms.ttl");
+        List<ModuleType> moduleTypes = scriptService.getModuleTypes(file.toString());
         Assertions.assertEquals(25, moduleTypes.size());
     }
 
     @Test
     public void getModule() {
-        List<Module> modules = scriptService.getModules("/tmp/og_spipes/hello-world/hello-world.sms.ttl");
-
+        Path file = scriptsRoot.resolve("hello-world").resolve("hello-world.sms.ttl");
+        List<Module> modules = scriptService.getModules(file.toString());
         Assertions.assertEquals(3, modules.size());
     }
 
     @Test
     public void moveModuleBasic() throws IOException {
         String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname";
+        Path from = scriptsRoot.resolve("hello-world/hello-world.sms.ttl");
+        Path to   = scriptsRoot.resolve("hello-world/hello-world2.sms.ttl");
 
-        scriptService.moveModule(
-                "/tmp/og_spipes/hello-world/hello-world.sms.ttl",
-                "/tmp/og_spipes/hello-world/hello-world2.sms.ttl",
-                moduleUri,
-                false
-        );
+        scriptService.moveModule(from.toString(), to.toString(), moduleUri, false);
 
-        Model fromModel = ontologyHelper.createOntModel(new File("/tmp/og_spipes/hello-world/hello-world.sms.ttl"));
-        Model toModel = ontologyHelper.createOntModel(new File("/tmp/og_spipes/hello-world/hello-world2.sms.ttl"));
+        Model fromModel = ontologyHelper.createOntModel(from.toFile());
+        Model toModel   = ontologyHelper.createOntModel(to.toFile());
 
         String resUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname";
         List<Statement> fromStatements = fromModel.listStatements(fromModel.getResource(moduleUri), null, (RDFNode) null).toList();
         List<Statement> toStatements = toModel.listStatements(toModel.getResource(resUri), null, (RDFNode) null).toList();
 
-        Assertions.assertEquals(fromStatements.size(), 0);
-        Assertions.assertEquals(toStatements.size(), 5);
+        Assertions.assertEquals(0, fromStatements.size());
+        Assertions.assertEquals(5, toStatements.size());
     }
 
     @Test
     public void moveModuleBasicWithRename() throws IOException {
         String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.1/bind-firstname";
+        Path from = scriptsRoot.resolve("hello-world/hello-world.sms.ttl");
+        Path to   = scriptsRoot.resolve("hello-world/hello-world2.sms.ttl");
 
-        scriptService.moveModule(
-                "/tmp/og_spipes/hello-world/hello-world.sms.ttl",
-                "/tmp/og_spipes/hello-world/hello-world2.sms.ttl",
-                moduleUri,
-                true
-        );
+        scriptService.moveModule(from.toString(), to.toString(), moduleUri, true);
 
-        Model fromModel = ontologyHelper.createOntModel(new File("/tmp/og_spipes/hello-world/hello-world.sms.ttl"));
-        Model toModel = ontologyHelper.createOntModel(new File("/tmp/og_spipes/hello-world/hello-world2.sms.ttl"));
+        Model fromModel = ontologyHelper.createOntModel(from.toFile());
+        Model toModel = ontologyHelper.createOntModel(to.toFile());
 
         String resUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/hello-world-example-0.2/bind-firstname";
         List<Statement> fromStatements = fromModel.listStatements(fromModel.getResource(moduleUri), null, (RDFNode) null).toList();
@@ -131,15 +108,12 @@ public class ScriptServiceTest {
     @Test
     public void moveModuleAffectMoreFiles() throws IOException {
         String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels";
+        Path from = scriptsRoot.resolve("skosify/metadata.ttl");
+        Path to   = scriptsRoot.resolve("skosify/identification.ttl");
 
-        scriptService.moveModule(
-                "/tmp/og_spipes/skosify/metadata.ttl",
-                "/tmp/og_spipes/skosify/identification.ttl",
-                moduleUri,
-                true
-        );
+        scriptService.moveModule(from.toString(), to.toString(), moduleUri, true);
 
-        Model resModule = ModelFactory.createDefaultModel().read("/tmp/og_spipes/skosify/skosify.sms.ttl", langTurtle);
+        Model resModule = ModelFactory.createDefaultModel().read(scriptsRoot.resolve("skosify/skosify.sms.ttl").toString(), langTurtle);
         String resModuleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/identification/construct-labels";
         List<Statement> toStatements = resModule.listStatements(resModule.getResource(resModuleUri), null, (RDFNode) null).toList();
 
@@ -151,11 +125,11 @@ public class ScriptServiceTest {
         String moduleUri = "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata/construct-labels";
 
         scriptService.deleteModuleOnly(
-                "/tmp/og_spipes/skosify/metadata.ttl",
+                scriptsRoot.resolve("skosify/metadata.ttl").toString(),
                 moduleUri
         );
 
-        Model resModule = ModelFactory.createDefaultModel().read("/tmp/og_spipes/skosify/metadata.ttl", langTurtle);
+        Model resModule = ModelFactory.createDefaultModel().read(scriptsRoot.resolve("skosify/metadata.ttl").toString(), langTurtle);
         List<Statement> toStatements = resModule.listStatements(resModule.getResource(moduleUri), null, (RDFNode) null).toList();
 
         Assertions.assertEquals(0, toStatements.size());
@@ -164,7 +138,7 @@ public class ScriptServiceTest {
     @Test
     public void createScript() throws OntologyDuplicationException, IOException, FileExistsException {
         scriptService.createScript(
-                "/tmp/og_spipes/hello-world",
+                scriptsRoot.resolve("hello-world").toString(),
                 "karel.ttl",
                 URI.create("http://onto.fel.cvut.cz/ontologies/s-pipes/karel"),
                 "say_Return",
@@ -173,14 +147,14 @@ public class ScriptServiceTest {
 
 
 
-        File file = new File("/tmp/og_spipes/hello-world/karel.ttl");
+        File file = new File(scriptsRoot.resolve("hello-world/karel.ttl").toString());
         Assertions.assertTrue(file.exists());
     }
 
     @Test
     public void getScriptOntologies() {
         List<String> scriptImportedOntologies = scriptService
-                .getScriptImportedOntologies("/tmp/og_spipes/skosify/skosify.sms.ttl");
+                .getScriptImportedOntologies(scriptsRoot.resolve("skosify/skosify.sms.ttl").toString());
 
         List<String> expectedRes = Arrays.asList(
             "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/relations",
@@ -192,7 +166,7 @@ public class ScriptServiceTest {
 
     @Test
     public void addScriptOntology() throws IOException, MissingOntologyException {
-        File f = new File("/tmp/og_spipes/skosify/skosify.sms.ttl");
+        File f = scriptsRoot.resolve("skosify/skosify.sms.ttl").toFile();
         scriptService.addScriptOntology(
                 f.getAbsolutePath(),
                 "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/new-ontology"
@@ -209,7 +183,7 @@ public class ScriptServiceTest {
 
     @Test
     public void removeScriptOntology() throws IOException {
-        File f = new File("/tmp/og_spipes/skosify/skosify.sms.ttl");
+        File f = scriptsRoot.resolve("skosify/skosify.sms.ttl").toFile();
         scriptService.removeScriptOntology(
                 f.getAbsolutePath(),
                 "http://onto.fel.cvut.cz/ontologies/s-pipes/skosify-example-0.1/metadata"
@@ -222,12 +196,6 @@ public class ScriptServiceTest {
                 .toList();
 
         Assertions.assertEquals(0, statements.size());
-    }
-
-    @AfterEach
-    public void after() {
-        FileSystemUtils.
-        deleteRecursively(new File(scriptPath));
     }
 
 }

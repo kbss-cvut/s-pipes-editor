@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,7 +31,7 @@ public class Rdf4jPersistenceProvider {
     private Repository repository;
 
     @Autowired
-    public Rdf4jPersistenceProvider(@Value("${rdf4j.repositoryUrl}") String repositoryUrl, @Value("${rdf4j.repositoryName}") String repositoryName, @Qualifier("rdf4jEMF") EntityManagerFactory emf) {
+    public Rdf4jPersistenceProvider(@Qualifier("rdf4jRepositoryUrl") String repositoryUrl, @Qualifier("rdf4jRepositoryName") String repositoryName, @Qualifier("rdf4jEMF") EntityManagerFactory emf) {
         this.repositoryUrl = repositoryUrl;
         this.repositoryName = repositoryName;
         this.emf = emf;

@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -37,18 +36,17 @@ public class PersistenceFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(PersistenceFactory.class);
 
-    private final Environment environment;
+    private final String scriptPath;
 
     private EntityManagerFactory emf;
 
     @Autowired
-    public PersistenceFactory(Environment environment) {
-        this.environment = environment;
+    public PersistenceFactory(@Qualifier("scriptPath") String scriptPath) {
+        this.scriptPath = scriptPath;
     }
 
     @PostConstruct
     private void init() {
-        final String scriptPath = environment.getProperty("scriptPaths");
         LOG.info("Using repository path: {}.", scriptPath);
 
         final Map<String, String> props = new HashMap<>();

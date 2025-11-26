@@ -9,29 +9,19 @@ import og_spipes.model.Vocabulary;
 import og_spipes.model.dto.SHACLValidationResultDTO;
 import og_spipes.model.dto.ScriptCreateDTO;
 import og_spipes.model.spipes.ScriptOntologyDTO;
+import og_spipes.testutil.AbstractControllerTest;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.io.TempDir;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,34 +33,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ScriptControllerTest {
+public class ScriptControllerTest extends AbstractControllerTest {
 
     @Value(Constants.SCRIPTPATH_SPEL)
-    private String scriptPaths;
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @TempDir
-    static Path tempDir;
-
-    @DynamicPropertySource
-    static void registerProps(DynamicPropertyRegistry registry) {
-        registry.add("rdf4j.repositoryUrl", () -> tempDir.resolve("repositories").toUri().toString());
-    }
+    private String scriptPath;
 
     private final ObjectMapper mapper = new ObjectMapper();
 
     @BeforeEach
     public void init() throws Exception {
-        File scriptsHomeTmp = new File(scriptPaths);
-        if(scriptsHomeTmp.exists()){
-            FileSystemUtils.deleteRecursively(scriptsHomeTmp);
-            Files.createDirectory(Paths.get(scriptsHomeTmp.toURI()));
-        }
+        File scriptsHomeTmp = new File(scriptPath);
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/hello-world"), scriptsHomeTmp);
         FileUtils.copyFileToDirectory(new File("src/test/resources/SHACL/rule-test-cases/data-without-label.ttl"), scriptsHomeTmp);
         RestConfig.configureObjectMapper(mapper);
@@ -80,7 +52,7 @@ public class ScriptControllerTest {
         @DisplayName("Create script")
         public void testCreateFile() throws Exception {
                 ScriptCreateDTO scriptCreateDTO = new ScriptCreateDTO(
-                                scriptPaths,
+                        scriptPath,
                                 "new-ontology.ttl",
                                 "http://onto.fel.cvut.cz/ontologies/s-pipes/new-ontology",
                                 "test-return",
@@ -94,7 +66,7 @@ public class ScriptControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        File file = new File(scriptPaths + "/new-ontology.ttl");
+        File file = new File(scriptPath + "/new-ontology.ttl");
         Assertions.assertTrue(file.exists());
     }
 
@@ -105,7 +77,7 @@ public class ScriptControllerTest {
                 .content(
                         "{" +
                                 "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-create-dto\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\": \"" + scriptPaths +"\"," +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-script-path\": \"" + scriptPath +"\"," +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-name\": \"" + "hello-world.sms.ttl\"," +
                                 "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-ontology-uri\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/new-ontology\"" +
                                 "}"
@@ -119,14 +91,14 @@ public class ScriptControllerTest {
     @Test
     @DisplayName("Delete script or script's directory")
     public void testDeleteScript() throws Exception {
-        File file = new File(scriptPaths);
+        File file = new File(scriptPath);
         int initLength = (Objects.requireNonNull(file.list())).length;
 
         this.mockMvc.perform(post("/scripts/delete")
                 .content(
                         "{" +
                                 "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
-                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \""+ scriptPaths +"/hello-world.sms.ttl\"" +
+                                "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \""+ scriptPath +"/hello-world.sms.ttl\"" +
                                 "}"
                 )
                 .contentType(MediaType.APPLICATION_JSON))
@@ -140,10 +112,10 @@ public class ScriptControllerTest {
     @Test
     @DisplayName("Get script ontologies")
     public void testScriptOntologies() throws Exception {
-        File scriptsHomeTmp = new File(scriptPaths);
+        File scriptsHomeTmp = new File(scriptPath);
         FileUtils.copyDirectory(new File("src/test/resources/scripts_test/sample/skosify"), scriptsHomeTmp);
 
-        String tmpScripts = scriptPaths + "/skosify.sms.ttl";
+        String tmpScripts = scriptPath + "/skosify.sms.ttl";
         MvcResult mvcResult = this.mockMvc.perform(post("/scripts/ontologies")
                 .content(
                         "{" +
@@ -170,6 +142,7 @@ public class ScriptControllerTest {
     @Test
     @DisplayName("List script folder")
     public void testScriptsEndpoint() throws Exception {
+        Path scriptsDir = tempDir.resolve("scripts");
         this.mockMvc.perform(get("/scripts"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -179,24 +152,24 @@ public class ScriptControllerTest {
                                 "    {\n" +
                                 "      \"children\": [\n" +
                                 "        {\n" +
-                                "          \"id\": \"" + new File("/tmp/og_spipes/hello-world.sms.ttl").toURI().getPath() + "\",\n" +
+                                "          \"id\": \"" + scriptsDir.resolve("hello-world.sms.ttl").toUri().getPath() + "\",\n" +
                                 "          \"name\": \"hello-world.sms.ttl\"\n" +
                                 "        },\n" +
                                 "        {\n" +
-                                "          \"id\": \"" + new File("/tmp/og_spipes/hello-world2.sms.ttl").toURI().getPath() + "\",\n" +
+                                "          \"id\": \"" + scriptsDir.resolve("hello-world2.sms.ttl").toUri().getPath() + "\",\n" +
                                 "          \"name\": \"hello-world2.sms.ttl\"\n" +
                                 "        },\n" +
                                 "        {\n" +
-                                "          \"id\": \"" + new File("/tmp/og_spipes/hello-world3.sms.ttl").toURI().getPath() + "\",\n" +
+                                "          \"id\": \"" + scriptsDir.resolve("hello-world3.sms.ttl").toUri().getPath() + "\",\n" +
                                 "          \"name\": \"hello-world3.sms.ttl\"\n" +
                                 "        },\n" +
                                 "        {\n" +
-                                "          \"id\": \"" + new File("/tmp/og_spipes/data-without-label.ttl").toURI().getPath() + "\",\n" +
+                                "          \"id\": \"" + scriptsDir.resolve("data-without-label.ttl").toUri().getPath() + "\",\n" +
                                 "          \"name\": \"data-without-label.ttl\"\n" +
                                 "        }\n" +
                                 "      ],\n" +
-                                "      \"name\": \"og_spipes\",\n" +
-                                "      \"id\": \"" + new File("/tmp/og_spipes").toURI().getPath() + "\" \n" +
+                                "      \"name\": \"scripts\",\n" +
+                                "      \"id\": \"" + scriptsDir.toUri().getPath() + "\" \n" +
                                 "    }\n" +
                                 "  ],\n" +
                                 "  \"name\": \"[SCRIPTS ROOT]\",\n" +
@@ -212,7 +185,7 @@ public class ScriptControllerTest {
                 .content(
                         "{" +
                             "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
-                            "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \""+ scriptPaths +"/hello-world.sms.ttl\"" +
+                            "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-absolute-path\": \""+ scriptPath +"/hello-world.sms.ttl\"" +
                         "}"
                 )
                 .contentType(MediaType.APPLICATION_JSON))
@@ -225,7 +198,7 @@ public class ScriptControllerTest {
     @DisplayName("Add dependency between two modules in script")
     public void testAddModuleDependency() throws Exception {
         //TODO try inline JsonLD from object
-        String tmpScripts = scriptPaths + "/hello-world.sms.ttl";
+        String tmpScripts = scriptPath + "/hello-world.sms.ttl";
         this.mockMvc.perform(post("/scripts/modules/dependency")
                 .content(
                         "{\n" +
@@ -256,7 +229,7 @@ public class ScriptControllerTest {
     @Test
     @DisplayName("Delete module in script")
     public void testDeleteModule() throws Exception {
-        String tmpScripts = scriptPaths + "/hello-world.sms.ttl";
+        String tmpScripts = scriptPath + "/hello-world.sms.ttl";
         this.mockMvc.perform(post("/scripts/modules/delete")
                 .content("{\n" +
                             "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/module-dto\",\n" +
@@ -281,7 +254,7 @@ public class ScriptControllerTest {
     @Test
     @DisplayName("Delete dependency of module in script")
     public void testDeleteDependecyOfModule() throws Exception {
-        String tmpScripts = scriptPaths + "/hello-world.sms.ttl";
+        String tmpScripts = scriptPath + "/hello-world.sms.ttl";
         this.mockMvc.perform(post("/scripts/modules/dependencies/delete")
                 .content(
                         "{\n" +
@@ -309,7 +282,7 @@ public class ScriptControllerTest {
     @Test
     @DisplayName("Enforce script SHACL rules on valid script")
     public void restSHACLRulesForValidScript() throws Exception {
-        String tmpScripts = scriptPaths + "/hello-world.sms.ttl";
+        String tmpScripts = scriptPath + "/hello-world.sms.ttl";
         this.mockMvc.perform(post("/scripts/validate")
                 .content(
                         "{" +
@@ -326,7 +299,7 @@ public class ScriptControllerTest {
     @Test
     @DisplayName("Enforce script SHACL rules on valid script")
     public void restSHACLRulesForInvalidScript() throws Exception {
-        String tmpScripts = scriptPaths + "/data-without-label.ttl";
+        String tmpScripts = scriptPath + "/data-without-label.ttl";
         MvcResult mvcResult = this.mockMvc.perform(post("/scripts/validate")
                 .content(
                         "{" +
@@ -372,10 +345,5 @@ public class ScriptControllerTest {
 //                .andDo(print())
 //                .andExpect(status().isOk());
 //    }
-
-    @AfterEach
-    public void after() {
-        FileSystemUtils.deleteRecursively(new File(scriptPaths));
-    }
 
 }
