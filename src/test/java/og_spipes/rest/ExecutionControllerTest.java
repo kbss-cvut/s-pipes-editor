@@ -68,8 +68,7 @@ class ExecutionControllerTest {
     }
 
     @Test
-    @DisplayName("List history of execution")
-    public void testScriptsEndpoint() throws Exception {
+    public void historyOfAllExecutionReturnsJson() throws Exception {
         this.mockMvc.perform(get("/execution/history"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -77,20 +76,19 @@ class ExecutionControllerTest {
     }
 
     @Test
-    @DisplayName("Get file moduleTypes")
-    public void testGetScriptModuleTypes() throws Exception {
+    public void historyOfModuleReturnsSuccessfully() throws Exception {
         HashSet<ModuleExecutionInfo> executionInfos = Sets.newHashSet(
                 new ModuleExecutionInfo("moduleUri", null, 100L, 122L, 123L)
         );
         Mockito.when(viewService.modulesExecutionInfo("http://example.com/transformationId")).thenReturn(executionInfos);
         this.mockMvc.perform(post("/execution/history-modules")
-                .content(
-                        "{" +
-                            "\"@type\": \"http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto\"," +
-                            "\"http://onto.fel.cvut.cz/ontologies/s-pipes/has-transformation-id\": \"http://example.com/transformationId\"" +
-                        "}"
-                )
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content("""
+                        {
+                            "@type": "http://onto.fel.cvut.cz/ontologies/s-pipes/script-dto",
+                            "http://onto.fel.cvut.cz/ontologies/s-pipes/has-transformation-id": "http://example.com/transformationId"
+                        }
+                    """)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
