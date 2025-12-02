@@ -76,6 +76,7 @@ public class FunctionController {
 
         String function = dto.getFunction();
         String[] split = dto.getParams().split("&");
+        String scriptPath = dto.getScriptPath();
 
         Map<String, String> params = new HashMap<>();
         if(!dto.getParams().equals("")){
@@ -84,7 +85,7 @@ public class FunctionController {
                     .collect(Collectors.toMap(e -> e[0], e -> e[1]));
         }
 
-        return executorService.serviceExecution(function, params);
+        return executorService.serviceExecution(function, params, scriptPath);
     }
 
     @PostMapping(path = "/module/execute")
